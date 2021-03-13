@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Submission Manager: System Documentation</title>
+<meta charset="UTF-8">
+
+<style>
+body
+{
+	font-family: Arial, Times New Roman;
+	font-size: 12pt;
+	background-color: white;
+	color: black;
+}
+
+a
+{
+	color: #325287;
+}
+
+td
+{
+	vertical-align: top;
+}
+
+a:hover
+{
+	color: red;
+	background-color: white;
+	text-decoration: underline;
+}
+
+.header
+{
+	font-size: 14pt;
+	font-weight: bold;
+	margin-bottom: 25px;
+}
+
+.header_grey
+{
+	font-size: 14pt;
+	font-weight: bold;
+	background-color: #DFDFDF;
+	border: 1px solid black;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	padding: 5px;
+}
+
+.header_clear
+{
+	font-size: 14pt;
+	font-weight: bold;
+	border: 1px solid black;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	padding: 5px;
+}
+
+.table
+{
+	background-color: #F4F4F4;
+}
+
+.table_grey
+{
+	background-color: #DFDFDF;
+}
+
+.row_left
+{
+	text-align: right;
+	padding-right: 5px;
+	white-space: nowrap;
+}
+
+.indent_1
+{
+	margin-left: 25px;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
+.indent_2
+{
+	margin-left: 50px;
+	margin-top: 25px;
+	margin-bottom: 25px;
+}
+</style>
+
+</head>
+<body>
+
+<div style="text-align: center;">
+<div style="font-size: 25pt; font-weight: bold;">Submission Manager</div>
+<div style="font-size: 15pt;">System Documentation</div>
+<div style="font-size: 10pt;">updated 2019-09-06<br>&copy;2019 Devin Emke</div>
+</div>
+
+<hr>
+
+<div class="header">Contents:</div>
+<ul style="font-weight: bold; padding-bottom: 50px;">
+<li><a href="#overview_header">Overview</a></li>
+<li style="margin-left: 20px;"><a href="#overview_1">System Elements</a></li>
+<li style="margin-left: 20px;"><a href="#overview_2">Access Levels</a></li>
+<li><a href="#installation_header">Installation</a></li>
+<li style="margin-left: 20px;"><a href="#installation_1">System Requirements</a></li>
+<li style="margin-left: 20px;"><a href="#installation_2">Before You Install Submission Manager</a></li>
+<li style="margin-left: 20px;"><a href="#installation_3">Installing Submission Manager</a></li>
+<li style="margin-left: 20px;"><a href="#installation_4">Configuration Options</a></li>
+<li style="margin-left: 20px;"><a href="#installation_5">Special Situations</a></li>
+<li><a href="#backup_header">Backup</a></li>
+<li><a href="#security_header">Security</a></li>
+<li><a href="#submission_header">The Submission Process</a></li>
+<li><a href="#staff_header">Staff Areas</a></li>
+<li style="margin-left: 20px;"><a href="#staff_1">The Submission Area</a></li>
+<li style="margin-left: 20px;"><a href="#staff_2">The Contact Area</a></li>
+<li style="margin-left: 20px;"><a href="#staff_3">The Reports Area</a></li>
+<li style="margin-left: 20px;"><a href="#staff_4">The Configuration Area</a></li>
+<li style="margin-left: 20px;"><a href="#staff_5">The Maintenance Area</a></li>
+<li><a href="#config_header">Configuring the system for your publication</a></li>
+<li style="margin-left: 20px;"><a href="#config_1">Configuring Genres</a></li>
+<li style="margin-left: 20px;"><a href="#config_2">Configuring Access Levels</a></li>
+<li style="margin-left: 20px;"><a href="#config_3">Configuring Actions</a></li>
+<li style="margin-left: 20px;"><a href="#config_4">Using Forwards to Configure the System to Your Reading Process</a></li>
+<li><a href="#payment_header">Using Submission Manager to Collect Payments</a></li>
+</ul>
+
+<div class="header_grey" id="overview_header">Overview</div>
+
+<div class="indent_1">
+
+	<p>Submission Manager is an online system for accepting and managing submissions to a literary magazine. It is a web-based front end to a mySQL database.</p>
+	<div class="header_clear" id="overview_1">System Elements</div>
+	<p>The basic elements of the system are:</p>
+
+	<div class="indent_2">
+		<p><b>Contacts:</b><br>All contacts are stored in a single database table. This means that contact information about your staff is stored in the same place as information about your submitters. What differentiates staff from submitters is their level of access to the administrative parts of the system. This is called their access level.</p>
+		<p><b>Submissions:</b><br>Submissions are the work submitted by contacts to be considered by the publication. Each submission has a record in the database that contains all of the information about the submitted file (the author, title, etc). This record is linked to the submission file, which is stored on the publication&rsquo;s server. The submission file can be any file type. By default Submission Manager accepts the following file types: <b>DOC, DOCX, PDF, RTF, TXT</b>. You can customize the file types and sizes that Submission Manager accepts.</p>
+		<p><b><span id="actions">Actions:</span></b><br>Actions are records of processes created by a staff member on a submission. There are 4 types of actions:</p>
+		<table>
+		<tr class="table"><td class="row_left"><b>Accept:</b></td><td>Accepting a submission for publication.</td></tr>
+		<tr class="table"><td class="row_left"><b>Withdraw:</b></td><td>Withdrawing a submission from consideration.</td></tr>
+		<tr class="table"><td class="row_left"><b>Forward:</b></td><td>Passing a submission from one staff member to another. The system is designed with 4 different types of forward actions. These are fully customizable.</td></tr>
+		<tr class="table"><td class="row_left"><b>Reject:</b></td><td>Rejecting a submission. The system is designed with 4 different types of rejects. These are fully customizable.</td></tr>
+		</table>
+	</div>
+
+	<p>Submission Manager allows various <i>contacts</i> (editors, submitters, etc) to <i>submit</i> a document containing their work. Certain contacts can then create <i>actions</i> (accept, withdraw, forward, reject) for submissions already entered into the system. Submission Manager also allows administrators and editors to view all submissions in the system, to assign them to a reader, and to see the current status of a submission.</p>
+
+	<div class="header_clear" id="overview_2">Access Levels</div>
+
+	<p>One other concept that is very important to understand is access levels. Each contact in the database is assigned an access level when their record is created.</p>
+	<p>The access level places them into a group of contacts who have the same level of administrative access to the system. Access levels determine whether or not a group of contacts can access the administrative area of the system, and whether or not they can perform specific actions on the system.</p>
+	<p>The system is designed with 8 access levels. 3 are hard-coded, 5 are customizable. The access levels are:</p>
+
+	<div class="indent_2">
+		<table>
+		<tr class="table"><td class="row_left"><b>NULL:</b></td><td>Contacts with a null access level have no administrative access to the system. This level is designed for submitters. Contacts with a null access level can submit stories, and check on their account, but that is all. The default access level is null.</td></tr>
+		<tr class="table"><td class="row_left"><b>admin:</b></td><td>Contacts with Admin level access have complete administrative access to the system. They can configure exactly how the system works, and can change the system&rsquo;s appearance. They can view all submissions and can perform all actions on them. Admin users can set and change the access levels of all contacts. Because admin users have the power to change all aspects of the system, only very trusted contacts should be given admin level access.</td></tr>
+		<tr class="table"><td class="row_left"><b>editor:</b></td><td>Editors have access to some administrative areas. They can view all submissions and can perform all actions on them. Editors can also change the access level of contacts who are not admins; however, they cannot make anyone an admin, nor can they demote an admin to another access level. Editors do not have access to the configuration areas. This level is designed for staff members who will assign submissions to other staff members.</td></tr>
+		<tr class="table"><td class="row_left"><b>active 1-5:</b></td><td>These are 5 customizable levels of access to the system. Admins and editors can use these levels to group staff members by the types of actions they are allowed to perform. For example: active 1 can be used for a group of readers who can forward a story to another reader, but not reject it or accept it. Active 2 can be used for readers who can reject stories, but not accept them. And active 3 can be used for readers who can perform all actions.</td></tr>
+		<tr class="table"><td class="row_left"><b>inactive:</b></td><td>This level is used for a contact that was formerly on staff, but no longer has access to the system. (for example: A former editor)</td></tr>
+		<tr class="table"><td class="row_left"><b>blocked:</b></td><td>Contacts who have been blocked entirely from using the system (for example: submitters who have abused the system)</td></tr>
+		</table>
+	</div>
+
+	<p>For staff members, access level is determined by the admins in the contacts area. When a submitter creates an account, his/her access level will always be NULL.</p>
+
+	<div class="header_clear"><b>Important System Notes</b></div>
+	<ul>
+	<li>The system assumes that only one staff member will be reading a submission at one time. This will be very important when customizing the system to your editorial process.</li>
+	<li>The status of a submission is always determined by the last action performed on that submission.</li>
+	</ul>
+
+</div>
+
+<div class="header_grey" id="installation_header">Installation</div>
+
+<div class="indent_1">
+
+	<div class="header_clear" id="installation_1">System Requirements</div>
+
+	<ul>
+	<li>Web Server</li>
+	<li><a href="https://www.php.net" target="_blank">PHP</a> (version 5.5 or higher)</li>
+	<li><a href="https://www.mysql.com" target="_blank">mySQL</a> (version 5 or higher)</li>
+	<li>SMTP application (if you want the system to send email notifications)</li>
+	<li>Web Browser (set to accept cookies)</li>
+	</ul>
+
+	<p>Submission Manager is designed to be accessed by a web browser. It has been tested on a wide variety of current browsers including Chrome, Firefox, Safari, Internet Explorer, and Edge. Some features may not work on earlier versions of these browsers, but newer versions of all of these browsers are freely available.</p>
+	<p>Submission Manager requires that a user&rsquo;s browser be set to accept cookies, and to allow popup windows. Some popular browsers do not do either of these by default. Staff members can change these defaults in the browser settings. For information on how to do this, refer to the browser&rsquo;s documentation.</p>
+	<p><b>A brief note about file permissions:</b> Submission Manager is written in PHP and needs to be able to read and write files and folders to your web server. In a UNIX environment it is necessary that the PHP user has full read/write access to the parts of your server&rsquo;s file system where Submission Manager stores its files. This can usually be accomplished by configuring PHP to run as the same UNIX user as the one that owns your files/folders.</p>
+
+	<div class="header_clear" id="installation_2">Before You Install Submission Manager</div>
+
+	<ul>
+	<li>Create a directory on your server where Submission Manager will be stored: (for example: <b>https://www.example.com/submissions</b>).<br><b>Important:</b> This installation directory must be readable and writeable to the web server. Refer to your server&rsquo;s documentation for help with changing read/write permissions.</li>
+	<li>Create a MySQL database. Submission Manager does not create the MySQL database for you. Before you begin installation, you should create an empty named database (for example: submgr). If you have databases on the server for other uses, it is recommend that you create a separate database for Submission Manager.</li>
+	<li>Know your MySQL user information. You will need to know your MySQL host name, and know the username and password of a MySQL user who has full read and write privileges to your server.</li>
+	<li>Know the first name, last name, email address, and password of the first admin level contact you would like to create (the person who will do the initial configuration of the system). The password must be 8-20 characters and cannot contian spaces.</li>
+	</ul>
+
+	<div class="header_clear" id="installation_3">Installing Submission Manager</div>
+	<p>To install Submission Manager on your server unzip and upload all files to the directory you created prior to installation (for example: <b>https://www.example.com/submissions</b>).</p>
+	<p>The rest of the installation process is done using a web browser. To start the process, type the exact URL of the installation directory (for example: <b>https://www.example.com/submissions</b>) into your web browser&rsquo;s address bar and hit return. You will be led through a 5-step installation process.</p>
+
+	<div class="indent_2">
+		<p><b>Step 1: Database Connection</b><br>Submission Manager needs to be told how to connect to your MySQL database server. You will be asked for your MySQL host name, MySQL username, and MySQL password.</p>
+		<p><b>Step 2: Database Name</b><br>Submission Manager will ask you for the name of the database you intend to use to store Submission Manager data. This is the database you created prior to installation (submgr).</p>
+		<p><b>Step 3: Table Creation</b><br>Submission Manager will create the necessary tables in the database named in step 2. It will also enter default information into some of the tables.</p>
+		<p><b>Step 4: Admin Account Creation</b><br>Submission Manager will now ask you to set up one admin contact to configure the program. More staff accounts can be set up later. To create this admin user you will need to input the first name, last name, email address and password for this contact.</p>
+		<p><b>Step 5: Configuration</b><br>Admin Login: You will be asked to log in to the account you just created to configure the system.</p>
+	</div>
+
+	<div class="header_clear" id="installation_4">Configuration Options</div>
+	<p>Some of the configuration options listed below are required. The system will be accessible only to admin level users until the required options are set. Required options are marked by a red asterisk. A notice will appear on the top every page until all of these options are set.</p>
+
+	<div class="indent_2">
+		<div id="general_configuration"><b>General Configuration</b></div>
+		<table>
+		<tr><td>&nbsp;</td><td><span style="color: red;">*</span> <span style="font-size: 8pt; font-style: italic;">= required field</span></td></tr>
+		<tr class="table"><td class="row_left"><b>system_online:</b></td><td>This option allows you to decide who has access to the system at any given time. Your choices are:<br><b>all:</b> This gives access to the system to everyone including staff and submitters.<br><b>no submissions:</b> This gives access to everyone (staff and submitters) however no submissions are accepted. This is designed for the times that you want staff to be able to read submissions and perform actions but when you do not want to receive any new submissions. This might be used if your reading period has ended, but you still have submissions on the system that need to be decided upon.<br><b>admin only:</b> This gives access to admin level users only.</td></tr>
+		<tr class="table"><td class="row_left"><b>offline_text:</b></td><td>This text will appear to anyone who visits Submission Manager when the system is offline. <span style="font-size: 10pt;">(HTML allowed)</span></td></tr>
+		<tr class="table"><td class="row_left"><b>instruction_text:</b></td><td>This text will appear on the home page above the submission form. <span style="font-size: 10pt;">(HTML allowed)</span></td></tr>
+		<tr class="table"><td class="row_left"><b>submission_text:</b></td><td>This is the text that is displayed in the browser immediately after a contact submits a document and is sent to the contact in their confirmation email.</td></tr>
+		<tr class="table"><td class="row_left"><b><span id="redirect_url">redirect_url</span>:</b></td><td>Submitters will be sent to this URL following a successful submission. If you are accepting payments for submissions, this URL should point to your payment gateway. Redirect URLs can be set globally here, or by genre in the <a href="#genre_configuration">genre configuration</a>. If left blank, the default submission confirmation will be displayed.</td></tr>
+		<tr class="table"><td class="row_left"><b>test_mode:</b></td><td>Use this when testing the system. Administrators can test different actions, but no emails will be sent to contacts. When you are working in test mode, the phrase &ldquo;test mode&rdquo; will appear in brackets above the name of your publication.</td></tr>
+		<tr class="table"><td class="row_left"><b>timezone:</b></td><td>Choose your local time zone. All dates and times are stored in the database as GMT, but this setting controls how users see these dates and times.</td></tr>
+		<tr class="table"><td class="row_left"><b>dst:</b></td><td>Check this box if Daylight Saving Time is used in your locale. Submission Manager uses your web server&rsquo;s interpretation of daylight savings time (DST). This means that if your web server is in a locale that recognizes DST differently than your locale, your times may be off by one hour during DST.</td></tr>
+		<tr class="table"><td class="row_left"><span style="color: red;">*</span> <b>company_name:</b></td><td>Fill in your company name here.</td></tr>
+		<tr class="table"><td class="row_left"><b>show_company_name:</b></td><td>Checking this will display your company name (as listed above) in the upper left corner of the screen on all pages of Submission Manager.</td></tr>
+		<tr class="table"><td class="row_left"><b>logo_path:</b></td><td>Fill in the server path to your company&rsquo;s logo graphic (.gif or .jpeg) for it to appear in the upper left hand corner. The logo can appear in addition to the company name or instead of the company name.</td></tr>
+		<tr class="table"><td class="row_left"><span style="color: red;">*</span> <b>app_url:</b></td><td>The absolute URL to your installation of Submission Manager. (<b>https://www.example.com/submissions/</b>).</td></tr>
+		<tr class="table"><td class="row_left"><b>fonts:</b></td><td>A comma separated list of fonts to use. Browsers will use the first font available on a user&rsquo;s computer.</td></tr>
+		<tr class="table"><td class="row_left"><b>font_size:</b></td><td>Base font size. Other fonts will be larger/smaller relative to the base.</td></tr>
+		<tr class="table"><td class="row_left"><b>color_background:</b></td><td>The color of the background of the page. The default for this area is white.</td></tr>
+		<tr class="table"><td class="row_left"><b>color_foreground:</b></td><td>The color of the area around the forms. The default for this is a light grey.</td></tr>
+		<tr class="table"><td class="row_left"><b>color_form:</b></td><td>The color that appears inside of the form fields. The default for this is a darker grey.</td></tr>
+		<tr class="table"><td class="row_left"><b>color_text:</b></td><td>The color of the text.</td></tr>
+		<tr class="table"><td class="row_left"><b>color_link:</b></td><td>The color of text that is a link.</td></tr>
+		<tr class="table"><td class="row_left"><b>color_link_hover:</b></td><td>The color that link text will change to if a user hovers their mouse over that link text.</td></tr>
+		<tr class="table"><td class="row_left"><b>border_radius:</b></td><td>Rounding of borders (in pixels).</td></tr>
+		<tr class="table"><td class="row_left"><b>max_file_size:</b></td><td>Use this to set the maximum file size you will allow a submitter to upload. This should be entered in bytes; the default is 512000 (500 KB). A setting of 0 means no limit.</td></tr>
+		<tr class="table"><td class="row_left"><b>max_comments_size:</b></td><td>Use this to set the maximum character length for the comments filled in the submission form. The default is 3000. A setting of 0 means no limit.</td></tr>
+		<tr class="table"><td class="row_left"><b>submission_limit:</b></td><td>This is the number of outstanding submissions you would like any individual contact to be able to have on the system at once. The default is 3. Setting this to 0 will allow an unlimited number of submissions. Submission limits can also set by genre in the <a href="#genre_configuration">genre configuration</a>.</td></tr>
+		<tr class="table"><td class="row_left"><b>pagination_limit:</b></td><td>This determines how many records per page are displayed when the staff is reviewing submission and contact records. A setting of 0 means no limit.</td></tr>
+		<tr class="table"><td class="row_left"><b>default_sort_order:</b></td><td>This determines default sorting of submissions. The default is date ascending.</td></tr>
+		<tr class="table"><td class="row_left"><span style="color: red;">*</span> <b>upload_path:</b></td><td>Fill in the absolute server path to the directory where you want all of your submission files to be stored. For security reasons, it is strongly suggested that this be a non-public directory, stored somewhere outside of your server&rsquo;s document root. Files will be stored in this directory in sub-directories by year. This directory must be readable and writable by your web server.</td></tr>
+		<tr class="table"><td class="row_left"><span style="color: red;">*</span> <b>general_dnr_email:</b></td><td>All automatically generated email notifications (both submission confirmations and non-personal rejections) will come from this address.</td></tr>
+		<tr class="table"><td class="row_left"><span style="color: red;">*</span> <b>admin_email:</b></td><td>The main system administrative email address. The system will display this to submitters if there is a system error. This should be the email address of your web master or of someone familiar with the system setup.</td></tr>
+		<tr class="table"><td class="row_left"><b>mail_method:</b></td><td>The method by which mail notifications will be sent (options: mail, sendmail, smtp).</td></tr>
+		<tr class="table"><td class="row_left"><b>smtp_auth:</b></td><td>Check this if you SMTP server required authentication.</td></tr>
+		<tr class="table"><td class="row_left"><b>smtp_secure:</b></td><td>Set SMTP security protocol (options: SSL, TLS).</td></tr>
+		<tr class="table"><td class="row_left"><b>smtp_port:</b></td><td>SMTP port number (if using SMTP authentication)</td></tr>
+		<tr class="table"><td class="row_left"><b>smtp_host:</b></td><td>SMTP host name (if using SMTP authentication)</td></tr>
+		<tr class="table"><td class="row_left"><b>smtp_username:</b></td><td>SMTP username (if using SMTP authentication)</td></tr>
+		<tr class="table"><td class="row_left"><b>smtp_password:</b></td><td>SMTP password (if using SMTP authentication)</td></tr>
+		<tr class="table"><td class="row_left"><b><span id="submission_price">submission_price</span>:</b></td><td>Price charged for submissions. Price can be set globally here, or by genre in the <a href="#genre_configuration">genre configuration</a>.</td></tr>
+		<tr class="table"><td class="row_left"><b>currency_symbol:</b></td><td>The symbol displayed in front of all prices</td></tr>
+		<tr class="table"><td class="row_left"><b>success_result_code:</b></td><td>The result code returned by your payment gateway indicating a successful transaction.</td></tr>
+		<tr class="table"><td class="row_left"><b>payment_redirect_method:</b></td><td>This determines by which method payment variables will be sent to the payment gateway. The default is GET, however some payment gateways require POST or cURL.</td></tr>
+		<tr class="table"><td class="row_left"><b>cc_exp_date_format:</b></td><td>credit card expiration date format</td></tr>
+		<tr class="table"><td class="row_left"><b>captcha_site_key:</b></td><td>Google reCAPTCHA Site key (to prevent robot submissions)</td></tr>
+		<tr class="table"><td class="row_left"><b>captcha_secret_key:</b></td><td>Google reCAPTCHA Secret key (to prevent robot submissions)</td></tr>
+		<tr class="table"><td class="row_left"><b>mysqldump_path:</b></td><td>Path to the <a href="https://dev.mysql.com/doc/refman/5.0/en/mysqldump.html" target="_blank">mysqldump</a> program to make database backups</td></tr>
+		<tr class="table"><td class="row_left"><b>csp:</b></td><td>Content Security Policy</td></tr>
+		<tr class="table"><td class="row_left"><b>default_country:</b></td><td>default country on main submission form</td></tr>
+		<tr class="table"><td class="row_left"><b>exclude_countries:</b></td><td>comma separated list of excluded country codes (use "USA_only" to exclude all but USA)</td></tr>
+		<tr class="table"><td class="row_left"><b>send_mail_staff:</b></td><td>If this box is checked, the system will send email notifications of all submissions and all actions to selected staff members. Whether or not a staff member receives these emails is determined in their record in the contacts area.</td></tr>
+		<tr class="table"><td class="row_left"><b>send_mail_contact:</b></td><td>When this is checked, a submitter will receive a submission confirmation email.</td></tr>
+		<tr class="table"><td class="row_left"><b>default_mailing_list:</b></td><td>default state of mailing list checkbox</td></tr>
+		<tr class="table"><td class="row_left"><b>use_genres:</b></td><td>This turns on and off the genre management system. If your publication only accepts one genre you probably do not need the genre management system. Many publications use this to manage contests as well as different literary genres.</td></tr>
+		<tr class="table"><td class="row_left"><b>allow_withdraw:</b></td><td>When this is checked, submitters will have the option of withdrawing their own submissions from consideration. Submitters will only be able to withdraw submissions that have a status of &ldquo;received&rdquo;.</td></tr>
+		<tr class="table"><td class="row_left"><b>show_date_paid:</b></td><td>When this is checked, the &ldquo;date paid&rdquo; column will be visible in all submission displays. Unpaid submissions will display with a red border.</td></tr>
+		<tr class="table"><td class="row_left"><b>show_payment_fields:</b></td><td>show credit card fields on submission forms</td></tr>
+		</table>
+	</div>
+
+	<p>Once you fill in all of this information, click &ldquo;update&rdquo; and log out. The system will now be ready to accept submissions. Admins can use the buttons on the bottom of this form at any time to update the configuration information, to reset to the last saved configuration, or to reset to the system defaults.</p>
+	<p>You will want to configure actions and do some testing before you go live.</p>
+
+	<div class="header_clear" id="installation_5">Special Situations</div>
+	<div class="indent_2">
+		<p><b>If you need to reinstall Submission Manager:</b><br>If you are reinstalling Submission Manager for any reason, know that it will overwrite existing tables with the same name, and all data will be lost. Be sure to backup any data before reinstalling the program.</p>
+		<p><b>If your mySQL configuration changes after you have installed Submission Manager:</b><br>If your mySQL configuration changes after your have installed the Submission Manager, you can update your mySQL connection parameters by editing the file config_db.php located in the directory where you installed the application. The config_db.php is a plain text file which looks like this:</p>
+
+<pre>
+&lt;?php
+$config_db = array(
+'host' =&gt; '{host}',
+'username' =&gt; '{username}',
+'password' =&gt; '{password}',
+'name' =&gt; '{name}',
+'port' =&gt; '{port}'
+);
+
+define('INSTALLED', true);
+?&gt;
+</pre>
+
+		<p>Update the {host}, {username}, {password}, {name}, and {port} to match your mySQL connection parameters. The {name} field is the name of the database where you are storing Submission Manager data. Be sure to use a plain ASCII text editor when editing this file (like Windows Notepad). When you have finished editing the file upload it to your web server in the directory where you installed Submission Manager.</p>
+	</div>
+
+</div>
+
+<div class="header_grey" id="backup_header">Backup</div>
+
+<div class="indent_1">
+<p>Submission Manager stores all of your data (contacts, submissions, actions, configuration, etc.) in your mySQL database. <b>It is critical that you regularly backup your data!</b> MySQL comes with a backup utility called <a href="https://dev.mysql.com/doc/refman/5.0/en/mysqldump.html" target="_blank">mysqldump</a>. You can run this utility directly from Submission Manager in the <a href="#staff_5">Maintenance Area</a>. It is highly recommended that you run this backup utility often to make sure that your data is safe. It is further recommended that you automate this process (using cron on a UNIX server or the Task Scheduler on a Windows server). Check with your server administrator or read your server&rsquo;s documentation for more information on how to automate this process.</p>
+<p style="font-size: 8pt;">The authors of Submission Manager are not responsible for any data loss.</p>
+</div>
+
+<div class="header_grey" id="security_header">Security</div>
+
+<div class="indent_1">
+
+	<p>Submission Manager stores all of your submission data online. It is up to you to protect this data. This is crucial if you are using Submission Manager to collect submission payments.</p>
+	<p>Two important ways to make your Submission Manager installation for more secure:</p>
+	<ol>
+	<li>Run your Submission Manager on a secure server using SSL/TLS (HTTPS). You may have to pay your web host extra for this service.</li>
+	<li>Make sure that you are storing your uploaded submission files (upload_path) in a non-public directory above your server&rsquo;s document root. If you must use a public directory then make sure that this directory and its contents are non-world readable.</li>
+	</ol>
+	<p><b>Security note for those accepting payments with Submission Manager:</b> If you are using submission manager to process payments, you must be running the entire installation over an SSL/TLS encrypted connection. And any links on your website to your Submission Manager installation must use a secure URL. So if you link to your submission page from your home page, the URL should be <b>https://www.example.com/submissions/</b> rather than <b>http://www.example.com/submissions/</b>. It is further recommended that you put in place an automatic redirect for all <b>HTTP</b> traffic to <b>HTTPS</b>. This can done using an Apache .htaccess file.</p>
+
+</div>
+
+<div class="header_grey" id="submission_header">The Submission Process</div>
+
+<div class="indent_1">
+
+	<p>You should now point your browser to the directory where Submission Manager is installed. (for example: <b>https://www.example.com/submissions</b>) This page should now contain the form a submitter will see when they enter the system.</p>
+	<p>To understand this process, take some time to make a few test submissions.</p>
+	<p><b>Important Note:</b> If you want to be able to easily remove test contacts and submissions make sure that all test contacts have email addresses that end in <b>@example.com</b> (for example: <b>sally123@example.com</b>). A function included in the maintenance area will allow you to delete all contacts and submissions that come from <b>example.com</b>.</p>
+	<p>To create a submission, a contact must first enter all of their data, and then use the &ldquo;choose file&rdquo; button to find their submission file on their computer. When they hit enter, they will be asked to review their data. If their email address is already in the system, they will be prompted to log in to their existing account.</p>
+	<p>Contacts will now be given an opportunity to review their submission information. If they decide it is okay, they can click on &ldquo;continue&rdquo; and their submission will be entered into the system and their account will be created.</p>
+	<p><b>Submission Notes:</b></p>
+
+	<ul>
+	<li>All submissions are expected to be one document.</li>
+	<li>The system expects that multiple titles submitted as a single document be entered into the title field separated by commas.</li>
+	</ul>
+
+	<p>Submitters can log back in to their account at any time using the email address and password they entered during their initial submission. When submitters logs back in, they will see their contact information and their submission history with each submission&rsquo;s status (received, accepted, declined). From this page, they can create another submission or update their contact information.</p>
+	<p><b>The &ldquo;Need Help&rdquo; Page:</b><br>Below the login form is a link to a &ldquo;need help&rdquo; page which answers the following questions:</p>
+
+	<ul>
+	<li>Why log in?</li>
+	<li>Do I need to set up an account?</li>
+	<li>How do I access my account?</li>
+	<li>What if I forget my password?</li>
+	<li>What if I still need help?</li>
+	</ul>
+
+	<p>This page also contains a form by which contacts can reset their passwords.</p>
+
+</div>
+
+<div class="header_grey" id="staff_header">Staff Areas</div>
+
+<div class="indent_1">
+
+	<p>Submission Manager has five areas to be used by staff members to configure the system and perform actions. Some of these areas are accessible to admins only, some to admins and editors, and some to all staff members. The access a staff member has to these areas is determined by their access level. The five areas are:</p>
+	<table>
+	<tr class="table"><td class="row_left"><b>Submissions:</b></td><td>Admins and editors have complete access to this area. Other staff members have limited access.</td></tr>
+	<tr class="table"><td class="row_left"><b>Contacts:</b></td><td>Admins have complete access to this area. Editors have limited access.</td></tr>
+	<tr class="table"><td class="row_left"><b>Reports:</b></td><td>Admins and editors have complete access to this area. Other staff members have no access.</td></tr>
+	<tr class="table"><td class="row_left"><b>Configuration:</b></td><td>This area is for admins only.</td></tr>
+	<tr class="table"><td class="row_left"><b>Maintenance:</b></td><td>This area is for admins only.</td></tr>
+	</table>
+
+	<div class="header_clear" id="staff_1">The Submissions Area</div>
+
+	<div class="indent_2">
+		<p>The submission area is where submission management takes place. Admins and editors can see all submissions on the system from this window.</p>
+		<p>When admins or editors first log into their account, they will be taken to the submission area, which will be blank. Admins and editors must always select the submissions they wish to see.</p>
+		<p>To do this they should use the form on the upper left hand corner.</p>
+		<p><b>Searching by keywords:</b> Staff members can search by any word or phrase that appears in the submission ID#, submitter ID#, submitter name, submission title, comments that the submitter left when submitting and notes that staff members left for submissions. Enter one or more keywords in this box. To search for an exact phrase enclose the phrase in double quotes (for example: &ldquo;Good Morning&rdquo;). To search for a specific submission ID# then prefix the number with &ldquo;id:&rdquo; (for example: id:123).</p>
+		<p><b>Filtering by other criteria:</b> Staff members can search by specifc criteria based on genre and by the last action performed on a submission.</p>
+
+		<table>
+		<tr class="table"><td class="row_left"><b>genre:</b></td><td>This field allows staff to filter submissions by genre. A staff member can choose to look at all submissions, or can look at submissions of only one genre.</td></tr>
+		<tr class="table"><td class="row_left"><b>last action:</b></td><td>This field allows the staff to further filter submissions by the last action performed on them. To see all unforwarded submissions, a user should select &ldquo;no action&rdquo;.</td></tr>
+		<tr class="table"><td class="row_left"><b>to:</b></td><td>This field allows staff members to further filter the records by whom a submission was last forwarded to (this is the staff member who currently has the submission in their queue). This field is active only when the &ldquo;last action&rdquo; field is set to any of the forwards.</td></tr>
+		<tr class="table"><td class="row_left"><b>sort:</b></td><td>This field allows the staff to sort the selected records by date in either ascending or descending order.</td></tr>
+		<tr class="table"><td class="row_left"><b>paid only:</b></td><td>When checked, search results will only include submissions where the &ldquo;date paid&rdquo; field is filled in. This check box is only visible when &ldquo;show_date_paid&rdquo; is checked in the <a href="#general_configuration">General Configuration</a>.</td></tr>
+		</table>
+
+		<p style="margin-top: 40px;">These four fields are designed to logically allow a staff member to find any group of submission records on the system.</p>
+
+		<b>Example 1:</b> A staff member is looking for poetry submissions that were last forwarded to staff member Mary Smith using Forward 1:<br>
+		<table style="margin-bottom: 40px;">
+		<tr class="table"><td class="row_left">find keywords:</td><td class="table_grey">(leave blank)</td></tr>
+		<tr class="table"><td class="row_left">genre:</td><td class="table_grey">all poetry</td></tr>
+		<tr class="table"><td class="row_left">last action:</td><td class="table_grey">forward 1</td></tr>
+		<tr class="table"><td class="row_left">to:</td><td class="table_grey">Smith, Mary</td></tr>
+		</table>
+
+		<b>Example 2:</b> A staff member is looking for all unforwarded submissions:<br>
+		<table style="margin-bottom: 40px;">
+		<tr class="table"><td class="row_left">find keywords:</td><td class="table_grey">(leave blank)</td></tr>
+		<tr class="table"><td class="row_left">genre:</td><td class="table_grey">all submissions</td></tr>
+		<tr class="table"><td class="row_left">last action:</td><td class="table_grey">no action</td></tr>
+		</table>
+
+		<p>The selected submissions will be listed in a table along with the following information:</p>
+		<table>
+		<tr class="table"><td class="row_left"><b>ID#:</b></td><td class="table">The unique number of the submission assigned by the system</td></tr>
+		<tr class="table"><td class="row_left"><b>date / time:</b></td><td class="table">The exact time the submission was entered</td></tr>
+		<tr class="table"><td class="row_left"><b>date paid:</b></td><td class="table">The date that the submission was paid. This column is only visible when &ldquo;show_date_paid&rdquo; is checked in the <a href="#general_configuration">General Configuration</a>.</td></tr>
+		<tr class="table"><td class="row_left"><b>writer:</b></td><td class="table">The name of the writer. If the name of the writer appears in red, it means that the writer name is different from the contact name. This indicates a submission that has come from a writer using a pseudonym, or a submission that has come from an agent. Hovering over the writer&rsquo;s name will reveal their email address and name and address if available. Clicking on the writers name will show all submissions by that writer.</td></tr>
+		<tr class="table"><td class="row_left"><b>title(s):</b></td><td class="table">The title (or titles) of the submission</td></tr>
+		<tr class="table"><td class="row_left"><b>genre:</b></td><td class="table">The type of submission (the system defaults are poetry, fiction, nonfiction, other. These can be changed in the <a href="#genre_configuration">genre configuration</a> area)</td></tr>
+		<tr class="table"><td class="row_left"><b>file:</b></td><td class="table">A link to the submitted file. The name of the file will be the unique id number, followed by the document extension (.rft). Clicking on this link will prompt the staff member to either open or save the document.</td></tr>
+		<tr class="table"><td class="row_left"><b>comments (by submitter):</b></td><td class="table">If the writer has submitted comments, the word &ldquo;view&rdquo; will be present. Hovering over the word view will show these comments. Clicking on the word view will open the comments in a popup window.</td></tr>
+		<tr class="table"><td class="row_left"><b>notes (by staff):</b></td><td class="table">Notes by the staff made about the submission, not about the contact. Hovering over the word view will show these comments. Clicking on the word view will open the note in a popup window.</td></tr>
+		<tr class="table"><td class="row_left"><b>status:</b></td><td class="table">The current status of the submission. System defaults can be used or it can be customized by action type. The default status levels are as follows:<br><b>Accepted:</b> For all accepted submissions.<br><b>Declined:</b> For all rejected submissions.<br><b>Withdrawn:</b> For all withdrawn submissions.<br><b>Received:</b> For all other submissions.<br>For information on customizing this field, click <a href="#status">here</a>.</td></tr>
+		<tr class="table"><td class="row_left"><b>actions:</b></td><td class="table">The number of actions that have been taken on a submission. Clicking on this number allows the staff member to view the action list of that submission.</td></tr>
+		<tr class="table"><td class="row_left"><b>tag:</b></td><td class="table">Admins and editors can use this to perform the same action on multiple submissions.</td></tr>
+		</table>
+
+		<p><b>Viewing a submission:</b><br>To view a submission, the staff member should click on the file name. Depending on how their browser is configured, the submission will either appear in the user&rsquo;s browser window, or they will be prompted to save the document to their computer.</p>
+		<p><b>Performing one action on one submission:</b><br>To perform an action on one submission, a staff member should click on either the submission ID # or the number in the action column. All actions that have been created for this submission will now be displayed.</p>
+		<p>To create a new action, the staff member should click on &ldquo;insert new action&rdquo;. The create action form will be displayed.</p>
+		<p>Let&rsquo;s say they are forwarding this story to a reader.</p>
+
+		<ul>
+		<li>They will fill in the action type (forward 1).</li>
+		<li>Then select which staff member they would like to forward the submission to.</li>
+		<li>They will also have the option of making notes about the action (in the notes box.). These notes are only for the staff to see.</li>
+		<li>They can fill in a message that will be sent in the email to the receiver.</li>
+		<li>Once they think they have the action as they want it, they should click preview. All of the details of the action will be displayed in the preview area to the right of the form.</li>
+		<li>If the action is correct, they can click send and the action will be created.</li>
+		</ul>
+
+		<p>Accepts, withdrawals, and rejects work in the same way, but for these actions the &ldquo;to&rdquo; field will be grayed out.</p>
+		<p><b>Performing one action on many submissions:</b><br>Admins and editors can also perform the same action on multiple submissions. To do this, the staff member should click the tag box for all submissions on which they want to perform the same action.</p>
+		<p>Using the action box on the upper right hand corner, the staff member can select the action type, and for forwards, the receiver.</p>
+		<p>Clicking on &ldquo;apply to tagged&rdquo; will bring up a confirmation page that lists the action type, the receiver, and all of the submissions that will have this action performed on them. Hovering over the action name will display the email text that will be sent to the receiver(s). If everything looks correct, the staff member should hit confirm and the actions will be created.</p>
+		<p><b>Access to this area by Staff Members with Access Levels 1-5:</b><br>Staff members with access levels 1-5 can perform actions as described above with 3 exceptions:</p>
+
+		<ol>
+		<li>They can only see submissions forwarded to them and any other submissions made by a submitter in their assigned list.</li>
+		<li>They can only perform the actions allowed by their access level.</li>
+		<li>They can only perform one action at a time. (The tag field will not be visible to them).</li>
+		</ol>
+
+	</div>
+
+	<div class="header_clear" id="staff_2">The Contacts Area</div>
+
+	<div class="indent_2">
+
+		<p>This area is accessible to admins and editors only. When an administrator or editor first enters the contact area, the contact list will be empty. Just like in the submission area, staff members must select the records they are interested in seeing.</p>
+		<p>To do this a staff member should use the fields on the upper left hand corner.</p>
+		<p>The first field allows staff members to select which type of contacts they would like to see. They can choose &ldquo;any contact&rdquo; (which will show contacts with all access levels), &ldquo;any non-staff&rdquo; which will show contacts that have a null access level, &ldquo;any staff&rdquo; which will show all contacts with any access level other than null, or they can choose to see contacts of a specific access level.</p>
+		<p>The staff member can choose to further narrow their search by using the next two fields. They should then choose which field they would like to look at (i.e. lastname) and then fill in the information they are looking for in the box below. The user can search for fields that either contain the text that they typed or that are an exact match for the text that they type. If they are searching for fields that contain some specific text, they should use % as wildcards.</p>
+
+		<b>Example 1:</b> If the staff member is looking for a contact whose email address they know is joe@example.com, they will select:<br>
+		<table style="margin-bottom: 40px;">
+		<tr class="table"><td class="row_left">show me:</td><td class="table_grey">any contact</td></tr>
+		<tr class="table"><td class="row_left">whose:</td><td class="table_grey">email</td></tr>
+		<tr class="table"><td class="row_left">equals:</td><td class="table_grey">joe@example.com</td></tr>
+		</table>
+
+		<b>Example 2:</b> If the staff member is looking for all submitters who have an email address from Gmail, they will select:<br>
+		<table style="margin-bottom: 40px;">
+		<tr class="table"><td class="row_left">show me:</td><td class="table_grey">any non-staff</td></tr>
+		<tr class="table"><td class="row_left">whose:</td><td class="table_grey">email</td></tr>
+		<tr class="table"><td class="row_left">contains:</td><td class="table_grey">%@gmail.com</td></tr>
+		</table>
+
+		<b>Example 3:</b> If the staff member is looking for other staff members whose last name begins with b, they would select:<br>
+		<table>
+		<tr class="table"><td class="row_left">show me:</td><td class="table_grey">any staff</td></tr>
+		<tr class="table"><td class="row_left">whose:</td><td class="table_grey">last name</td></tr>
+		<tr class="table"><td class="row_left">contains:</td><td class="table_grey">B%</td></tr>
+		</table>
+		<div style="font-size: 8pt;">(the search is not case sensitive so b% will yield the same result.)</div>
+
+		<p>To see all contacts, the staff member should search for any contact and leave the field empty.</p>
+		<p>When the search is complete a list will be displayed of contacts matching the search criteria. The list will contain the contact&rsquo;s unique id number, their name, email (a mailto link), and access level. The list will be sorted by whatever field the staff member chose to search by in ascending order.</p>
+		<p>Hovering over the contact&rsquo;s name will show you that contact&rsquo;s name, email address, and full mailing address.</p>
+		<p><b>Seeing a complete contact record, editing or deleting a contact:</b></p>
+		<p>To see or edit a contact record, a staff member should click on the name or the contact id. The chosen contact will be displayed in full on the right hand side. The staff member will now be able to see and edit the contact&rsquo;s password, their access level, whether or not they receive administrative emails, notes about them, and how many submissions they have on the system.</p>
+		<p><b>Editing basic information:</b> To edit a contact&rsquo;s name and address information, the staff member should simply type the new information over the old and hit update. Old information will not be saved. To keep older information, use the notes box.</p>
+		<p><b>Setting the access level of a contact:</b> The access level of a contact is set in the access level field. Admins can change the access level of all contacts. Editors can change the access levels of contacts who are not admins. Editors cannot create an admin level contact, nor can they delete or demote them. To change an access level, the staff member can simply select the new access level and hit update.</p>
+		<p><b>Deciding whether or not a staff member receives system notification emails:</b> The contact form also contains two checkboxes that determine whether or not a staff member will receive notification of each submission and action entered into the system. These checkboxes will not be active for contacts with a null access level.</p>
+		<p><b>Deleting a contact:</b> The delete button will delete a contact from the system. When a staff member deletes a contact, they will be asked whether or not they also want to delete any submissions or actions related to this contact.</p>
+		<p><b>Adding staff members to the system:</b></p>
+		<p>Admin level users and editors can add contacts to the table and assign their access level. This is done by clicking on &ldquo;insert a new contact&rdquo; and filling in the form.</p>
+		<p>The minimum amount of information needed to create a staff contact is first name, last name, email and password.</p>
+		<p>To create staff members, the admin or editor must select an access level of 1-5, admin, or editor. Access Levels are described in the overview section of this document. Editors cannot create an admin level user.</p>
+		<p>Before testing the system you should create a few staff accounts.</p>
+
+	</div>
+
+	<div class="header_clear" id="staff_3">The Reports Area</div>
+
+	<div class="indent_2">
+
+		<p>Submission Manager comes with 6 standard reports. These are designed to give admins and editors an overview of the data on the system. The reports are:</p>
+		<table>
+		<tr class="table"><td class="row_left"><b>daily report:</b></td><td class="table">This report shows all submissions and actions that were entered on a given day. By default, the &ldquo;date&rdquo; field is pre-populated with the current date. To see a daily report on a different date simply enter the date in the &ldquo;date&rdquo; field using the YYYY-MM-DD format and click <b>show report</b>.</td></tr>
+		<tr class="table"><td class="row_left"><b>submissions by month:</b></td><td class="table">This report shows a count of all submissions by genre by month.</td></tr>
+		<tr class="table"><td class="row_left"><b>submissions by status:</b></td><td class="table">This report shows a count of all submissions by their current status. Clicking on any count will show a complete list of all of the submissions that make up this count.</td></tr>
+		<tr class="table"><td class="row_left"><b>actions by staff:</b></td><td class="table">This report shows a count of all actions entered by each staff member. Counts are broken down by action type. In this report, staff members are sorted first by access level, and then by last name.</td></tr>
+		<tr class="table"><td class="row_left"><b>forwards by staff:</b></td><td class="table">This report shows a count of submissions that are forwarded to each staff member. Counts are broken down by genre and by the type of forward. In this report, staff members are sorted first by access level, and then by last name. Clicking on any count will show a complete list of all of the submissions that make up this count.</td></tr>
+		<tr class="table"><td class="row_left"><b>contacts by access:</b></td><td class="table">This report shows a count of all contacts broken down by access level. Clicking on any count will show a complete list of all of the contacts that make up this count.</td></tr>
+		</table>
+
+	</div>
+
+	<div class="header_clear" id="staff_4">The Configuration Area</div>
+
+	<div class="indent_2">
+
+		<p>The configuration is accessible only to admins. It has three sub-areas. The administrator can move between them using the menu on the left. The six sub-areas are:</p>
+		<p><b>General Configuration:</b> This page allows the administrator to adjust the configuration of the system, as described in the <a href="#installation_4">configuration options</a> section of this document.</p>
+		<p><b>Action Types:</b> This is where the administrator will customize the actions. The system is designed with 10 action types. All 10 action types are customizable. For the system to work you do not need to use all 10 action types.</p>
+
+		<table style="margin-bottom: 20px;">
+		<tr class="table"><td class="row_left"><b>accept:</b></td><td class="table">Use this to accept a submission for publication.</td></tr>
+		<tr class="table"><td class="row_left"><b>withdraw:</b></td><td class="table">Use this to withdraw a submission from consideration.</td></tr>
+		<tr class="table"><td class="row_left"><b>forward 1 - 4:</b></td><td class="table">Use these to forward a submission to someone else on your staff. More information about configuring forwards can be found in the <a href="#config_header">&ldquo;Configuring the system for your publication&rdquo;</a> section.</td></tr>
+		<tr class="table"><td class="row_left"><b>reject 1 - 4:</b></td><td class="table">Use these to reject a submission. Publications can use these four levels of rejects to create standard rejection notices that range from more to less encouraging. Rejections can be configured to be form letters, or to allow room for personal comments.</td></tr>
+		</table>
+
+		All actions have a list of variables: some that are configurable, and some that are hard coded. The variables are as follows:<br>
+		<table>
+		<tr class="table"><td class="row_left"><b>action type ID:</b></td><td class="table">This is hardcoded and used by the system to identify the action.</td></tr>
+		<tr class="table"><td class="row_left"><b>action name:</b></td><td class="table">This is hardcoded and used by the system to identify the action.</td></tr>
+		<tr class="table"><td class="row_left"><b>description:</b></td><td class="table">A 10-character field to describe the action to your staff. for example: Reject1 can be described as &ldquo;standard&rdquo;, reject 2 as &ldquo;nice&rdquo;, reject 3 as &ldquo;very nice&rdquo; and reject 4 as &ldquo;personal&rdquo;.</td></tr>
+		<tr class="table"><td class="row_left"><b><span id="status">status:</span></b></td><td class="table">A field that will control what is displayed as the status of submissions. When this is null, the default status (Accepted, Declined, Withdrawn, Received) will appear. When filled in, this field will appear in the status column seen by both editors and submitters.</td></tr>
+		<tr class="table"><td class="row_left"><b>active:</b></td><td class="table">When this box is checked this action will be active on your system. If you only want to have one type of rejection, you would deselect the active box on rejects 2-4.</td></tr>
+		<tr class="table"><td class="row_left"><b>access groups:</b></td><td class="table">Use this field to decide which access groups can perform this action. For instance, if you have decided that readers in access group 3 will have the power to reject stories, you will select group 3 for all levels of reject. If readers in access group 2 cannot reject, deselect group 2 for all rejections.</td></tr>
+		<tr class="table"><td class="row_left"><b>email from reader:</b></td><td class="table">If you check this box, the email will have the return address of the staff member that created this action instead of the general DNR email address. This means that if the submitter hits reply to this email, the staff member who created the action will get the reply. This option should be used sparingly. If it is not checked, the email will be from the email address chosen in the &ldquo;general dnr email&rdquo; field in the configuration area.</td></tr>
+		<tr class="table"><td class="row_left"><b>email subject:</b></td><td class="table">This is the template for the subject line of the email that will be sent to the receiver when this action is performed.</td></tr>
+		<tr class="table"><td class="row_left"><b>email body:</b></td><td class="table">This is the template for the body of the email that will be sent to the receiver when the action is performed. Note: When creating the email subject and body you can use placeholders to fill in information contained in the database. (for example: the name of the submitter or submission). A legend explaining the placeholders is on the left side of the page. For example, if you would like the title of the submitted story to appear in the email that is sent with any given action, you can simply type &ldquo;[title]&rdquo; where you want the title to appear in the text.</td></tr>
+		</table>
+
+		<p style="margin-top: 40px;"><b>File Types:</b> Submission Manager is preconfigured to only accept file types with the following extensions: <b>DOC, DOCX, PDF, RTF, TXT</b>. Submission Manager will only upload files that have a valid file extension. Admins can add/delete/update file types using this configuration page.</p>
+
+		<p style="margin-top: 40px;"><b>Groups:</b> Submission Manager comes preconfigured with 7 staff groups: admin, editor, and active 1-5. This page allows admins to set which groups can forward submissions to which others groups. Admins can also flag certain groups as &ldquo;blind&rdquo; which means any member of that group will not be able to see the contact info for submitters.</p>
+
+		<p style="margin-top: 40px;"><b><span id="genre_configuration">Genres</span>:</b> Submission Manager comes preconfigured with 3 genres: poetry, fiction, and nonfiction, but you can add as many genres as you like. Genres can have their own price, submission limit, and redirect URL. If you choose to set any of these variables here, your genre settings will override the settings on the <a href="#general_configuration">General Configuration</a> page. To add new genres, type the genre name in the new field and click update. Genres have the following variables:</p>
+		<table>
+		<tr class="table"><td class="row_left"><b>Genre ID:</b></td><td class="table">Unique numeric indentifier for each genre.</td></tr>
+		<tr class="table"><td class="row_left"><b>Name:</b></td><td class="table">The name of the genre.</td></tr>
+		<tr class="table"><td class="row_left"><b>Submission Limit:</b></td><td class="table">The number of times that each submitter can submit using this genre. This limit overides the global limit set in the <a href="#general_configuration">General Configuration</a>. Set to 0 for no limit.</td></tr>
+		<tr class="table"><td class="row_left"><b>Redirect URL:</b></td><td class="table">Submitters will be sent to this URL following a successful submission. If you are collecting payments for this genre, this URL should point to your payment gateway.</td></tr>
+		<tr class="table"><td class="row_left"><b>Price:</b></td><td class="table">Price for submissions to this genre. This limit overides the global price set in the <a href="#general_configuration">General Configuration</a>.</td></tr>
+		<tr class="table"><td class="row_left"><b>Active:</b></td><td class="table">When unchecked this genre will no longer be available for submissions.</td></tr>
+		<tr class="table"><td class="row_left"><b>Blind:</b></td><td class="table">When checked submissions in this genre will have hidden submitter contact info so the staff cannot see who is submitting.</td></tr>
+		</table>
+
+		<p>If you turn off genres on the <a href="#general_configuration">General Configuration</a> page, this area will still appear, but will not affect how the system runs.</p>
+
+		<p style="margin-top: 40px;"><b><span id="payment_variables">Payment Variables</span>:</b> Submission Manager can collect payment data and send it off to your payment gateway following each submission. To do this, you will need to tell Submission Manager which variables your payment gateway requires that you send to it, and which variables they will return. This configuration area allows you to control this process. We highly recommend that you have an experience programmer manage this part of the installation. When you first install Submission Manager, no payment variables will be set.</p>
+		<p><b>Outgoing Payment Variables:</b> These are the variables that are sent to your payment gateway. Consult your payment gateway documentation to determine which variables are required to process payments. Some will be constant (like the login of your payment account) and some will taken from the submitter data (like the submitter&rsquo;s name and credit card information). In the name field, type the Name of the variable required by your payment gateway. In the value field, type the data Submission Manager should send. If the information is static, simply type the information in. For example, if your login for the payment gateway is <b>&ldquo;Example&rdquo;</b>, Simply type <b>&ldquo;Example&rdquo;</b> in the value field. If the information needs to come from submitter data, you may use the local variables shown at left. For example, If you need to send the price, type <b>$price</b> in the value field. Variables that come from submitter data should be preceded by the dollar sign ($).</p>
+		<p><b>Incoming Payment Variables:</b> These are the variables your payment gateway returns. Submission Manager requires two return variables.</p>
+
+		<ol>
+		<li><b>$submission_id:</b> Each submission is assigned a unique numeric identifier known as submission_id. In order to update a submission as paid, your payment gateway must return this submission_id.</li>
+		<li><b>$result_code:</b> This lets submission manager know if the payment was successful. It will be one or more characters and is payment gateway specific.</li>
+		</ol>
+
+		<p>Submission Manager does not store the result code for each record, it uses the result code to update the date paid field in the submission record.</p>
+
+	</div>
+
+	<div class="header_clear" id="staff_5">The Maintenance Area</div>
+
+	<div class="indent_2">
+
+		<p>The maintenance page stores processes for managing the data on the system. Currently it has seven functions.</p>
+
+		<p><b>Cleanup Temp Files:</b><br>Typically there is a one to one relationship between database submission records and uploaded files.</p>
+		<p>Due to lost connections and server glitches there are sometimes submission records without a corresponding submission file and submission files without a corresponding record. We&rsquo;ll call these orphaned records and files.</p>
+		<p>The Cleanup Temp files function allows you to delete these orphaned files from your system. Selecting cleanup temp files will produce a table that lists a complete count of records and files by year, and shows all unrecorded files (files without matching database records) and missing files (database records without matching files).</p>
+		<p>Clicking on the name of an unrecorded file will display the file that is missing its record. Clicking on a missing file will show the submission record that is missing its corresponding file. You can delete orphaned files by clicking <b>delete temp files</b>.</p>
+		<p><b>Important Note:</b> Temp files are <i>always</i> created during the submission process. They are created as soon as a submitter selects the file from their computer and retains the temporary name until the submission is complete. It is therefore safest to make sure that all temp files that you delete are at least a few hours old.</p>
+
+		<p style="margin-top: 40px;"><b>Sample Data:</b><br>In order to test the system you&rsquo;ll need a set of dummy submissions to work with. Clicking <b>insert sample data</b> will create 100 dummy contacts, submissions and files to test the system. Clicking <b>delete sample data</b> will delete all of those dummy records. All sample contact records will have an email with the domain name of <b>@example.com</b>. (for example: <b>sally123@example.com</b>).</p>
+
+		<p style="margin-top: 40px;"><b>Export Data:</b><br>This function will allow you to export the contact data to a .csv file. This format is easily read by other database applications.</p>
+		<p>When exporting data you have four options:</p>
+		<table>
+		<tr class="table"><td class="row_left"><b>include primary key field:</b></td><td class="table">When this is checked, the Submission Manager contact id will be included in the export.</td></tr>
+		<tr class="table"><td class="row_left"><b>include staff contacts:</b></td><td class="table">When this is checked, staff contacts will be included in the export.</td></tr>
+		<tr class="table"><td class="row_left"><b>insert field names as first row:</b></td><td class="table">When this is checked, the first row of the export will be the names of the fields.</td></tr>
+		<tr class="table"><td class="row_left"><b>use CLMP data structure:</b></td><td class="table">When this is checked, the field names will be the same as the field names in the CLMP fulfillment template. This will make it easier to merge these records for mailing or other uses. We do not, however, recommend you import this data into the current CLMP fulfillment template.</td></tr>
+		</table>
+		<p>You can select the records to be exported in three ways. You can use a range of primary keys (the default is to select all records), you can select all records created after a certain date, or you can select all records modified after a certain date.</p>
+
+		<p style="margin-top: 40px;"><b>Backup Data:</b><br>This function will backup your Submission Manager mySQL database using <a href="https://dev.mysql.com/doc/refman/5.0/en/mysqldump.html" target="_blank">mysqldump</a>. The server path to mysqldump can be set in <a href="#general_configuration">General Configuration</a> using the <b>mysqldump_path</b> setting. By default this is set to simply <b>mysqldump</b> which assumes that the program is in your server&rsquo;s PATH configuration. You may have to set an explicit path, such as <b>/usr/local/mysql/bin/mysqldump</b> for example.</p>
+
+		<p style="margin-top: 40px;"><b>Purge Data:</b><br>This function will purge submissions and their related actions and files. You can choose a range of submissions based on dates.</p>
+		<p>WARNING: This will permanently delete data from your database! Please backup and archive your database before using.</p>
+
+		<p style="margin-top: 40px;"><b>Update Data Structure:</b><br>This function has been put into place to allow administrators to easily update Submission Manager when future versions become available. Detailed instructions for using this function will be sent with any new versions of Submission Manager.</p>
+
+		<p style="margin-top: 40px;"><b>Versions:</b><br>This will show the versions of your installed Submission Manager, the latest version of Submission Manager, PHP, and mySQL.</p>
+
+	</div>
+
+</div>
+
+<div class="header_grey" id="config_header">Configuring the system for your publication</div>
+
+	<div class="indent_1">
+
+		<p>Every submission process is different; Submission Manager was designed to be flexible enough to work with most systems, but simple enough to prevent configuration from getting too complicated.</p>
+		<p>Once the system is installed and the basic configuration has been completed, an editor should go into the system and configure it for their publication. Editors should be sure to look at the following:</p>
+
+		<div class="header_clear" id="config_1">Configuring Genres</div>
+		<p>The system comes with 3 genres: fiction, nonfiction, and poetry.</p>
+		<p>If your magazine does not accept all 3 genres, uncheck the active box next to the genre name. To add a genre, type the genre name into the new box and click update. Editors can add as many genres as needed.</p>
+
+		<div class="header_clear" id="config_2">Configuring Access Levels:</div>
+		<p>Contacts are assigned an access level in their contact record. This access level determines which actions they can perform and what type of access they have to the system.</p>
+		<p>Once again, Admin level access gives a contact the ability to fully configure the system and to perform all actions. Editor level access gives a contact the ability to perform all actions and view all submissions.</p>
+		<p>The remaining 5 access levels are designed to give lower level editors and readers access to different actions.</p>
+		<p>Access Levels are given access to an action on the action configuration page.</p>
+		<p>Let&rsquo;s say that LitMagA has a group of staff members that they would like to only be able to forward stories to other readers. They do not want these staff members to be able to accept or reject a submission. The editors of LitMagA decide to group these staff members into the &ldquo;active 1&rdquo; access level. To do this, the editor will go into each of these staff member&rsquo;s contact record and select &ldquo;active 1&rdquo; in the access field.</p>
+		<p>LitMagA has a second set of staff members who they would like to be able to reject stories as well as forward them. The editors of LitMagA decide to group these staff members into the &ldquo;active 2&rdquo; access level. To do this the editor will go into each of these staff member&rsquo;s contact record and select &ldquo;active 2&rdquo; in the access field.</p>
+		<p>To complete the configuration, the editors would then go to the action section of the configuration page and deselect access group 1 from all actions except for forwards, and deselect access group 2 from accept and withdrawal.</p>
+
+		<div class="header_clear" id="config_3">Configuring Actions:</div>
+		<p>Action configuration is detailed <a href="#actions">here</a>.</p>
+		<p>Some notes:<br>To see how you can customize the email templates, see the sample rejections on the action page.</p>
+		<table>
+		<tr class="table"><td class="row_left"><b>reject 1:</b></td><td class="table">uses only one placeholder - the name of your company in the subject of the email</td></tr>
+		<tr class="table"><td class="row_left"><b>reject 2:</b></td><td class="table">inserts the writer&rsquo;s name, the title of the story, and the company name into the body of the email</td></tr>
+		<tr class="table"><td class="row_left"><b>reject 3:</b></td><td class="table">inserts the same fields as reject 2, and allows the staff member to insert a message to the submitter</td></tr>
+		<tr class="table"><td class="row_left"><b>reject 4:</b></td><td class="table">is a completely personal email. It uses no form language, but simply allows the staff member to compose their own email text.</td></tr>
+		</table>
+
+		<div class="header_clear" id="config_4">Using forwards to configure the system to your reading process:</div>
+		<p>Most likely, your submission process is hierarchical. Each submission moves from a less experienced editor to a more experienced editor. Keep the hierarchy in mind as you work on configuring your system.</p>
+		<p>Also keep in mind the two important system notes:</p>
+
+		<ol>
+		<li>The system assumes that only one editor will have access to a submission at one time. Note: If there is a point where more than one editor may need to read a story at one time, you may want to create a dummy contact (<b>finalreview@example.com</b>) whose log in information will be shared by a group of editors.</li>
+		<li>The status of a submission is always determined by the most recent action performed on that submission.</li>
+		</ol>
+
+		<p>The key to making the system work for you is configuring the 4 forwards. Forwards are how a submission moves from one editor to another. You can assign each forward a specific meaning.</p>
+		<p>It is probably easiest to understand this using an example.</p>
+		<p><b>LitMagA&rsquo;s submission process:</b></p>
+		<p>Every submission to LitmagA must be read by two readers before it is rejected.</p>
+		<p>The managing editor assigns each submission to the genre editor.</p>
+		<p>The genre editor assigns each submission to a slush reader who either recommends yes or no.</p>
+		<p>All submissions that are recommended yes get sent back to the genre editor who decides whether or not that submission makes it to the final conference.</p>
+		<p>If the slush reader recommends no, it goes on to a second reader for a second read.</p>
+		<p>If the second reader recommends yes, the submission goes back to the genre editor, who decides if the submission makes it to a final conference. If the second reader confirms the no, the genre editor rejects the story.</p>
+
+		<b>How LitmagA uses the 4 Forwards:</b>
+		<table>
+		<tr class="table"><td class="row_left"><b>forward 1:</b></td><td class="table">Assign to reader</td></tr>
+		<tr class="table"><td class="row_left"><b>forward 2:</b></td><td class="table">Recommend reject</td></tr>
+		<tr class="table"><td class="row_left"><b>forward 3:</b></td><td class="table">Confirm reject</td></tr>
+		<tr class="table"><td class="row_left"><b>forward 4:</b></td><td class="table">Recommend accept</td></tr>
+		</table>
+
+		<p><b>How a submission moves through LitMagA&rsquo;s system:</b></p>
+		<ol>
+		<li>The Editor assigns the submission to a genre editor using Forward 1</li>
+		<li>The Genre Editor assigns the submission to a slush reader using Forward 1</li>
+		<li>The Slush Reader recommends the story be rejected using Forward 2 or accepted using Forward 4. The Slush reader uses these forwards to send the story back to the Genre Editor.</li>
+		<li>The Genre Editor uses the administrative tool to assign all Forward 2s to a second level reader. To do this he uses Forward 1 (assign) again.</li>
+		<li>The Second Level Reader either confirms that the story should be rejected using Forward 3 or recommends it should be accepted using Forward 4. He uses these to send the story back to the genre editor.</li>
+		<li>The Genre editor reviews all forward 3s and does a mass rejection of all submissions.</li>
+		<li>At this point, all recommended accepted stories will have a status of Forward 4. The genre editor reviews all submissions and decides which stories will go to conference.</li>
+		</ol>
+
+		<p>In conference, the submissions must be read by a panel of 3 editors. Since Submission Manager assumes that only one person has access to a submission at one time, LitMagA creates a dummy contact with the email address conference@litmaga.com. All conference editors have access to this email address. The genre editor forwards all final choices to conference@litmaga.com, and the editors log in to this account separately to read the final choices and make their decisions.</p>
+
+		<p><b>How LitMagA groups its readers:</b></p>
+		<table>
+		<tr class="table"><td class="row_left"><b>editor:</b></td><td class="table"><i>Managing Editor</i><br>The managing editor needs to have access to all submissions in order to assign the stories.</td></tr>
+		<tr class="table"><td class="row_left"><b>access group 1:</b></td><td class="table"><i>Slush readers</i><br>These readers will have access only to forward 2 (recommend reject) and forward 4 (recommend accept).</td></tr>
+		<tr class="table"><td class="row_left"><b>access group 2:</b></td><td class="table"><i>Second readers</i><br>These readers will have access to forward 3 (confirm reject) and forward 4 (recommend accept).</td></tr>
+		<tr class="table"><td class="row_left"><b>access group 3:</b></td><td class="table"><i>Genre Editor</i><br>The Genre Editors will have access to all forwards, and all rejects, but not to Accept. Accepting will be done by the Managing Editor who has editor level access to the system.</td></tr>
+		</table>
+
+	</div>
+
+<div class="header_grey" id="payment_header">Using Submission Manager to Collect Payments</div>
+	<div class="indent_1">
+
+		<p>Submission Manager can be used to collect payments for submissions. This can be done globally, or for a specific genre. Before collecting payments, you must first set up an account with a payment gateway, such as Paypal. Your payment configuration will be determined by the requirements of your payment gateway. Submission Manager will send payment information to this gateway, and will receive payment confirmation from this gateway. Your payment gateway will require a return URL. This URL will be the absolute URL of submission manager installation followed by /payment.php. For example: If your submission manager is installed in https://www.example.com/submisssions/, the return URL will be https://www.example.com/submissions/payment.php. In addition to the information above, the areas of the documentation that specifically refer to working with payments and a payment gateway are as follows:</p>
+
+		<ul>
+		<li><a href="#security_header">Security</a></li>
+		<li><a href="#general_configuration">General Configuration</a></li>
+		<li><a href="#redirect_url">Redirect URL</a></li>
+		<li><a href="#submission_price">Submission Price</a></li>
+		<li><a href="#payment_variables">Payment Variables</a></li>
+		</ul>
+
+		<p>Be sure to read them carefully, that your site is secure, and that you have tested payments thoroughly before going live.</p>
+		<p>Below is an example of baisc paymet variables for <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_payflow-link-overview-outside" target="_blank">PayPal&rsquo;s Payflow Link</a> Service:</p>
+
+		<table>
+		<tr><td colspan="2"><b>Outgoing</b></td></tr>
+		<tr><td><b><u>Name</u></b></td><td><b><u>Value</u></b></td></tr>
+		<tr class="table_grey"><td>LOGIN</td><td>[your PayPal login name]</td></tr>
+		<tr class="table_grey"><td>PARTNER</td><td>[your PayPal partner name]</td></tr>
+		<tr class="table_grey"><td>AMOUNT</td><td>$price</td></tr>
+		<tr class="table_grey"><td>TYPE</td><td>S</td></tr>
+		<tr class="table_grey"><td>METHOD</td><td>CC</td></tr>
+		<tr class="table_grey"><td>ORDERFORM</td><td>false</td></tr>
+		<tr class="table_grey"><td>SHOWCONFIRM</td><td>false				</td></tr>
+		<tr class="table_grey"><td>CUSTID</td><td>$contact_id</td></tr>
+		<tr class="table_grey"><td>INVOICE</td><td>$submission_id</td></tr>
+		<tr class="table_grey"><td>NAME</td><td>$name</td></tr>
+		<tr class="table_grey"><td>EMAIL</td><td>$email</td></tr>
+		<tr class="table_grey"><td>ADDRESS</td><td>$address1</td></tr>
+		<tr class="table_grey"><td>CITY</td><td>$city</td></tr>
+		<tr class="table_grey"><td>STATE</td><td>$state</td></tr>
+		<tr class="table_grey"><td>ZIP</td><td>$zip</td></tr>
+		<tr class="table_grey"><td>COUNTRY</td><td>$country</td></tr>
+		<tr class="table_grey"><td>PHONE</td><td>$phone</td></tr>
+		<tr class="table_grey"><td>CARDNUM</td><td>$cc_number</td></tr>
+		<tr class="table_grey"><td>EXPDATE</td><td>$cc_exp_date</td></tr>
+		<tr class="table_grey"><td>CSC</td><td>$cc_csc</td></tr>
+		<tr class="table_grey"><td>DESCRIPTION</td><td>$genre_id</td></tr>
+		<tr class="table_grey"><td>USER4</td><td>$hash</td></tr>
+		<tr><td colspan="2">&nbsp;<br><b>Incoming</b></td></tr>
+		<tr><td><b><u>Name</u></b></td><td><b><u>Value</u></b></td></tr>
+		<tr class="table_grey"><td>INVOICE</td><td>$submission_id</td></tr>
+		<tr class="table_grey"><td>RESULT</td><td>$result_code</td></tr>
+		<tr class="table_grey"><td>USER4</td><td>$hash</td></tr>
+		</table>
+
+	</div>
+
+<hr>
+<div style="font-size: 8pt;"><b>Submission Manager</b><br>&copy;2019 Devin Emke</div>
+</body>
+</html>

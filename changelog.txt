@@ -1,0 +1,610 @@
+version 3.40 2021-03-02
+- ran $_SERVER['PHP_SELF'] through htmlentities()
+- upgraded to PHPMailer 6.3.0 (2021-02-19) now that PHP >= 5.5 is required
+- removed all checks for PHP_VERSION < 5.5
+- minimum PHP version is now 5.5 (updated check_version() function)
+
+version 3.39 2020-11-02
+- all popups can now be closed by clicking on background
+- added kill_session() before exit_error() in form_hash()
+- upgraded to PHPMailer 5.2.28 (2020-03-19)
+- refactoring of form_hash() to mitigate CSRF
+- added "regenerate" argument to kill_session() to preserve cookie and create new session
+- post-installation: invalid config values display error classes for labels/fields in /configuration/general/
+- post-installation: re-direct to /configuration/general/ with proper error $notice
+- post-installation: "required configuration" error is now a link to /configuration/general/
+- fixed bug in /maintenance/purge/ where "SELECT actions" query was run when $to_purge['submissions'] was empty
+- removed $_SESSION['data'] nesting
+- ran page, module, submodule, and submit $_REQUEST variables through htmlentities()
+- added $pages array. only pages in the array are allowed.
+- added genre_id as keys to the $genre array in get_genres() to simplify adding/removing genres in custom.php
+- added quotes around "mysqldump_path" if it contains spaces
+- added get_hash() for more entropy in payment $hash
+- added SM contact info to /maintenance/versions/
+- removed img-src from default CSP
+- added compare_configs() to suppress errors before data structure update
+- fixed bug where last submission was shown in display() following contact update
+- split form_main() into 3 sections: contact, submission, payment
+- removed class="foreground" from various forms
+- added $config['font_size'] (default = 10)
+- added $config['border_radius'] (default = 5)
+- Submission Manager is now free under the GNU General Public License (see readme.txt)
+
+version 3.38 2019-06-01
+- escaped table names for reserved words in mySQL 8 (groups)
+- hide form_main while displaying form_confirmation until form_main_show is clicked
+- upgraded to PHPMailer 5.2.27 (2018-11-15)
+- added NULL searches to contact form (use "equals" operator + "NULL" search value)
+- fixed state/zip form validation bugs in contact form (server-side + client-side)
+- if country != 'USA' then state = ''
+- fixed bug in /maintenance/update data structure/ where "sync last actions" was unchecked when needed (check for $describe['submissions']['last_action_id'])
+- added unsafe-inline to CSP script-src to support older browsers (nonce still used for newer browsers)
+- fixed JavaScript errors when genre field is not present (!$config['use_genres'] or all genres inactive)
+- added full country name to get_row_string()
+- added $config['exclude_countries']
+- added $config['default_country'] (default = USA)
+- added conversion to country codes in /maintenance/update data structure/. contacts.country field is now CHAR(3).
+- added Curaçao (CUW), South Sudan (SSD), Sint Maarten (SXM) to country list
+- added $config['default_mailing_list'] (default = Y)
+- fixed typo on the contacts page
+- JavaScript form_main_check() function now strips non-numeric characters from USA zip codes
+- switched to JavaScript native trim() function (now that IE >= 9 required)
+- contact search with blank "search_value" now changes "search_operator" to "contains" (to use wildcard)
+- removed "all" prefix from genres in submission search select box and headers
+- added optional "optimize tables" checkbox in /maintenance/update data structure/
+- delete button is now always visible in /maintenance/cleanup temp files/
+- fixed bug with maintenance submodule not getting reset when hitting "Go" in nav form ($copy was still set)
+- added length constraints to various form fields (with related server-side + client-side validation)
+- fixed various bugs with blind genres/groups in popup.php (disable "writer" + "comments")
+- fixed bug with /configuration/groups/ UPDATE SQL
+- refactoring of all inline JavaScript to conform to CSP (IE >= 9 now required)
+- added $config['csp']
+- added Content Security Policy (CSP)
+
+version 3.37 2018-05-02
+- removed check for $_COOKIE['submgr_cookie_test'] if $_GET['token'] is set
+- removed -moz -webkit CSS prefixes
+- added TRUNCATE resets to /maintenance/cleanup temp files/
+- added mt_rand() and more_entropy to uniqid() in get_token() for PHP < 5.3.0
+- added logic for password_needs_rehash() to password_wrapper()
+- changed URL in check_version('SubMgr') to https://www.submissionmanager.net/version.txt
+- changed all references to opendir(),readdir() to scandir() now that PHP 5 is required
+- removed all type attributes from style, script, and link tags for HTML 5 validation
+- updated documentation
+- upgraded to PHPMailer 5.2.26 (2017-11-04)
+- fixed bug with untagged submission rows not reverting back to normal hover color
+- added Bonaire (BES) to country list
+- fixed bug with min/max years in /reports/monthly/
+- fixed bug in cc_display() where genre price was empty string rather than 0.00 decimal/float
+- added check for changed indexes in "update data structure" (only rebuild if changed)
+- moved index rebuilding in "update data structure" to separate loop after collation changes (fixes bug with FULLTEXT indexes, must be all same collation)
+- added FULLTEXT indexes (actions, contacts, submissions) and logic to submission search
+- removed "form_nostyle" CSS class
+- changed JavaScript arrays "genres_url" + "genres_price" to object "genres"
+- added ob_end_clean() to download() to suppress Tidy cleaning
+- added output_tidy() function to index.php, footer.php, popup.php
+- removed JavaScript nullify() links on required form fields in popup.php
+- added submissions.date_paid field to export data
+- fixed bug where email_notification checkboxes were not disabled on contact form
+- added htmlspecialchars() to notes and message displays on new action form
+- removed "account does not have password" login error (go straight to "wrong password" error)
+- added db_port to config_db + install routine
+- JavaScript form validation overhaul (using CSS error classes for fields + labels)
+- added labels to all form fields
+
+version 3.36 2017-08-13
+- fixed bug where actions where not displayed when in submission "single_display" mode ($submodule was not NULL)
+- added check for $session_start
+- added check for contacts.password VARCHAR(255) for password_needs_rehash
+- added changelog to /maintenance/versions/
+- added phpinfo to /maintenance/versions/
+- added /maintenance/backup/ using mysqldump (added $config['mysqldump_path'])
+- added JavaScript form validation for configuration reset previous
+- added JavaScript form validation for payment variables
+- added extra fields to $defaults['config'] (type, required, allowed)
+- moved timezones to inc_lists.php
+- added inc_lists.php (removed inc_countries.php + inc_states.php)
+- added get_genres(), get_file_types(), get_action_types() functions
+- added reset_defaults() function
+- switched to JavaScript confirmation for configuration default resets
+- added TouchNet uPay to Payment Variable Presets
+- added links from reports/monthly for totals
+- fixed bug with cancelling submission from staff login
+- moved Payment Variables delete button to the first column next to the ID
+- fixed bug that allowed duplicate genre names
+- added JavaScript form validation for genres
+- added ability to delete genres
+- added all fields to new genre form
+- removed make_body() function
+- HTML 5 validation
+- removed double quotes from make_email()
+- fixed bug with "no genre" submissions in reports
+- fixed bug with "no genre" submissions blind handling
+- fixed bug with submitter name in staff email after submitter withdraw
+- removed $config['color_link_active'] and $config['color_link_visited']
+- upgraded to PHPMailer 5.2.24 (2017-07-26)
+- changed $config['smtp_secure'] to drop down box (none, SSL, TLS)
+- added check for custom.css
+- added $config['default_sort_order'] (default = ascending)
+- added "timeout" and "ignore_errors" to stream_context_create() if PHP >= 5.2.10
+- added mail_setup() function to speed up mail loops
+- added CAPTCHA system using Google's reCAPTCHA API
+- removed config.description field
+- removed "back to list" links when search criteria is not set (fixes search query failure)
+- added anchors to "back to list" links
+- changed all popup windows to iframes
+- fixed tooltip width bug
+- added stream_context_create() to file_get_contents() in check_version() to fix SM remote version check
+- added get_token() function using available PHP CSPRNG API
+- added $db_port to db_connect()
+
+version 3.35 2017-04-12
+- speed improvements in "reports" area by using "last_action" rather than JOIN queries
+- fixed bug with cURL extension validation
+- fixed bug where $config_invalid incorrectly returned false
+- removed config_db_blank.php
+- added get_tables() function that only fetches SM tables
+- changed get_describe() function to allow optional SHOW FULL COLUMNS
+- added include('db_schema.php') to inc_common.php (removed elsewhere)
+- added display widths to all integer fields in db_schema.php (improves speed of "update data structure")
+- added check for UTF-8 to "update data structure" (database, tables, and fields) and will change to CHARACTER SET utf8 COLLATE utf8_unicode_ci
+- installer alters database to CHARACTER SET utf8 COLLATE utf8_unicode_ci
+- changed create tables in "update data structure" to CHARSET=utf8 COLLATE=utf8_unicode_ci
+- changed resets.token field to CHAR(40)
+- changed all references to fopen(),fwrite(),fclose() to file_put_contents() now that PHP 5 is required
+- $config['test_mode'] now defaults to off
+- sample data contacts passwords now random and run through password_wrapper()
+- fixed bug where login form was displayed when database was unavailable
+- switched to mySQLi extension (PHP/mySQL >= 5 now required, PHP >= 7 supported)
+- added $header_extra variable to header.php which can be set in custom.php (Google Analytics for example)
+- upgraded to PHPMailer 5.2.23 (2017-03-15)
+- password re-hashed on login if PHP >= 5.5.0 and hash length == 40
+
+version 3.34 2016-07-19
+- removed rel="shortcut icon"
+- added <html lang="en">
+- fixed bug with double escaping in action creation + staff email notifications
+- added strtolower() to result_code comparisons
+- upgraded to PHPMailer 5.2.16 (2016-06-06)
+- added contact_id INDEX to resets table
+- added contact_display to all header variables
+- added date_default_timezone_set if PHP >= 5.1.3
+- updated /maintenance/versions/ to display PHP/mySQL
+
+version 3.33 2016-05-11
+- added check for reset table to login routine
+- changed installer tables to CHARSET=utf8 COLLATE=utf8_unicode_ci
+- fixed typo in install copy
+- added checks for $access_grouping in header.php
+- fixed bug with submitter's name in global scope during submission, action, update
+- added htmlspecialchars() to company_name displays
+- added htmlspecialchars() to page display
+- added htmlspecialchars() to email display (help page)
+- expanded max password length to 20
+- changed all references to "(int) price" to "(float) price"
+- fixed genres global scope bug in /maintenance/sample data/ (using $genres_sample to avoid conflict)
+- added password_wrapper() function (using password_hash() if PHP >= 5.5.0)
+- expanded contacts.password field to VARCHAR(255)
+- added optional "sync last actions" to /maintenance/update data structure/
+- added delete resets to /maintenance/cleanup temp files/
+- removed email notifications containing passwords
+- added password resets (table + logic)
+- added HTML mail (for links in password resets)
+- added $app_url_slash for all URLs with extra query strings
+- added CSS box-sizing
+- added DOCTYPE
+- added to strtoupper() to zip codes in cleanup()
+
+version 3.32 2015-12-28
+- moved ob_end_flush() from footer.php to index.php
+- added header('X-Frame-Options: SAMEORIGIN')
+- added htmlspecialchars() to various email displays
+- upgraded to PHPMailer 5.2.14 (2015-11-01)
+- changed check_version() to use version_compare()
+
+version 3.31 2015-08-01
+- upgraded to PHPMailer 5.2.10 (2015-05-04)
+- fixed bug with submitter's name in global scope during tagged action
+
+version 3.30 2014-09-05
+- upgraded to PHPMailer 5.2.8 (2014-08-31)
+- changed $string = end(array_keys($array)); to avoid "Strict Standards" error
+- removed line breaks from createMailto() which caused bug in conjunction with nl2br() in display()
+- updated get_submissions() to better handle sid: and cid: queries (bypassing COUNT)
+
+version 3.29 2014-04-10
+- added check for PHP >= 5.2.0 for setcookie() in kill_session()
+- added check for PHP >= 5.2.3 for mysql_set_charset
+- added checks for $config['payment_redirect_method']
+- changed default mail character set to UTF-8
+- added "SET NAMES utf8" query and mysql_set_charset('utf8') after db_connect
+- added UTF-8 meta tags to header.php and popup.php
+
+version 3.28 2013-06-03
+- added first_name and last_name to list of placeholders
+- switched to JavaScript confirmation for all deletes
+- added keywords "sid:" (submission_id) and "cid:" (contact_id) to submission search form logic
+- added form_hash() routines to prevent duplicate form submissions
+- added JavaScript submit disable routines to prevent duplicate form submissions
+- changed default pagination_limit to 100
+- added session_name('submgr')
+- updated kill_session() function using new PHP manual example for session_destroy()
+- changed user agent check from "Mobile" to "mobile" (case insensitive)
+- upgraded to PHPMailer 5.2.6 (2013-04-11)
+
+version 3.27 2013-01-01
+- upgraded to PHPMailer 5.2.2 (2012-12-03)
+- fixed bug with upper case or mixed case upload file extensions
+- added viewport meta tags to popup windows
+- added PayPal IPN logic to payment.php
+- fixed bug with redirect(). $url was not getting set when method == GET and no NVP.
+
+version 3.26 2012-07-03
+- added $error to $local_variables['payment']
+- removed $config['payment_vars_hash_field']. this is now derived from $hash payment_var value.
+- $config['success_result_code'] can now contain "|" as a delimiter for multiple options
+- added $config['cc_exp_date_format'] (default = MMYYYY)
+- added automatic SQL wildcards (%) to contact search
+- added "Payment Variable Presets" section to payment variables module
+- changed $config['payment_vars_post'] to $config['payment_redirect_method'] (GET, POST, cURL)
+- if PHP < 5 use mail() rather than PHPMailer
+- made submissions.last_action fields in popup non writable
+- suppressed emails that include passwords when updating a contact
+- fixed bug when sending mail to multiple staff members
+- added smart quotes to config_defaults
+- admins/editors can now insert new submissions from the contacts module using inactive genres
+- removed from_name and from_email from action preview display
+
+version 3.25 2012-04-06
+- send_mail('staff') is now always sent from $config['general_dnr_email']
+- mail sending is now all handled by PHPMailer (added associated mail config options)
+- moved get action types routine to inc_common.php so custom.php can access action types
+- removed unnecessary UI elements to contact module when logged in as active 1-5 (top <hr> and navigation arrows)
+- added sync_last_action routine to "maintenance" module
+- added last_action_id, last_action_type_id, last_receiver_id fields to submissions table with all associated queries
+- added get_forwards() function (only runs for active staff)
+- added $config['currency_symbol'] (default = $)
+- "pay now" link now goes directly to redirect URL if $config['show_payment_fields'] is off
+- config_db now allows for blank passwords
+- added check for custom.php
+
+version 3.24 2011-09-16
+- added "back to list" link at top of submissions page to return to same place in paginated list
+- expanded payment_vars.name and payment_vars.value fields to VARCHAR(255)
+- added $config['show_payment_fields']
+- export submissions now can include full contact data
+
+version 3.23 2011-05-02
+- added "confirm password" form field and associated checks
+- random passwords now contain A-Z a-z 0-9
+- passwords now 8-12 characters and can include any character except space
+- added file_types table and associated checks
+- added autocomplete="off" to contact forms
+- fixed bug in /reports/submissions by status/. now all actions are displayed (rather than just active actions)
+- added "purge data" module to maintenance
+- added timestamp as payment variable
+- expanded payment_vars.name and payment_vars.value fields to VARCHAR(100)
+
+version 3.22 2011-01-11
+- added $config['payment_vars_hash_field'] which is checked in payment.php
+- added $config['payment_vars_post'] to send payment variables via POST rather than GET
+- fixed bug where submitter's name was not properly escaped in tooltips
+- fixed bug with config rows deletion during data structure update
+- fixed bugs relating to setting global redirect_url and price with no genres
+- $config['success_result_code'] can now be non-integer
+- changed genre price to decimal(6,2) to accommodate higher prices
+- added smart quotes
+- fixed bug in UPDATE popup window if no genres were active
+
+version 3.21 2010-03-29
+- removed underscores from field names in error displays (server-side + client-side)
+- added blank values for all initial form inputs
+- added documentation link at lower right when logged in admin/editor
+- added display list of missing required form fields to form_check()
+- added ability to send genre_id as a GET variable
+- added cancel buttons in submitter login forms
+- added payment system (payment_vars table, new fields in genres and config)
+- fixed bug where config vars were not being flushed before pull from db (which messed up add/delete config rows)
+
+version 3.20 2010-01-22
+- fixed bug where file paths were wrong around Jan 1 due to localized dates [ switched from gmdate('Y') to date('Y') ]
+- added ability for admins to change anyone's password
+- changed various integer field types to MEDIUMINT
+
+version 3.19 2009-12-02
+- added individual redirect URLs to genres (genre redirect URLs override global redirect URL)
+- fixed bug where [first_name last_name == writer] comparison was comparing escaped and unescaped strings
+- fixed bug where escaped characters were showing up in update emails
+
+version 3.18 2009-11-18
+- fixed bug where tag_all() function was being run without conditionally checking for submit status
+- fixed bug where writer field was not being inserted into submission table
+- added "United States" to country list (in addition to "USA")
+
+version 3.17 2009-10-28
+- fixed bug where tagged submission list was not honoring sort selection
+- fixed bugs where blind groups/genres could see/edit submitter comments
+- added submission tagged count in tag header
+- added highlighting of tagged submission rows
+- added JavaScript SHIFT click for multiple tag submission selection
+- added data structure to check_version() function. this is now checked at each admin login.
+- added data structure version to config table's COMMENTS
+- added genre submission limits
+- added "export submissions" option to /maintenance/export/
+
+version 3.16 2009-10-15
+- added language to the random password confirmation about white listing/junk mail filters
+- added routine to "update data structure" to update configuration descriptions
+- added conditional code to check_version('SubMgr') function for when remote version cannot be determined
+- added configuration validation for fields that require numeric values
+- fixed typos
+
+version 3.15 2009-09-03
+- fixed bug with incorrect date_time timezone in staff emails (were all GMT)
+
+version 3.14 2009-08-20
+- replaced calls to split() with preg_split() (for PHP 5.3)
+- added email obfuscation to all mailto links
+- added conditional calls to get_readers() only when needed (already in SESSION)
+- fixed bug with daily report showing only GMT date/times
+- fixed bug where file paths were wrong around Jan 1 due to localized dates [ switched from date('Y') to gmdate('Y') ]
+- moved all timezone_adjust() calls to display level
+- set global time zone query, removed timezone_adjust() calls from all timestamp displays
+
+version 3.13 2009-08-07
+- added app_url to "account information enclosed" email
+- added country = USA to the first contact created during install
+- fixed bug where send_mail('staff', 'updates') following contact INSERT was sending the row of the currently logged in contact rather than the one being inserted
+- added note in documentation about file permissions
+
+version 3.12 2009-07-01
+- replaced all calls to ereg functions with preg functions (for PHP 5.3)
+
+version 3.11 2009-06-10
+- fixed typos in documentation
+- removed display widths from all integer fields in db_schema.php
+
+version 3.10
+- fixed bug where check_version() function was not being run in maintenance/version
+
+version 3.09
+- added trim() JavaScript function. all email fields are now trimmed prior to validation.
+- fixed bug where [genre] placeholder was not being replaced in tagged actions
+- reports/monthly counts: min/max years must be cast to INT to accommodate range() behavior in PHP 4.1.0 -> 4.3.2
+
+version 3.08
+- writer field is now compared to submitter name prior to db insert
+- added "SubMgr" to check_version() function (swapped file() for file_get_contents() now that PHP 4.3.0 is required)
+- added "version" submodule to "maintenance" module
+- added new version check to header (admins only)
+
+version 3.07
+- added ability for editors to insert new submissions from contact page
+- added "send mail" checkbox to tagged actions and admin/editor submission inserts
+- added $config['send_mail_contact'] to every outgoing contact email
+- fixed typos
+
+version 3.06
+- added genre to list of placeholders
+
+version 3.05
+- login email field can be pre-populated by GET var
+- cleanup() function now strips non-numeric characters from USA zip codes
+- updated countries and states lists
+- changed send_mail('staff') function to use 2nd argument instead of other conditions
+- fixed bug with staff emails where logged in contact's row was being pulled instead of updated contact's row
+- added ability for admins to insert new submissions from contact page
+
+version 3.04
+- fixed bug with next/previous contact_ids not being set on contacts page
+- added update button to contacts in submission list
+- hashed passwords (SHA1)
+
+version 3.03
+- added previous/next arrows to daily report
+- fixed bug in "reports/monthly counts" with 0 records in actions, submissions tables
+- updated documentation with "security" section
+- changed file extensions for sample data to "txt"
+- replaced addslashes() with mysql_real_escape_string(). now requires PHP 4.3.0.
+- fixed bug with send_mail('staff') missing $to and $body vars
+- made genre_id require numeric value for INSERT
+- fixed security issue with unauthenticated resetting of configuration values
+- added contacts.email, actions.notes, and actions.message to the keyword search on submission search form
+- increased the size of the action popup edit window
+
+version 3.02
+- changed test cookie expire time to end of session
+
+version 3.01
+- moved session_start() to inc_common.php (removed from all other files)
+
+version 3.00
+- new version system
+
+version 20080205.23
+- added check for cookies
+- added favicon code to header
+- fixed JavaScript bug with email_notification for "updates" checkbox and "blocked" access
+- fixed bug with IE download over SSL (moved download routine to separate function)
+- added "updates" to staff email notifications
+- changed look of send password form
+- made logout routine go directly back to the home page
+- removed calls to stripos() and str_ireplace() which required PHP 5
+- fixed bug with submission search_keyword getting re-escaped via htmlspecialchars()
+- changed $test_mail to constant TEST_MAIL
+- fixed several bugs with submitter info being displayed to blind senders/receivers/genres
+- fixed several bugs with uploaded file sizes not being checked properly
+- fixed bug so that search submissions form remembers search_receiver_id after tagging
+- fixed bug with unset variables when performing mass tagged non-forwards
+- fixed several bugs with display of "blocked"
+- added action counts to "monthly counts" report
+- added "blocked" access level to contacts table
+- fixed bug with undeclared $prev_contact_id variable on contacts page
+- fixed bug with names being sent in emails to blind groups and blind genres
+- fixed bug with CREATE TABLE syntax (indexes) in "update data structure" routine
+- removed multiple titles copy from submission form
+- added header('Content-Type: application/octet-stream'); to download.php
+- added OPTIMIZE TABLE to "update data structure" routine
+- added "submit another?" link following first submission
+- made new empty config fields NULL after running "update data structure" routine
+- added $config['redirect_url']
+- fixed bug where action list was not displayed under single submission display (after choosing "show my forward list")
+- added index rebuilding to "update data structure" routine
+- updated db_schema.php with INDEX arrays
+- added genre_id INDEX to submissions table
+- added keywords to search submission form (use id:[submission_id] for old behavior)
+- fixed bug where user had to re-select upload file when re-submitting form (both submission and action files)
+- added time/date stamp to CSV filename
+- HTML allowed in submission_text (stripped out for mail)
+- changed outgoing tagged forward emails to 1 digest email
+- fixed bug with $_SESSION['data']['is_uploaded_file'] set assumption
+- fixed typos
+- removed links to unauthorized submission files
+- fixed bug with not showing actions when linked from maintenance/cleanup
+- fixed bug with "0 records" being displayed after contact deletion
+- added file attachments to actions (added "ext" field to actions table)
+
+version 20071017
+- CSS overhaul
+- added "send mail?" checkbox to action creation form
+- fixed typos
+- top alignment in actions list
+- fixed addslashes bug when updating submissions/actions
+- added "blind" genres
+- added "blind" groups
+- added ability to set which groups can forward to which other groups
+- added group management module to configuration area
+- added "blind" field to genres table
+- added "groups" table
+- added JavaScript confirmation of submitter withdraw
+- changed submitter withdraw to single link instead of checkbox form
+- fixed bug with pending submission count and custom status
+- added file download to submitter login
+- added viewable submitter comments to submitter login
+- changed CSV output to include all contact fields
+
+version 20070202
+- added custom "status" field to action types
+- fixed bug with cancelling popup windows in IE
+- switched to JavaScript confirmation for action deletes
+- fixed bug with updating action records where submitter withdrew own submission
+- added viewable staff comments to submitter login
+- fixed bug with pagination limit of 0 in contacts area
+- added descriptions to "forwards by staff" report
+- fixed misspelled word "character"
+- if search contact query returns only one result then display it in form on right
+- changed zip field in the admin contact area to maxlength 50
+- changed it so editors cannot insert/update admins
+- changed it so editors cannot view admin passwords
+- changed "title(s)" to "submission title(s)"
+- subgrouped inactive staff in search submission form
+- fixed bug where submission status was incorrectly displayed from submitter login (switched to calc_submission_status)
+- added "actions by staff" report
+- added Serbia (SRB) to country list
+
+version 20061003
+- expanded zip field to 50 characters for foreign zip codes
+- changed "submissions" to "submission" if submission limit count is 1
+- fixed bug with blank mailto links in contacts area
+- made tooltips have fixed position to correct bug with Safari
+- fixed bug with searching submissions by submission ID after subquery search
+- fixed bug with htmlspecialchars() in edit popup
+- changed (sent to submitter) to (sent to receiver) in actions message header
+- made submission_ids link to submissions in daily report
+- changed config formcheck to write valid fileds to db (even if formcheck fails)
+- added suggested path for $config['upload_path']
+- fixed alignment problem with submission count in contacts area
+
+version 20060809
+- added "daily report" to reports area
+- added option for submitters to withdraw their own submissions
+- cleanup() function now strips non-numeric characters from phone numbers
+- added checks for required tables
+- sorted config rows according to defaults
+- added "update data structure" function to maintenance area
+- changed format of db_schema.php file to array
+- changed timestamp calculations from mySQL to PHP
+- added DATETIME fields to contacts
+- added TIMESTAMP fields to actions, contacts, and submissions tables
+- fixed bug with genres error check when use_genres is OFF
+- fixed bug with missing data in tooltips
+- fixed bug with quotes in contact data
+- fixed JavaScript bug with disabling message box in new action form
+- added export to CSV function in maintenance area
+- fixed typos in the instruction text
+- fixed bug with renaming existing uploaded filenames
+
+version 20060704
+- fixed bug with tooltips following tagged action
+- added ability to search for submission with no genre
+- changed admin left side navigation to links instead of form
+- added deletion of sample data in maintenance area
+- added creation of sample files in maintenance area
+- unified cascading delete function
+- added "reports" area for admin/editor login
+- added placeholder substitution for config fields: offline_text, instruction_text, submission_text
+- moved login form to left side of browser window
+- changed "staff only" offline mode to "no submissions"
+- made certain config fields use "0" for no limits
+- added $config['instruction text']
+- added $config['max_comments_size'] (default = 3000)
+- alphabetized states by abbreviation
+- set variable width on mouse hover box
+- added mouse hover action email preview for tagged actions
+- fixed bug where submissions were allowed beyond submission limit
+- fixed bug where receiver_id was inserted into new non-forward actions from tagged list
+- fixed bug with tagged submission list (JOIN query not needed)
+- removed login form when logged in
+- fixed bug with "to" field in send_mail() function when sending to contacts
+
+version 20060508 BETA
+- added friendly names of readers/receivers/actions in admin emails
+- changed submission "type" field to a select box in edit popup
+- fixed popup windows in FireFox and Safari (still broken Safari 1.x)
+- added missing </select> tag in contact editor
+- added ORDER BY date_time to submission query in submitter account summary
+- fixed bug with following cancel tagged
+- fixed bug with submit buttons in config page with no config area selected
+- moved genres to separate table
+- added 2 more active access groups (4 and 5)
+- added 2nd admin access group (editor)
+- added submissions sort (asc, desc)
+- added submission filter by genre
+- added changeable foreground color and form color
+- added </option> and </li> tags
+- fixed submission pagination in non active 1-5 login
+- made receiver disabled when action type is not a forward
+- added access filter to contact search
+- unified mail functions
+- put active login inside submission module
+- contact list view is now paginated
+- subgrouped receivers in submission form
+- subgrouped access types in contact form
+- fixed extra line breaks when no message in outgoing action email
+- fixed feedback copy after last submission reject
+- redesigned submission/contact search forms
+- added maintenance page (cleanup temp files)
+- added mouse hover effects for contacts and comments
+- added notes form/display to submissions
+- added forgotten password form in login help page
+- removed admin_email list from config, added email_notification field to contacts table
+- made all dates/times GMT, added TZ and DST configs
+- made password required field
+- made HTML documentation
+
+version 20060219 BETA
+- changed format of "to" field in mail_contact() function to email only
+
+version 20060127 BETA
+- added check for mySQL extension
+- added version.txt to display version
+- added change log
+
+version 20051121 BETA
+- fixed conflicts between global vars and session vars when register_globals is ON
+
+version 20051101 BETA
+- changed format of config_db.php
+
+version 20051031 BETA
+- initial BETA
