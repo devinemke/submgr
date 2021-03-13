@@ -1,5 +1,5 @@
 version 3.40 2021-03-13
-- Submission Manager now on GitHub https://github.com/devinemke/submgr.git (added LICENSE + README.md)
+- Submission Manager now on GitHub @ https://github.com/devinemke/submgr.git (added LICENSE + README.md)
 - ran $_SERVER['PHP_SELF'] through htmlentities()
 - upgraded to PHPMailer 6.3.0 (2021-02-19) now that PHP >= 5.5 is required
 - removed all checks for PHP_VERSION < 5.5
