@@ -45,7 +45,7 @@ The complete [documentation](https://www.submissionmanager.net/documentation.htm
 To update your Submission Manager installation please do the following:
 
 1. Backup your existing Submission Manager directory on your web server and your Submission Manager mySQL database.
-1. Copy all of the files in the ZIP archive to your Submission Manager directory on your web server except for "config_db.php" (keep the old one).
+1. Copy all of the files in the ZIP archive to your Submission Manager directory on your web server except for **"config_db.php"** (keep the old one).
 1. Log in to Submission Manager using an admin account.
 1. Go to the "maintenance" area using the navigation drop-down on the upper right of the Submission Manager browser window.
 1. Choose "update data structure" from the list on the left and follow the on-screen instructions.
