@@ -33,7 +33,7 @@ System Requirements:
 * Web Server
 * PHP (version 5.5 or higher)
 * mySQL (version 5 or higher)
-* SMTP application (if you want the system to send email notifications)
+* SMTP (if you want the system to send email notifications)
 * Web Browser (set to accept cookies)
 
 Helpful Links:
