@@ -1,7 +1,7 @@
 ![Submission Manager](https://www.submissionmanager.net/info/logo.gif)
 
 # Submission Manager
-https://www.submissionmanager.net
+**https://www.submissionmanager.net**
 
 **Submission Manager** is an online system for accepting and managing written submissions for a magazine or press. It’s easy to use and flexible enough to work with any submission and reading process. **Submission Manager** allows you to:
 
@@ -36,7 +36,12 @@ System Requirements:
 * SMTP application (if you want the system to send email notifications)
 * Web Browser (set to accept cookies)
 
-The complete [documentation](https://www.submissionmanager.net/documentation.html) is available (jump to [installation](https://www.submissionmanager.net/documentation.html#installation_header)).
+Helpful Links:
+
+* [Live Demo](https://www.submissionmanager.net)
+* [Documentation](https://www.submissionmanager.net/documentation.html)
+* [Installation](https://www.submissionmanager.net/documentation.html#installation_header)
+* [ChangeLog](changelog.txt)
 
 ---
 
