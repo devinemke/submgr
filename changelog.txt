@@ -1,4 +1,5 @@
-version 3.40 2021-03-13
+version 3.40 2021-03-15
+- added check for $_SESSION['form_hash'] in form_hash() to surpress PHP Warning: Undefined array key
 - Submission Manager now on GitHub @ https://github.com/devinemke/submgr (added license.txt + readme.md)
 - ran $_SERVER['PHP_SELF'] through htmlentities()
 - upgraded to PHPMailer 6.3.0 (2021-02-19) now that PHP >= 5.5 is required
