@@ -4541,10 +4541,10 @@ else // if staff login
 						</table>
 						';
 
-						$contact_sm = 'Please include the following in your email:<ul><li>the name of your publication</li><li>the name/email of the person who originally registered for Submission Manager</li><li>the full public URL of your Submission Manager (if already installed)</li></ul>';
+						$contact_sm = 'The latest version of Submission Manager can always be found on <a href="https://github.com/devinemke/submgr" target="_blank"><b>GitHub</b></a>.<br>Please contact <b>' . mail_to('devin@submissionmanager.net') . '</b> for information on upgrading to the latest version.<br>Please include the following in your email:<ul><li>the name of your publication</li><li>the name/email of the person who originally registered for Submission Manager</li><li>the public URL of your Submission Manager (if already installed)</li></ul>';
 						$version_ouput = '<p>Congratulations! You are using the latest version of Submission Manager.</p>';
-						if ($version_local < $version_remote) {$version_ouput = '<p>There is a newer version of Submission Manager available.<br>Newer versions typically include new features, bug fixes and security patches.<br>Please contact <b>' . mail_to('devin@submissionmanager.net') . '</b> for information on upgrading to the latest version.</p>' . $contact_sm;}
-						if ($version_remote == '???') {$version_ouput = '<p>Submision Manager cannot currently determine if there is a newer version available.<br>Please contact <b>' . mail_to('devin@submissionmanager.net') . '</b> for information about the latest version.</p>' . $contact_sm;}
+						if ($version_local < $version_remote) {$version_ouput = '<p>There is a newer version of Submission Manager available. Newer versions typically include new features, bug fixes and security patches.</p>' . $contact_sm;}
+						if ($version_remote == '???') {$version_ouput = '<p>Submision Manager cannot currently determine if there is a newer version available.</p>' . $contact_sm;}
 						echo $version_ouput;
 					}
 
