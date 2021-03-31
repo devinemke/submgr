@@ -15,8 +15,10 @@ document.addEventListener("DOMContentLoaded", function()
 	for (i = 0; i < mail_to_links.length; i++)
 	{
 		var email = mail_to_links[i].innerHTML;
-		split1 = email.split(" [at] ");
-		split2 = split1[1].split(" [dot] ");
+		split1 = email.split("[at]");
+		split1 = split1.map(e => e.trim());
+		split2 = split1[1].split("[dot]");
+		split2 = split2.map(e => e.trim());
 		email = split1[0] + "@" + split2[0] + "." + split2[1];
 		mail_to_links[i].innerHTML = "<a href=\"mail" + "to:" + email + "\">" + email + "</a>";
 	}
