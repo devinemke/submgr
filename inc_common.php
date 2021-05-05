@@ -1785,8 +1785,8 @@ function send_mail($arg1, $arg2)
 		if ($arg2 == 'reset')
 		{
 			$app_url_reset = $app_url_slash . 'index.php?page=login&token=' . $GLOBALS['token'];
-			$subject = $config['company_name'] . ' Submission Manager account reset information';
-			$body .= 'You have reset the password for your Submission Manager account. To login to your account please follow the link below:' . "\n\n" . '<a href="' . $app_url_reset . '">' . $app_url_reset . '</a>' . "\n\n" . 'This link will expire in one hour. If you need any further help accessing your account please contact <a href="mailto:' . $config['admin_email'] . '">' . $config['admin_email'] . '</a>';
+			$subject = $config['company_name'] . ' Submission Manager password reset information';
+			$body .= 'You have reset the password for your ' . $config['company_name'] . ' Submission Manager account. To login to your account please follow the link below:' . "\n\n" . '<a href="' . $app_url_reset . '"><b>Reset Account Password</b></a>' . "\n\n" . 'This link will expire in one hour. If you need any further help accessing your account please contact <a href="mailto:' . $config['admin_email'] . '">' . $config['admin_email'] . '</a>';
 			$html_mail = true;
 		}
 
