@@ -1,6 +1,6 @@
-version 3.40 2021-05-05
+version 3.40 2021-06-18
+- upgraded to PHPMailer 6.5.0 (2021-06-16) now that PHP >= 5.5 is required
 - updated password reset copy
-- upgraded to PHPMailer 6.4.1 (2021-04-29) now that PHP >= 5.5 is required
 - if phone length > 7 then phone = ''
 - added array.map and string.trim in mail_to_link JavaScript routine to avoid line break issues with Tidy
 - added check for $_SESSION['form_hash'] in form_hash() to suppress PHP Warning: Undefined array key
