@@ -1,5 +1,5 @@
-version 3.40 2021-06-18
-- upgraded to PHPMailer 6.5.0 (2021-06-16) now that PHP >= 5.5 is required
+version 3.40 2021-06-20
+- upgraded to PHPMailer 6.5.0 (2021-06-16)
 - updated password reset copy
 - if phone length > 7 then phone = ''
 - added array.map and string.trim in mail_to_link JavaScript routine to avoid line break issues with Tidy
@@ -7,6 +7,7 @@ version 3.40 2021-06-18
 - added GitHub link to $contact_sm in /maintenance/versions/
 - Submission Manager now on GitHub @ https://github.com/devinemke/submgr (added license.txt + readme.md)
 - ran $_SERVER['PHP_SELF'] through htmlentities()
+- upgraded to PHPMailer 6.x now that PHP >= 5.5 is required
 - removed all checks for PHP_VERSION < 5.5
 - minimum PHP version is now 5.5 (updated check_version() function)
 
