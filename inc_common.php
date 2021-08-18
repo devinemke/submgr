@@ -1689,6 +1689,7 @@ function mail_setup()
 
 	require_once('PHPMailer.php');
 	require_once('SMTP.php');
+	require_once('Exception.php');
 	$mail = new PHPMailer\PHPMailer\PHPMailer;
 	$mail->CharSet = 'UTF-8';
 	if ($config['mail_method'] == 'mail') {$mail->IsMail();}

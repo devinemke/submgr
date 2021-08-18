@@ -1,5 +1,6 @@
-version 3.40 2021-06-20
-- upgraded to PHPMailer 6.5.0 (2021-06-16)
+version 3.40 2021-08-18
+- upgraded to PHPMailer 6.5.1 (2021-08-18)
+- added Exception.php to PHPMailer routine
 - updated password reset copy
 - if phone length > 7 then phone = ''
 - added array.map and string.trim in mail_to_link JavaScript routine to avoid line break issues with Tidy
