@@ -22,7 +22,7 @@ function form_reset()
 	</tr>
 	</table>
 	<input type="hidden" id="form_reset_submit_hidden" name="submit_hidden" value="reset password">
-	<input type="hidden" id="form_hash_help" name="form_hash" value="' . $GLOBALS['nonce'] . '">
+	<input type="hidden" id="form_hash_help" name="form_hash" value="' . $GLOBALS['form_hash'] . '">
 	</form>
 	';
 

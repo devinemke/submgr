@@ -467,9 +467,8 @@ else // if staff login
 
 	if ($submit == 'Go')
 	{
-		// flush session
-		$keep = array('login', 'contact');
-		foreach ($_SESSION as $key => $value) {if (!in_array($key, $keep)) {unset($_SESSION[$key]);}}
+		$keep = array('login', 'contact', 'csrf_token');
+		flush_session($keep);
 		$submodule = '';
 	}
 
@@ -560,7 +559,7 @@ else // if staff login
 		return $output;
 	}
 
-	if (!isset($_POST['row'])) {form_hash('session');} // coming from popup, otherwise $_SESSION['form_hash'] will be overwritten
+	form_hash('session');
 	if ($action_types) {$_SESSION['action_types'] = $action_types;}
 	$_REQUEST = cleanup($_REQUEST, 'strip_tags', 'stripslashes');
 	if ($module == 'submissions' || $submodule == 'insert_submission') {$enctype = ' enctype="multipart/form-data"';} else {$enctype = '';}
@@ -1975,7 +1974,7 @@ else // if staff login
 			{
 				$submodule = 'forwards';
 				$keep = array('login', 'contact', 'forwards');
-				foreach ($_SESSION as $key => $value) {if (!in_array($key, $keep)) {unset($_SESSION[$key]);}}
+				flush_session($keep);
 				$submit = 'search submissions';
 			}
 
@@ -4556,7 +4555,7 @@ else // if staff login
 	}
 
 	echo '
-	<input type="hidden" id="form_hash_login" name="form_hash" value="' . $GLOBALS['nonce'] . '">
+	<input type="hidden" id="form_hash_login" name="form_hash" value="' . $GLOBALS['form_hash'] . '">
 	</form>
 	';
 }

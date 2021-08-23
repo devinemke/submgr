@@ -975,7 +975,18 @@ function kill_session($arg = '')
 
 	session_destroy();
 
-	if ($arg == 'regenerate') {session_name('submgr'); session_start();}
+	if ($arg == 'regenerate')
+	{
+		session_name('submgr');
+		session_start();
+		$_SESSION['csrf_token'] = $GLOBALS['nonce'];
+		$GLOBALS['form_hash'] = $_SESSION['csrf_token'];
+	}
+}
+
+function flush_session($keep)
+{
+	foreach ($_SESSION as $key => $value) {if (!in_array($key, $keep)) {unset($_SESSION[$key]);}}
 }
 
 function get_payment_vars()
@@ -1145,7 +1156,7 @@ function form_main()
 	</tr>
 	</table>
 	<input type="hidden" id="form_main_submit_hidden" name="submit_hidden" value="submit">
-	<input type="hidden" id="form_hash_main" name="form_hash" value="' . $GLOBALS['nonce'] . '">
+	<input type="hidden" id="form_hash_main" name="form_hash" value="' . $GLOBALS['form_hash'] . '">
 	</form>
 	';
 }
@@ -1177,7 +1188,7 @@ function form_confirmation()
 	<p>If the above information is correct, click <button type="submit" id="form_confirmation_submit" name="submit" value="continue" class="form_button" style="margin-left: 5px;">' . $submit_value . '</button></p>
 	<p>If you wish to make changes, <a href="#" id="form_main_show"><b>click here</b></a>, update the form below, and hit <b>submit</b>.</p>
 	<input type="hidden" id="form_confirmation_submit_hidden" name="submit_hidden" value="continue">
-	<input type="hidden" id="form_hash_confirmation" name="form_hash" value="' . $GLOBALS['nonce'] . '">
+	<input type="hidden" id="form_hash_confirmation" name="form_hash" value="' . $GLOBALS['form_hash'] . '">
 	</form>
 	';
 }
@@ -1186,7 +1197,7 @@ function form_login()
 {
 	extract($GLOBALS);
 
-	if (!$submit) {form_hash('session');} // otherwise $_SESSION['form_hash'] will be overwritten when form_login() and form_main() are together
+	form_hash('session');
 	if ($notice) {echo '<div class="notice">' . $notice . '</div>';}
 	if (!isset($email)) {$email = '';}
 	if (isset($_REQUEST['email']) && $_REQUEST['email']) {$email = htmlspecialchars(trim($_REQUEST['email']));}
@@ -1213,7 +1224,7 @@ function form_login()
 	</td>
 	</tr>
 	</table>
-	<input type="hidden" id="form_hash_login" name="form_hash" value="' . $GLOBALS['nonce'] . '">
+	<input type="hidden" id="form_hash_login" name="form_hash" value="' . $GLOBALS['form_hash'] . '">
 	</form>
 	';
 }
@@ -1247,12 +1258,14 @@ function form_hash($arg)
 {
 	if ($arg == 'session')
 	{
-		$_SESSION['form_hash'] = $GLOBALS['nonce'];
+		// $_SESSION['form_hash'] = $GLOBALS['nonce'];
+		if (isset($_SESSION['csrf_token'])) {$GLOBALS['form_hash'] = $_SESSION['csrf_token'];} else {$_SESSION['csrf_token'] = $GLOBALS['nonce']; $GLOBALS['form_hash'] = $_SESSION['csrf_token'];}
 	}
 
 	if ($arg == 'validate')
 	{
-		if (!isset($_POST['form_hash']) || (isset($_POST['form_hash']) && isset($_SESSION['form_hash']) && $_POST['form_hash'] != $_SESSION['form_hash'])) {kill_session('regenerate'); $_SESSION['form_hash'] = $GLOBALS['nonce']; exit_error('form_hash');} else {$_SESSION['form_hash'] = $GLOBALS['nonce'];}
+		// if (!isset($_POST['form_hash']) || (isset($_POST['form_hash']) && isset($_SESSION['form_hash']) && $_POST['form_hash'] != $_SESSION['form_hash'])) {kill_session('regenerate'); $_SESSION['form_hash'] = $GLOBALS['nonce']; exit_error('form_hash');} else {$_SESSION['form_hash'] = $GLOBALS['nonce'];}
+		if (!isset($_POST['form_hash']) || (isset($_POST['form_hash']) && isset($_SESSION['csrf_token']) && $_POST['form_hash'] != $_SESSION['csrf_token'])) {kill_session('regenerate'); exit_error('csrf_token');}
 	}
 }
 

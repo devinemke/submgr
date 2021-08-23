@@ -1,4 +1,5 @@
-version 3.40 2021-08-18
+version 3.40 2021-08-22
+- refactoring of form_hash() to use per-session rather than per-request CSRF tokens
 - upgraded to PHPMailer 6.5.1 (2021-08-18)
 - added Exception.php to PHPMailer routine
 - updated password reset copy

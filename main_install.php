@@ -81,7 +81,7 @@ function form_install($step)
 		';
 	}
 
-	if (in_array($step, $form_steps)) {echo '<input type="hidden" id="form_hash_install" name="form_hash" value="' . $GLOBALS['nonce'] . '"></form>';}
+	if (in_array($step, $form_steps)) {echo '<input type="hidden" id="form_hash_install" name="form_hash" value="' . $GLOBALS['form_hash'] . '"></form>';}
 
 	if ($step == 5)
 	{
@@ -160,7 +160,6 @@ if ($step == 3)
 	$name = strip_tags($name);
 	$name = stripslashes($name);
 	$_SESSION['config_db']['name'] = $name;
-	extract($_SESSION);
 
 	if ($name == '')
 	{
@@ -177,9 +176,8 @@ if ($step == 3)
 
 		if ($GLOBALS['db_connect'])
 		{
-			extract($_SESSION);
-			foreach ($config_db as $key => $value) {$config_db_keys[] = '{' . $key . '}';}
-			$config_db_string = str_replace($config_db_keys, $config_db_addslashes, $config_db_string);
+			foreach ($_SESSION['config_db'] as $key => $value) {$config_db_keys[] = '{' . $key . '}';}
+			$config_db_string = str_replace($config_db_keys, $_SESSION['config_db_addslashes'], $config_db_string);
 			$_SESSION['config_db_string'] = $config_db_string;
 			@file_put_contents('config_db.php', $config_db_string) or exit_error('cannot open config_db.php');
 			$step = 3;

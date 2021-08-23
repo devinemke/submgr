@@ -59,11 +59,7 @@ if (isset($_GET['token']) && $_GET['token'])
 {
 	$token = trim($_GET['token']);
 
-	if (strlen($token) != 40 || !ctype_alnum($token))
-	{
-		kill_session();
-		exit_error('invalid reset token');
-	}
+	if (strlen($token) != 40 || !ctype_alnum($token)) {kill_session('regenerate'); exit_error('invalid reset token');} // session needed for form_hash()
 
 	$sql = "SELECT * FROM resets WHERE token = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $token) . "' ORDER BY date_time DESC LIMIT 1";
 	$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('SELECT reset');
@@ -73,7 +69,7 @@ if (isset($_GET['token']) && $_GET['token'])
 		if ($gm_timestamp - strtotime($row['date_time'] . ' GMT') > 3600)
 		{
 			$error_output = 'This account password reset has expired. For security, password resets expire after one hour. You may reset your password again <a href="' . $app_url_slash . 'index.php?page=help">here</a>. If you need additional help please contact ' . mail_to($config['admin_email']) . '.';
-			kill_session();
+			kill_session('regenerate'); // session needed for form_hash()
 			exit_error();
 		}
 		else
@@ -85,7 +81,7 @@ if (isset($_GET['token']) && $_GET['token'])
 	}
 	else
 	{
-		kill_session();
+		kill_session('regenerate'); // session needed for form_hash()
 		exit_error('reset token not found');
 	}
 }
@@ -117,7 +113,7 @@ if (isset($_SESSION['login']) && $_SESSION['login'] && $module == 'update' && $s
 	extract($_SESSION['post']);
 	if ($config['send_mail_staff']) {send_mail('staff', 'updates');}
 	$_POST = $_SESSION['post'];
-	$_POST['form_hash'] = $_SESSION['form_hash']; // otherwise form_hash('validate') below will fail
+	$_POST['form_hash'] = $GLOBALS['form_hash']; // otherwise form_hash('validate') below will fail
 	$login_email = $email; $login_password = $password; // for login routine below
 	unset($title); // to hide the last submission from display()
 	$submit = 'login';
@@ -128,7 +124,7 @@ if (isset($_GET['first_submission']) && isset($_SESSION['post']['email']) && iss
 {
 	$_POST['login_email'] = $_SESSION['post']['email'];
 	$_POST['login_password'] = $_SESSION['post']['password'];
-	$_POST['form_hash'] = $_SESSION['form_hash']; // otherwise form_hash('validate') below will fail
+	$_POST['form_hash'] = $GLOBALS['form_hash']; // otherwise form_hash('validate') below will fail
 	$submit = 'login';
 }
 
@@ -136,8 +132,8 @@ if ($submit == 'login')
 {
 	form_hash('validate');
 	if (isset($_SESSION['goto_config'])) {$goto_config = 'Y';} // for install
-	$keep = array('form_hash');
-	foreach ($_SESSION as $key => $value) {if (!in_array($key, $keep)) {unset($_SESSION[$key]);}}
+	$keep = array('csrf_token');
+	flush_session($keep);
 	$_SESSION['login'] = false;
 
 	$_POST = cleanup($_POST, 'strip_tags', 'stripslashes');
@@ -259,7 +255,7 @@ elseif (isset($_SESSION['contact_reset']))
 		<tr><td>&nbsp;</td><td><input type="submit" id="form_new_password_submit" name="submit" value="submit" class="form_button" style="margin-top: 10px;"></tr>
 		</table>
 		<input type="hidden" id="form_new_password_submit_hidden" name="submit_hidden" value="submit">
-		<input type="hidden" id="form_hash_new_password" name="form_hash" value="' . $GLOBALS['nonce'] . '">
+		<input type="hidden" id="form_hash_new_password" name="form_hash" value="' . $GLOBALS['form_hash'] . '">
 		</form>
 		';
 

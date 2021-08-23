@@ -195,7 +195,7 @@ if ($page == 'update')
 	</td>
 	</tr>
 	</table>
-	<input type="hidden" id="form_hash_popup" name="form_hash" value="' . $GLOBALS['nonce'] . '">
+	<input type="hidden" id="form_hash_popup" name="form_hash" value="' . $GLOBALS['form_hash'] . '">
 	</form>
 	';
 }
