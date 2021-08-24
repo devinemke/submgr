@@ -1042,6 +1042,7 @@ function form_main()
 {
 	if (!ini_get('file_uploads')) {exit_error('Your web server is not configured to accept file uploads.');}
 	extract($GLOBALS);
+	form_hash('session');
 
 	function form_cc()
 	{
@@ -1164,6 +1165,7 @@ function form_main()
 function form_confirmation()
 {
 	extract($GLOBALS);
+	form_hash('session');
 
 	$submit_value = 'continue';
 	if ($page == 'login' && $module == 'update') {$submit_value = 'save changes';}
@@ -1196,8 +1198,8 @@ function form_confirmation()
 function form_login()
 {
 	extract($GLOBALS);
-
 	form_hash('session');
+
 	if ($notice) {echo '<div class="notice">' . $notice . '</div>';}
 	if (!isset($email)) {$email = '';}
 	if (isset($_REQUEST['email']) && $_REQUEST['email']) {$email = htmlspecialchars(trim($_REQUEST['email']));}

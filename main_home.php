@@ -11,7 +11,6 @@ if ($config['system_online'] == 'no submissions')
 
 if (!$submit)
 {
-	form_hash('session');
 	echo replace_placeholders($config['instruction_text']);
 	echo '<div style="margin-left: 100px;">';
 	form_main();

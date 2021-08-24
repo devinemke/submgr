@@ -300,7 +300,6 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 
 		if (!$submit)
 		{
-			form_hash('session');
 			echo '<p>Please update the information below and press the <b>submit</b> button when you are done.</p>';
 			form_main();
 		}
@@ -359,7 +358,6 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 
 		if (!$submit)
 		{
-			form_hash('session');
 			address_check();
 
 			// submission limit check
@@ -425,7 +423,6 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 
 		if (!$submit)
 		{
-			form_hash('session');
 			address_check();
 			echo display('html') . '<br>To pay for your submission please fill out the form below and then hit <b>submit</b>.<br><br>';
 			form_main();
