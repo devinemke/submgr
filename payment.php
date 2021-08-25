@@ -111,7 +111,8 @@ if ($ipn)
 else
 {
 	$app_url_header = $app_url_slash;
-	$app_url_header .= 'index.php?result_code=' . $result_code;
+	$app_url_header .= 'index.php?result_code=' . urlencode($result_code);
+	if (isset($_REQUEST['email']) && $_REQUEST['email']) {$app_url_header .= '&email=' . urlencode($_REQUEST['email']);}
 	header('location: ' . $app_url_header);
 }
 
