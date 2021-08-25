@@ -1267,7 +1267,7 @@ function form_hash($arg)
 	if ($arg == 'validate')
 	{
 		// if (!isset($_POST['form_hash']) || (isset($_POST['form_hash']) && isset($_SESSION['form_hash']) && $_POST['form_hash'] != $_SESSION['form_hash'])) {kill_session('regenerate'); $_SESSION['form_hash'] = $GLOBALS['nonce']; exit_error('form_hash');} else {$_SESSION['form_hash'] = $GLOBALS['nonce'];}
-		if (!isset($_POST['form_hash']) || (isset($_POST['form_hash']) && isset($_SESSION['csrf_token']) && $_POST['form_hash'] != $_SESSION['csrf_token'])) {kill_session('regenerate'); exit_error('csrf_token');}
+		if (!isset($_POST['form_hash']) || !isset($_SESSION['csrf_token']) || (isset($_POST['form_hash']) && isset($_SESSION['csrf_token']) && $_POST['form_hash'] != $_SESSION['csrf_token'])) {kill_session('regenerate'); exit_error('csrf_token');} else {$GLOBALS['form_hash'] = $_SESSION['csrf_token'];}
 	}
 }
 

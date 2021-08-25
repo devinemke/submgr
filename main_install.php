@@ -85,7 +85,7 @@ function form_install($step)
 
 	if ($step == 5)
 	{
-		$submit = ''; // so form_hash('session') will run
+		// $submit = ''; // otherwise form_hash('session') will not run | NO LONGER NEEDED since form_login() always runs form_hash('session')
 		form_login();
 	}
 }

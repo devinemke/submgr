@@ -1,4 +1,8 @@
-version 3.40 2021-08-22
+version 3.40 2021-08-25
+- fixed bug where $GLOBALS['form_hash'] was not set for $_GET['first_submission']
+- form_hash() now always sets $GLOBALS['form_hash'] = $_SESSION['csrf_token'] (for both "session" and "validate")
+- added isset() check for $_SESSION['csrf_token'] in form_hash()
+- moved form_hash('session') calls to form functions
 - refactoring of form_hash() to use per-session rather than per-request CSRF tokens
 - upgraded to PHPMailer 6.5.1 (2021-08-18)
 - added Exception.php to PHPMailer routine
