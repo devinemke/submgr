@@ -4597,7 +4597,7 @@ if ($GLOBALS['js_object'])
 					var comments = document.getElementById("comments_" + submission_id);
 					comments.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["comments"], comments, event, 400); });
 					comments.addEventListener("mouseout", function(event) { tooltip_hide(); });
-					comments.addEventListener("click", function(event) { if (!lightbox("on","popup.php?page=view&field=comments_submitter&submission_id=" + submission_id,400,400,400,100)) {event.preventDefault();} });
+					comments.addEventListener("click", function(event) { if (!lightbox("on","popup.php?page=view&field=comments_submitter&submission_id=" + submission_id,500,400,400,100)) {event.preventDefault();} });
 				}
 
 				if (submissions[submission_id]["last_action_message"])
@@ -4605,7 +4605,7 @@ if ($GLOBALS['js_object'])
 					var last_action_message = document.getElementById("last_action_message_" + submission_id);
 					last_action_message.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["last_action_message"], last_action_message, event, 400); });
 					last_action_message.addEventListener("mouseout", function(event) { tooltip_hide(); });
-					last_action_message.addEventListener("click", function(event) { if (!lightbox("on","popup.php?page=view&field=comments_staff&submission_id=" + submission_id,400,400,400,100)) {event.preventDefault();} });
+					last_action_message.addEventListener("click", function(event) { if (!lightbox("on","popup.php?page=view&field=comments_staff&submission_id=" + submission_id,500,400,400,100)) {event.preventDefault();} });
 				}
 
 				if (submissions[submission_id]["withdraw"])
@@ -4646,7 +4646,7 @@ if ($GLOBALS['js_object'])
 					var comments = document.getElementById("comments_" + submission_id);
 					comments.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["comments"], comments, event, 400); });
 					comments.addEventListener("mouseout", function(event) { tooltip_hide(); });
-					comments.addEventListener("click", function(event) { if (!lightbox("on","popup.php?page=view&table=submissions&id_name=submission_id&id_value=" + submission_id + "&field=comments",400,400,400,100)) {event.preventDefault();} });
+					comments.addEventListener("click", function(event) { if (!lightbox("on","popup.php?page=view&table=submissions&id_name=submission_id&id_value=" + submission_id + "&field=comments",500,400,400,100)) {event.preventDefault();} });
 				}
 
 				if (submissions[submission_id]["notes"])
@@ -4654,7 +4654,7 @@ if ($GLOBALS['js_object'])
 					var notes = document.getElementById("notes_" + submission_id);
 					notes.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["notes"], notes, event, 400); });
 					notes.addEventListener("mouseout", function(event) { tooltip_hide(); });
-					notes.addEventListener("click", function(event) { if (!lightbox("on","popup.php?page=view&table=submissions&id_name=submission_id&id_value=" + submission_id + "&field=notes",400,400,400,100)) {event.preventDefault();} });
+					notes.addEventListener("click", function(event) { if (!lightbox("on","popup.php?page=view&table=submissions&id_name=submission_id&id_value=" + submission_id + "&field=notes",500,400,400,100)) {event.preventDefault();} });
 				}
 
 				if (submissions[submission_id]["tag"])
@@ -4669,7 +4669,7 @@ if ($GLOBALS['js_object'])
 				if (in_array($_SESSION['contact']['access'], $access_grouping['admin_editor']) && $single_display)
 				{
 					echo '
-					document.getElementById("update_submission_" + submission_id).addEventListener("click", function(event) { if (!lightbox("on","popup.php?page=update&submission_id=" + submission_id,600,450,300,100)) {event.preventDefault();} });
+					document.getElementById("update_submission_" + submission_id).addEventListener("click", function(event) { if (!lightbox("on","popup.php?page=update&submission_id=" + submission_id,600,500,300,100)) {event.preventDefault();} });
 					document.getElementById("delete_submission_" + submission_id).addEventListener("click", function(event) { if (!confirm_prompt("delete", "submission", submission_id)) {event.preventDefault();} });
 					';
 				}
