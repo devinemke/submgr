@@ -133,7 +133,7 @@ if ($submit == 'login')
 {
 	form_hash('validate');
 	if (isset($_SESSION['goto_config'])) {$goto_config = 'Y';} // for install
-	$keep = array('csrf_token');
+	$keep = array('csrf_token', 'goto_config');
 	flush_session($keep);
 	$_SESSION['login'] = false;
 
