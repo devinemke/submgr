@@ -4527,11 +4527,15 @@ else // if staff login
 					{
 						if (!isset($version_local) || !isset($version_remote)) {check_version('SubMgr', true);}
 
+						// $version_remote_url = 'https://www.submissionmanager.net/changelog.txt';
+						$version_remote_url = 'https://github.com/devinemke/submgr/blob/main/changelog.txt';
+						if ($version_remote != '???') {$version_remote_display = '<a href="' . $version_remote_url . '" target="_blank">' . $version_remote . '</a>';} else {$version_remote_display = $version_remote;}
+
 						echo '
 						<table class="padding_lr_5">
 						<tr><td colspan="2"><b>Versions</b></td></tr>
 						<tr class="foreground"><td>Submission Manager (installed)</td><td><a href="#" id="popup_version_sm"><b>' . $version_local . '</b></a></td></tr>
-						<tr class="foreground"><td>Submission Manager (latest)</td><td><b>' . $version_remote . '</b></td></tr>
+						<tr class="foreground"><td>Submission Manager (latest)</td><td><b>' . $version_remote_display . '</b></td></tr>
 						<tr class="foreground"><td>PHP</td><td><a href="#" id="popup_version_php"><b>' . PHP_VERSION . '</b></a></td></tr>
 						<tr class="foreground"><td>mySQL</td><td><b>' . $version_mysql . '</b></td></tr>
 						</table>
