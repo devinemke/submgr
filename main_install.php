@@ -13,11 +13,11 @@ $copy = array(
 
 $config_db_string = '<?php
 $config_db = array(
-\'host\' => \'{host}\',
-\'username\' => \'{username}\',
-\'password\' => \'{password}\',
-\'name\' => \'{name}\',
-\'port\' => \'{port}\'
+\'host\' => \'[host]\',
+\'username\' => \'[username]\',
+\'password\' => \'[password]\',
+\'name\' => \'[name]\',
+\'port\' => \'[port]\'
 );
 
 define(\'INSTALLED\', false);
@@ -176,7 +176,7 @@ if ($step == 3)
 
 		if ($GLOBALS['db_connect'])
 		{
-			foreach ($_SESSION['config_db'] as $key => $value) {$config_db_keys[] = '{' . $key . '}';}
+			foreach ($_SESSION['config_db'] as $key => $value) {$config_db_keys[] = '[' . $key . ']';}
 			$config_db_string = str_replace($config_db_keys, $_SESSION['config_db_addslashes'], $config_db_string);
 			$_SESSION['config_db_string'] = $config_db_string;
 			@file_put_contents('config_db.php', $config_db_string) or exit_error('cannot open config_db.php');
