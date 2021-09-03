@@ -586,7 +586,8 @@ else // if staff login
 		'search_receiver_id',
 		'search_date_order',
 		'search_genre_id',
-		'search_paid_only'
+		// 'search_paid_only',
+		'search_payment'
 		);
 		foreach ($search_fields as $value)
 		{
@@ -634,7 +635,9 @@ else // if staff login
 
 				if ($search_genre_id == 'all no genre') {$sql2 .= ' AND submissions.genre_id IS NULL';}
 				if (is_numeric($search_genre_id)) {$sql2 .= ' AND submissions.genre_id = ' . mysqli_real_escape_string($GLOBALS['db_connect'], $search_genre_id);}
-				if ($search_paid_only) {$sql2 .= ' AND submissions.date_paid IS NOT NULL';}
+				// if ($search_paid_only) {$sql2 .= ' AND submissions.date_paid IS NOT NULL';}
+				if ($search_payment == 'paid') {$sql2 .= ' AND submissions.date_paid IS NOT NULL';}
+				if ($search_payment == 'unpaid') {$sql2 .= ' AND submissions.date_paid IS NULL';}
 
 				// look for search_keyword only if it does not contain sid: or cid:
 				if ($search_keyword && strpos($search_keyword, 'sid:') === false && strpos($search_keyword, 'cid:') === false)
@@ -1817,11 +1820,40 @@ else // if staff login
 								</td>
 								<td style="background-color: ' . $config['color_background'] . ';">&nbsp;</td>
 							</tr>
+							';
+
+							if ($config['show_date_paid'])
+							{
+								$payment_array = array('all', 'paid', 'unpaid');
+
+								echo '
+								<tr>
+								<td class="row_left"><label for="search_payment" id="label_search_payment">payment:</label></td>
+								<td>
+								<select id="search_payment" name="search_payment" style="width: 150px;">
+								';
+
+								foreach ($payment_array as $value)
+								{
+									echo '<option value="' . $value . '"';
+									if (isset($_SESSION['criteria']['search_payment']) && $_SESSION['criteria']['search_payment'] == $value) {echo ' selected';}
+									echo '>' . $value . '</option>';
+								}
+
+								echo '
+								</select>
+								</td>
+								<td style="background-color: ' . $config['color_background'] . ';">&nbsp;</td>
+								</tr>
+								';
+							}
+
+							echo '
 							<tr>
 								<td>
 								';
 
-								if ($config['show_date_paid']) {echo '<input type="checkbox" id="search_paid_only" name="search_paid_only" value="Y"'; if (isset($_SESSION['criteria']['search_paid_only']) && $_SESSION['criteria']['search_paid_only']) {echo ' checked';} echo '> <label for="search_paid_only" id="label_search_paid_only">paid only</label>';} else {echo '&nbsp;';}
+								// if ($config['show_date_paid']) {echo '<input type="checkbox" id="search_paid_only" name="search_paid_only" value="Y"'; if (isset($_SESSION['criteria']['search_paid_only']) && $_SESSION['criteria']['search_paid_only']) {echo ' checked';} echo '> <label for="search_paid_only" id="label_search_paid_only">paid only</label>';} else {echo '&nbsp;';}
 
 								// "search_genre_id" must be set in "criteria" so that "back to list" has a valid search query
 								$extra = '&nbsp;';
