@@ -1,4 +1,5 @@
-version 3.40 2021-09-02
+version 3.40 2021-09-03
+- removed config_db.php + added config_db_default.php (updated readme.md with new update instructions)
 - fixed bug where goto_config was not set if login failed following install
 - changed config_db.php placeholder brackets from curly to square (to be consistent with other placeholders)
 - added $version_remote link to GitHub changelog.txt in /maintenance/versions/

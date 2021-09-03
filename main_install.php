@@ -11,17 +11,7 @@ $copy = array(
 5 => 'The final step in the <b>Submission Manager</b> installation is to configure some of the program&rsquo;s basic settings. Please verify your account login info below and you will be taken to the main configuration page.'
 );
 
-$config_db_string = '<?php
-$config_db = array(
-\'host\' => \'[host]\',
-\'username\' => \'[username]\',
-\'password\' => \'[password]\',
-\'name\' => \'[name]\',
-\'port\' => \'[port]\'
-);
-
-define(\'INSTALLED\', false);
-?>';
+$config_db_string = file_get_contents('config_db_default.php');
 
 function form_install($step)
 {

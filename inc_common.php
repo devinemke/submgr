@@ -41,7 +41,7 @@ define('TEST_MAIL', false);
 
 if (!$session_start) {$display_login = false; exit_error('session_start failed');}
 if (file_exists('config_defaults.php')) {include('config_defaults.php'); $config = $config_defaults;} else {$display_login = false; exit_error('missing config_defaults.php');}
-if (file_exists('config_db.php')) {include('config_db.php');} else {$display_login = false; exit_error('missing config_db.php');}
+if (file_exists('config_db.php')) {include('config_db.php');} elseif (file_exists('config_db_default.php')) {include('config_db_default.php');} else {$display_login = false; exit_error('missing config_db.php');}
 if (file_exists('db_schema.php')) {include('db_schema.php');} else {$display_login = false; exit_error('missing db_schema.php');}
 
 $fields = array(
