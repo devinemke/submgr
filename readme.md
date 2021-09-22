@@ -3,7 +3,7 @@
 # Submission Manager
 **https://www.submissionmanager.net**
 
-**Submission Manager** is an online system for accepting and managing written submissions for a magazine or press. It’s easy to use and flexible enough to work with any submission and reading process. **Submission Manager** allows you to:
+**Submission Manager** is an online system for accepting and managing written submissions for magazines and presses. It’s easy to use and flexible enough to work with any submission and reading process. **Submission Manager** allows you to:
 
 * accept or reject submissions individually or en masse through your web site
 * easily manage the genres that you accept
