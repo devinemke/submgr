@@ -1,4 +1,6 @@
-version 3.40 2021-09-03
+version 3.40 2021-09-29
+- fixed bug in /maintenance/update data structure/ with integer type check (mySQL >= 8 deprecated parentheses in integer types)
+- fixed bug in /maintenance/update data structure/ with database UTF-8 check (fuzzy check for "utf8" in character_set_database)
 - changed search_paid_only checkbox to search_payment select box at top of submissions page (when $config['show_date_paid'] is set)
 - removed config_db.php + added config_db_default.php (updated readme.md with new update instructions)
 - fixed bug where goto_config was not set if login failed following install

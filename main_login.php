@@ -4300,7 +4300,7 @@ else // if staff login
 							$sql = 'SHOW VARIABLES LIKE "%database%"';
 							$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: SHOW VARIABLES');
 							while ($row = mysqli_fetch_assoc($result)) {$show_varibles[$row['Variable_name']] = $row['Value'];}
-							if ($show_varibles['character_set_database'] != 'utf8' || $show_varibles['collation_database'] != 'utf8_unicode_ci')
+							if (strpos($show_varibles['character_set_database'], 'utf8') === false || $show_varibles['collation_database'] != 'utf8_unicode_ci')
 							{
 								$sql = 'ALTER DATABASE `' . $config_db['name'] . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
 								$result = @mysqli_query($GLOBALS['db_connect'], $sql);
@@ -4409,7 +4409,9 @@ else // if staff login
 								foreach ($value['fields'] as $sub_key => $sub_value)
 								{
 									$needs = array();
-									if (strtolower($sub_value['type']) != strtolower($describe[$key][$sub_key]['Type'])) {$needs[] = 'type';}
+									// mySQL >= 8 deprecated parentheses in integer types
+									if (preg_match('~\(.*\)~', $describe[$key][$sub_key]['Type'])) {$type_compare = $sub_value['type'];} else {$type_compare = preg_replace('~\(.*\)~', '', $sub_value['type']);}
+									if (strtolower($type_compare) != strtolower($describe[$key][$sub_key]['Type'])) {$needs[] = 'type';}
 									if ($describe[$key][$sub_key]['Collation'] && $describe[$key][$sub_key]['Collation'] != 'utf8_unicode_ci') {$needs[] = 'utf8';}
 									if ($needs)
 									{
