@@ -106,7 +106,7 @@ if ($page == 'update')
 		<td class="row_left">' . $key_display . '</td>
 		';
 
-		$value = htmlspecialchars($value);
+		$value = htmlspecialchars((string) $value);
 		$enum_array = array();
 		$type = 'text';
 		$extra = '';
@@ -139,7 +139,7 @@ if ($page == 'update')
 			if ($key == 'ext') {$extra .= ' maxlength="10"';}
 			if ($_SESSION['table'] == 'submissions' && $key == 'writer' && ($_SESSION['groups'][$_SESSION['contact_access']]['blind'] || (isset($_SESSION['genres']['all'][$row['genre_id']]) && $_SESSION['genres']['all'][$row['genre_id']]['blind'])))
 			{
-				$value = 'blind groups cannot see/edit writer';
+				$value = 'blind groups/genres cannot see/edit writer';
 				$extra .= ' disabled';
 				$login_required_fields['submissions'][] = $key; // to prevent NULL link
 			}
@@ -150,7 +150,7 @@ if ($page == 'update')
 		{
 			if ($_SESSION['table'] == 'submissions' && $key == 'comments' && ($_SESSION['groups'][$_SESSION['contact_access']]['blind'] || (isset($_SESSION['genres']['all'][$row['genre_id']]) && $_SESSION['genres']['all'][$row['genre_id']]['blind'])))
 			{
-				$value = 'blind groups cannot see/edit comments';
+				$value = 'blind groups/genres cannot see/edit comments';
 				$extra .= ' disabled';
 				$login_required_fields['submissions'][] = $key; // to prevent NULL link
 			}

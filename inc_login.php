@@ -1402,6 +1402,7 @@ if (isset($_SESSION['contact']))
 	}
 	else
 	{
+		$_SESSION['contact'] = array_map('strval', $_SESSION['contact']);
 		$_SESSION['contact_display'] = array_map('htmlspecialchars', $_SESSION['contact']);
 		extract($_SESSION['contact_display']);
 	}

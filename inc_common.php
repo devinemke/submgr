@@ -478,7 +478,7 @@ if ($GLOBALS['db_connect'])
 	extract($config);
 
 	$app_url_slash = $app_url;
-	if (substr($app_url_slash, -1) != '/') {$app_url_slash .= '/';}
+	if (substr((string) $app_url_slash, -1) != '/') {$app_url_slash .= '/';}
 
 	// required config settings must be set
 	if (!isset($post_config)) {$config = check_config($config);}
@@ -1282,6 +1282,7 @@ function cleanup()
 	{
 		if (!is_array($value))
 		{
+			$value = (string) $value;
 			if (strpos($key, 'password') === false && $key != 'form_hash')
 			{
 				$value = trim($value);

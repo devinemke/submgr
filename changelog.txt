@@ -1,4 +1,5 @@
-version 3.40 2021-11-29
+version 3.40 2021-12-02
+- various null -> string type casting to suppress deprecation warnings in PHP >= 8.1 (using (string) + strval())
 - upgraded to PHPMailer 6.5.3 (2021-11-25)
 - fixed bug in /maintenance/update data structure/ with integer type check (mySQL >= 8 deprecated parentheses in integer types)
 - fixed bug in /maintenance/update data structure/ with database UTF-8 check (fuzzy check for "utf8" in character_set_database)

@@ -239,6 +239,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 				$file_object = '';
 				$withdraw_object = '';
 
+				$value = array_map('strval', $value);
 				$value = array_map('htmlspecialchars', $value);
 				extract($value);
 				$class = 'submission';
@@ -2396,6 +2397,7 @@ else // if staff login
 
 				foreach ($contacts as $value)
 				{
+					$value = array_map('strval', $value);
 					$value = array_map('htmlspecialchars', $value);
 					if (isset($value[$search_field]) && ($search_field == 'first_name' || $search_field == 'last_name')) {$value[$search_field] = '<u>' . $value[$search_field] . '</u>';}
 					extract($value);
@@ -2520,7 +2522,7 @@ else // if staff login
 
 					foreach ($contact as $key => $value)
 					{
-						$value = htmlspecialchars($value);
+						$value = htmlspecialchars((string) $value);
 
 						$type = 'text';
 						$maxlength = 50;
@@ -3630,7 +3632,7 @@ else // if staff login
 
 						foreach ($config_array_sorted as $key => $value)
 						{
-							$value = htmlspecialchars($value);
+							$value = htmlspecialchars((string) $value);
 
 							$extra1 = '';
 							$extra2 = '';
@@ -3692,6 +3694,7 @@ else // if staff login
 
 						foreach ($action_types_array as $key => $value)
 						{
+							$value = array_map('strval', $value);
 							$value = array_map('htmlspecialchars', $value);
 
 							foreach ($value as $field_name => $field_value)
@@ -3791,6 +3794,7 @@ else // if staff login
 
 						foreach ($groups as $key => $value)
 						{
+							$value = array_map('strval', $value);
 							$value = array_map('htmlspecialchars', $value);
 							extract($value);
 							$allowed_forwards_array = explode(',', $allowed_forwards);
@@ -3851,6 +3855,7 @@ else // if staff login
 
 						foreach ($genres['all'] as $value)
 						{
+							$value = array_map('strval', $value);
 							$value = array_map('htmlspecialchars', $value);
 							extract($value);
 
