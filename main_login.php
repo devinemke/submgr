@@ -4041,6 +4041,7 @@ else // if staff login
 		'export' => 'export data',
 		'backup' => 'backup data',
 		'purge' => 'purge data',
+		'test_mail' => 'test mail',
 		'update_structure' => 'update data structure',
 		'versions' => 'versions'
 		);
@@ -4258,6 +4259,97 @@ else // if staff login
 						if ($deletes['temp_files']) {echo '<div class="notice" style="font-style: italic;">' . $deletes['temp_files'] . ' file(s) deleted</div>';}
 						if ($deletes['resets']) {echo '<div class="notice" style="font-style: italic;">' . $deletes['resets'] . ' resets(s) deleted</div>';}
 						if ($deletes['truncate_resets']) {echo '<div class="notice" style="font-style: italic;">TRUNCATE resets</div>';}
+					}
+
+					if ($submodule == 'test_mail')
+					{
+						echo '
+						<p>This function will test mail settings.</p>
+						<table class="padding_lr_5">
+						<tr style="font-weight: bold; text-decoration: underline;">
+						<td style="text-align: right;">Name:</td>
+						<td>Value:</td>
+						<td>Description:</td>
+						</tr>
+						'
+						;
+
+						foreach ($config as $key => $value)
+						{
+							if ($key == 'mail_method' || strpos($key, 'smtp') !== false) {$test_mail[$key] = $value;}
+						}
+
+						$test_mail['from_name'] = $config['company_name'];
+						$test_mail['from_email'] = $config['general_dnr_email'];
+						$test_mail['to_email'] = '';
+
+						if ($submit == 'test mail')
+						{
+							if (!isset($_POST['test_mail']['smtp_auth'])) {$_POST['test_mail']['smtp_auth'] = '';}
+							$_POST['test_mail'] = cleanup($_POST['test_mail'], 'strip_tags', 'stripslashes');
+							foreach ($test_mail as $key => $value) {$test_mail[$key] = $_POST['test_mail'][$key];}
+						}
+
+						foreach ($test_mail as $key => $value)
+						{
+							$value = htmlspecialchars((string) $value);
+							$description = '';
+							$input = '<input type="text" id="test_mail_' . $key . '" name="test_mail[' . $key . ']" value="' . $value . '">';
+							if (isset($defaults['config'][$key]) && strpos($defaults['config'][$key]['type'], 'select|') !== false)
+							{
+								$select = array();
+								$explode = explode('|', $defaults['config'][$key]['type']);
+								$explode2 = explode(',', $explode[1]);
+								foreach ($explode2 as $sub_value) {$select[$sub_value] = $sub_value;}
+								$input = '<select id="test_mail_' . $key . '" name="test_mail[' . $key . ']">';
+								foreach ($select as $sub_key => $sub_value)
+								{
+									if ($sub_value == 'NULL') {$sub_key_display = ''; $sub_value_display = '&nbsp;';} else {$sub_key_display = htmlspecialchars($sub_key); $sub_value_display = htmlspecialchars($sub_value);}
+									$input .= '<option value="' . $sub_key_display . '"';
+									if ($sub_key == $value) {$input .= ' selected';}
+									$input .= '>' . $sub_value_display . '</option>' . "\n";
+								}
+								$input .= '</select>';
+							}
+							if (isset($defaults['config'][$key]) && $defaults['config'][$key]['type'] == 'checkbox') {$input = '<input type="checkbox" id="test_mail_' . $key . '" name="test_mail[' . $key . ']" value="Y"'; if ($value) {$input .= ' checked';} $input .= ' >';}
+							if (isset($defaults['config'][$key]['description'])) {$description = $defaults['config'][$key]['description'];}
+							$key_display = '<label for="test_mail_' . $key . '" id="label_test_mail_' . $key . '">' . $key . ':</label>';
+
+							echo '
+							<tr>
+							<td class="row_left">' . $key_display . '</td>
+							<td>' . $input . '</td>
+							<td>' . $description . '</td>
+							</tr>
+							';
+
+							if ($key == 'smtp_password') {echo '<tr><td colspan="3">&nbsp;</td></tr>';}
+						}
+
+						echo '
+						<tr>
+						<td>&nbsp;</td>
+						<td colspan="2"><br><input type="submit" id="submit_test_mail" name="submit" value="test mail" class="form_button" style="width: 100px;"> <input type="hidden" id="submit_test_mail_hidden" name="submit_hidden" value="test mail"></td>
+						</tr>
+						</table>
+						<br>
+						';
+
+						if ($submit == 'test mail')
+						{
+							echo '<div style="font-family: monospace; font-weight: bold; white-space: nowrap;">';
+							$test_from = 'test mail from ' . $test_mail['from_name'] . ' Submission Manager using ' . strtoupper($test_mail['mail_method']);
+							$config = $test_mail; // needed for mail_setup()
+							$mail = mail_setup();
+							$mail->SMTPDebug = 2;
+							$mail->Debugoutput = 'html';
+							$mail->SetFrom($test_mail['from_email'], $test_mail['from_name']);
+							$mail->AddAddress($test_mail['to_email']);
+							$mail->Subject = $test_from;
+							$mail->Body = $test_from;
+							if ($mail->Send()) {echo 'Message Sent';} else {echo 'Mailer Error: ' . $mail->ErrorInfo;}
+							echo '</div>';
+						}
 					}
 
 					if ($submodule == 'update_structure')

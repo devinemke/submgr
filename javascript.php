@@ -659,6 +659,7 @@ if ($continue)
 				if (submit_clicked == "insert sample data") {disable_submit("submit_insert_sample_data");}
 				if (submit_clicked == "delete sample data") {disable_submit("submit_delete_sample_data");}
 				if (submit_clicked == "purge") {disable_submit("submit_purge");}
+				if (submit_clicked == "test mail") {disable_submit("submit_test_mail");}
 				if (submit_clicked == "update data structure") {disable_submit("submit_update_data_structure");}
 			}
 		}
