@@ -96,7 +96,7 @@ a:hover
 <div style="text-align: center;">
 <div style="font-size: 25pt; font-weight: bold;">Submission Manager</div>
 <div style="font-size: 15pt;">System Documentation</div>
-<div style="font-size: 10pt;">updated 2021-09-02<br>&copy;2021 Devin Emke</div>
+<div style="font-size: 10pt;">updated 2021-12-11<br>&copy;2021 Devin Emke</div>
 </div>
 
 <hr>
@@ -519,8 +519,10 @@ define('INSTALLED', true);
 
 	<div class="indent_2">
 
-		<p>The configuration is accessible only to admins. It has three sub-areas. The administrator can move between them using the menu on the left. The six sub-areas are:</p>
+		<p>This area is used to configure Submission Manager for your publication. It is accessible only to admins.</p>
+
 		<p><b>General Configuration:</b> This page allows the administrator to adjust the configuration of the system, as described in the <a href="#installation_4">configuration options</a> section of this document.</p>
+
 		<p><b>Action Types:</b> This is where the administrator will customize the actions. The system is designed with 10 action types. All 10 action types are customizable. For the system to work you do not need to use all 10 action types.</p>
 
 		<table style="margin-bottom: 20px;">
@@ -577,7 +579,7 @@ define('INSTALLED', true);
 
 	<div class="indent_2">
 
-		<p>The maintenance page stores processes for managing the data on the system. Currently it has seven functions.</p>
+		<p>The maintenance area contains processes for managing system data. It is accessible only to admins.</p>
 
 		<p><b>Cleanup Temp Files:</b><br>Typically there is a one to one relationship between database submission records and uploaded files.</p>
 		<p>Due to lost connections and server glitches there are sometimes submission records without a corresponding submission file and submission files without a corresponding record. We&rsquo;ll call these orphaned records and files.</p>
@@ -601,6 +603,8 @@ define('INSTALLED', true);
 
 		<p style="margin-top: 40px;"><b>Purge Data:</b><br>This function will purge submissions and their related actions and files. You can choose a range of submissions based on dates.</p>
 		<p>WARNING: This will permanently delete data from your database! Please backup and archive your database before using.</p>
+
+		<p style="margin-top: 40px;"><b>Test Mail:</b><br>This function will help diagnose mail delivery problems.</p>
 
 		<p style="margin-top: 40px;"><b>Update Data Structure:</b><br>This function has been put into place to allow administrators to easily update Submission Manager when future versions become available. Detailed instructions for using this function will be sent with any new versions of Submission Manager.</p>
 
@@ -741,6 +745,6 @@ define('INSTALLED', true);
 	</div>
 
 <hr>
-<div style="font-size: 8pt;"><b>Submission Manager</b><br>&copy;2019 Devin Emke</div>
+<div style="font-size: 8pt;"><b>Submission Manager</b><br>&copy;2021 Devin Emke</div>
 </body>
 </html>
