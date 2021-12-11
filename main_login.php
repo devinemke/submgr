@@ -4271,10 +4271,14 @@ else // if staff login
 						<td>Value:</td>
 						<td>Description:</td>
 						</tr>
-						'
-						;
+						';
 
-						foreach ($config as $key => $value)
+						foreach ($config_defaults as $key => $value)
+						{
+							if (array_key_exists($key, $config)) {$config_array_sorted[$key] = $config[$key];}
+						}
+
+						foreach ($config_array_sorted as $key => $value)
 						{
 							if ($key == 'mail_method' || strpos($key, 'smtp') !== false) {$test_mail[$key] = $value;}
 						}
