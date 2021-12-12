@@ -4148,6 +4148,7 @@ else // if staff login
 						}
 
 						unset($_SESSION['unrecorded files']);
+						unset($_SESSION['missing files']);
 
 						foreach ($compare as $key => $value)
 						{
@@ -4156,6 +4157,7 @@ else // if staff login
 								$compare[$key]['unrecorded files'] = array_diff($compare[$key]['files'], $compare[$key]['records']);
 								$compare[$key]['missing files'] = array_diff($compare[$key]['records'], $compare[$key]['files']);
 								if ($compare[$key]['unrecorded files']) {$_SESSION['unrecorded files'][$key] = $compare[$key]['unrecorded files'];}
+								if ($compare[$key]['missing files']) {$_SESSION['missing files'][$key] = $compare[$key]['missing files'];}
 							}
 						}
 

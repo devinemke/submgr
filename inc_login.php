@@ -984,6 +984,20 @@ if ($_SESSION['contact']['access'])
 					$deletes['truncate_resets'] = true;
 				}
 			}
+
+			if (isset($_SESSION['missing files']) && $_SESSION['missing files'] && isset($_GET['fill_missing']) && $_GET['fill_missing'])
+			{
+				$copy = '';
+				foreach ($_SESSION['missing files'] as $key => $value)
+				{
+					foreach ($value as $sub_value)
+					{
+						$path = $config['upload_path'] . $key . '/' . $sub_value;
+						$contents = file_put_contents($path, 'text') or exit_error('cannot write to ' . $path);
+						$copy .= $contents . ' bytes written to ' . $path . '<br>' . "\n";
+					}
+				}
+			}
 		}
 
 		if ($submodule == 'sample')

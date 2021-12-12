@@ -1,4 +1,5 @@
-version 3.40 2021-12-10
+version 3.40 2021-12-11
+- added "fill_missing" routine to /maintenance/cleanup temp files/
 - added "test mail" submodule to maintenance
 - various null -> string type casting to suppress deprecation warnings in PHP >= 8.1 (using (string) + strval())
 - upgraded to PHPMailer 6.5.3 (2021-11-25)

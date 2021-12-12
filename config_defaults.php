@@ -243,14 +243,6 @@ $defaults = array(
 			'required' => '',
 			'allowed' => ''
 		),
-		'smtp_auth' => array(
-			'name' => 'smtp_auth',
-			'value' => '',
-			'description' => 'SMTP authorization',
-			'type' => 'checkbox',
-			'required' => '',
-			'allowed' => ''
-		),
 		'smtp_secure' => array(
 			'name' => 'smtp_secure',
 			'value' => '',
@@ -264,6 +256,14 @@ $defaults = array(
 			'value' => '',
 			'description' => 'SMTP port number',
 			'type' => 'text',
+			'required' => '',
+			'allowed' => ''
+		),
+		'smtp_auth' => array(
+			'name' => 'smtp_auth',
+			'value' => '',
+			'description' => 'SMTP authorization',
+			'type' => 'checkbox',
 			'required' => '',
 			'allowed' => ''
 		),
