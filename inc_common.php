@@ -1711,9 +1711,9 @@ function mail_setup()
 	if ($config['mail_method'] == 'mail') {$mail->IsMail();}
 	if ($config['mail_method'] == 'sendmail') {$mail->IsSendmail();}
 	if ($config['mail_method'] == 'smtp') {$mail->IsSMTP();}
-	if ($config['smtp_auth']) {$mail->SMTPAuth = true;}
 	if ($config['smtp_secure']) {$mail->SMTPSecure = $config['smtp_secure'];}
 	if ($config['smtp_port']) {$mail->Port = $config['smtp_port'];}
+	if ($config['smtp_auth']) {$mail->SMTPAuth = true;}
 	if ($config['smtp_host']) {$mail->Host = $config['smtp_host'];}
 	if ($config['smtp_username']) {$mail->Username = $config['smtp_username'];}
 	if ($config['smtp_password']) {$mail->Password = $config['smtp_password'];}
