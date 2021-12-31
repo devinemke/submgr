@@ -4349,11 +4349,12 @@ else // if staff login
 							$mail = mail_setup();
 							$mail->SMTPDebug = 2;
 							$mail->Debugoutput = 'html';
+							$mail->SMTPKeepAlive = false;
 							$mail->SetFrom($test_mail['from_email'], $test_mail['from_name']);
 							$mail->AddAddress($test_mail['to_email']);
 							$mail->Subject = $test_from;
 							$mail->Body = $test_from;
-							if ($mail->Send()) {echo 'Message Sent';} else {echo 'Mailer Error: ' . $mail->ErrorInfo;}
+							if ($mail->Send()) {echo '<div class="notice">Message Sent</div>';} else {echo '<div class="notice">Mailer Error</div>' . $mail->ErrorInfo;}
 							echo '</div>';
 						}
 					}

@@ -1710,7 +1710,7 @@ function mail_setup()
 	$mail->CharSet = 'UTF-8';
 	if ($config['mail_method'] == 'mail') {$mail->IsMail();}
 	if ($config['mail_method'] == 'sendmail') {$mail->IsSendmail();}
-	if ($config['mail_method'] == 'smtp') {$mail->IsSMTP();}
+	if ($config['mail_method'] == 'smtp') {$mail->IsSMTP(); $mail->SMTPKeepAlive = true;}
 	if ($config['smtp_secure']) {$mail->SMTPSecure = $config['smtp_secure'];}
 	if ($config['smtp_port']) {$mail->Port = $config['smtp_port'];}
 	if ($config['smtp_auth']) {$mail->SMTPAuth = true;}

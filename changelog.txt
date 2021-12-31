@@ -1,4 +1,5 @@
-version 3.40 2021-12-11
+version 3.40 2021-12-31
+- added SMTPKeepAlive to mail_setup()
 - added "fill_missing" routine to /maintenance/cleanup temp files/
 - added "test mail" submodule to maintenance
 - various null -> string type casting to suppress deprecation warnings in PHP >= 8.1 (using (string) + strval())
