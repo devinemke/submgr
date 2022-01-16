@@ -352,6 +352,7 @@ if ($_SESSION['contact']['access'])
 		$result = @mysqli_query($GLOBALS['db_connect'], "SELECT contact_id, first_name, last_name, email, access FROM contacts WHERE access IS NOT NULL AND access != 'blocked' ORDER BY last_name, first_name") or exit_error('query failure: SELECT readers');
 		while ($row = mysqli_fetch_assoc($result))
 		{
+			$row = array_map('strval', $row);
 			$row_display = array_map('htmlspecialchars', $row);
 			$readers['all'][$row['contact_id']] = $row_display;
 			$readers['raw'][$row['contact_id']] = $row;
