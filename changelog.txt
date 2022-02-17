@@ -1,9 +1,9 @@
-version 3.40 2021-12-31
+version 3.40 2022-02-17
+- upgraded to PHPMailer 6.5.4 (2022-02-17)
 - added SMTPKeepAlive to mail_setup()
 - added "fill_missing" routine to /maintenance/cleanup temp files/
 - added "test mail" submodule to maintenance
 - various null -> string type casting to suppress deprecation warnings in PHP >= 8.1 (using (string) + strval())
-- upgraded to PHPMailer 6.5.3 (2021-11-25)
 - fixed bug in /maintenance/update data structure/ with integer type check (mySQL >= 8 deprecated parentheses in integer types)
 - fixed bug in /maintenance/update data structure/ with database UTF-8 check (fuzzy check for "utf8" in character_set_database)
 - changed search_paid_only checkbox to search_payment select box at top of submissions page (when $config['show_date_paid'] is set)
