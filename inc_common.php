@@ -193,7 +193,7 @@ function db_connect($db_host, $db_username, $db_password, $db_name = '', $db_por
 	if ($db_connect && $db_select) {$GLOBALS['db_connect'] = $db_connect;} else {$GLOBALS['db_connect'] = false;}
 	if ($GLOBALS['db_connect'])
 	{
-		@mysqli_query($GLOBALS['db_connect'], "SET NAMES 'utf8'") or exit_error('query failure: SET NAMES utf8');
+		@mysqli_query($GLOBALS['db_connect'], 'SET NAMES "utf8"') or exit_error('query failure: SET NAMES utf8');
 		@mysqli_set_charset($GLOBALS['db_connect'], 'utf8');
 	}
 
@@ -875,7 +875,7 @@ if (INSTALLED && $GLOBALS['db_connect'])
 	$local_date_time = timezone_adjust($gm_date_time) . ' (GMT ' . $timezone . ')';
 	$local_date = substr($local_date_time, 0, 10);
 
-	@mysqli_query($GLOBALS['db_connect'], "SET time_zone = '$timezone'") or exit_error('query failure: SET time_zone');
+	@mysqli_query($GLOBALS['db_connect'], 'SET time_zone = "' . $timezone . '"') or exit_error('query failure: SET time_zone');
 	@$timezone_name = timezone_name_from_abbr('', $timezone_safe * 3600, $is_DST);
 	@date_default_timezone_set($timezone_name);
 }

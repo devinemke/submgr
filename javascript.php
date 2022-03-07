@@ -714,7 +714,7 @@ if ($continue)
 				}
 			}
 
-			event_listener("click", "lightbox_off", function(event) { if (!lightbox("off")) {event.preventDefault();} });
+			event_listener("click", "lightbox_off", function(event) { lightbox("off"); event.preventDefault(); });
 			event_listener("click", "background_id", function(event) { lightbox("off"); });
 			';
 		}
@@ -1528,8 +1528,8 @@ if ($continue)
 			echo '
 			event_listener("click", "submit_delete_sample_data", function(event) { if (!confirm_prompt("delete", "sample data")) {event.preventDefault();} });
 			event_listener("click", "submit_purge", function(event) { if (!confirm_prompt("purge", "submissions")) {event.preventDefault();} });
-			event_listener("click", "popup_version_sm", function(event) { if (!lightbox("on","popup.php?page=changelog",1200,700,100,10)) {event.preventDefault();} });
-			event_listener("click", "popup_version_php", function(event) { if (!lightbox("on","popup.php?page=phpinfo",1200,700,100,10)) {event.preventDefault();} });
+			event_listener("click", "popup_version_sm", function(event) { lightbox("on","popup.php?page=changelog",1200,700,100,10); event.preventDefault(); });
+			event_listener("click", "popup_version_php", function(event) { lightbox("on","popup.php?page=phpinfo",1200,700,100,10); event.preventDefault(); });
 			';
 		}
 	}

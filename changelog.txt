@@ -1,4 +1,5 @@
-version 3.40 2022-02-28
+version 3.40 2022-03-07
+- removed all checks for lightbox() to return false before event.preventDefault()
 - upgraded to PHPMailer 6.6.0 (2022-02-28)
 - added SMTPKeepAlive to mail_setup()
 - added "fill_missing" routine to /maintenance/cleanup temp files/
