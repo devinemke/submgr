@@ -807,7 +807,7 @@ if ($continue)
 					(function()
 					{
 						var action = tag_alls[i].href.split("#").pop();
-						tag_alls[i].addEventListener("click", function(event) { if (!tag_all(action)) {event.preventDefault();} });
+						tag_alls[i].addEventListener("click", function(event) { tag_all(action); event.preventDefault(); });
 					})();
 				}
 
@@ -1468,15 +1468,11 @@ if ($continue)
 			}
 
 			echo '
-			function form_reset_previous(arg)
-			{
-				alert("Previous " + arg + " settings have been reset.");
-				return true;
-			}
+			function form_reset_previous(arg) {alert("Previous " + arg + " settings have been reset.");}
 
 			var submodule_display = submodule.replace("_"," ");
 			submodule_display = submodule_display.toLowerCase().replace(/\b[a-z]/g, function(letter) {return letter.toUpperCase();});
-			event_listener("click", "submit_reset", function(event) { if (!form_reset_previous(submodule_display)) {event.preventDefault();} });
+			event_listener("click", "submit_reset", function(event) { form_reset_previous(submodule_display); });
 			event_listener("click", "submit_reset_defaults", function(event) { if (!confirm_prompt("reset", submodule_display)) {event.preventDefault();} });
 
 			document.addEventListener("DOMContentLoaded", function()

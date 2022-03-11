@@ -263,7 +263,7 @@ if ($page == 'update')
 			{
 				var key = nullifies[i].id.replace("nullify_","");
 				var type = document.getElementById("row_" + key).type;
-				document.getElementById("nullify_" + key).addEventListener("click", function(event) { if (!nullify(key, type)) {event.preventDefault();} });
+				document.getElementById("nullify_" + key).addEventListener("click", function(event) { nullify(key, type); event.preventDefault(); });
 			})();
 		}
 	});
@@ -339,13 +339,8 @@ if ($page == 'update')
 	if (isset($submission_id))
 	{
 		echo '
-		function today()
-		{
-			document.getElementById("row_date_paid").value = "' . $local_date . '";
-			return false;
-		}
-
-		event_listener("click", "date_paid", function(event) { if (!today()) {event.preventDefault();} });
+		function today() {document.getElementById("row_date_paid").value = "' . $local_date . '";}
+		event_listener("click", "date_paid", function(event) { today(); event.preventDefault(); });
 		';
 	}
 
