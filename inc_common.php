@@ -19,6 +19,7 @@ if (isset($_REQUEST['submodule'])) {$submodule = htmlentities($_REQUEST['submodu
 
 if (isset($_POST['submit'])) {$submit = htmlentities($_POST['submit']);} else {$submit = '';}
 if (isset($_POST['submit_hidden_nav'])) {$submit = htmlentities($_POST['submit_hidden_nav']);} // for "Go" nav
+if (isset($_POST['submit_hidden']) && $_POST['submit_hidden'] == 'continue') {$submit = 'continue';} // needed for captcha v3
 $submit_js = $submit; // needed for javascript because this changes downstream
 
 $gm_timestamp = time();
@@ -403,6 +404,16 @@ if ($GLOBALS['db_connect'])
 				}
 			}
 
+			// update CSP for captcha
+			if (isset($post_config['captcha_site_key']) && isset($post_config['captcha_secret_key']) && $post_config['captcha_site_key'] && $post_config['captcha_secret_key'] && isset($post_config['csp']))
+			{
+				if (strpos($post_config['csp'], 'https://www.google.com/recaptcha/') === false)
+				{
+					$post_config['csp'] = str_replace('script-src \'self\'', 'script-src \'self\' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/', $post_config['csp']);
+					$post_config['csp'] .= ' frame-src \'self\' https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/;';
+				}
+			}
+
 			$post_config = check_config($post_config);
 
 			// update db unconditionally so valid fields get written (even if form check fails)
@@ -484,6 +495,7 @@ if ($GLOBALS['db_connect'])
 	if (!isset($post_config)) {$config = check_config($config);}
 
 	if (isset($config['captcha_site_key']) && isset($config['captcha_secret_key']) && $config['captcha_site_key'] && $config['captcha_secret_key'] && extension_loaded('curl')) {$use_captcha = true;} else {$use_captcha = false;}
+	if ($use_captcha && isset($config['captcha_version'])) {$captcha_version = $config['captcha_version'];} else {$captcha_version = 2;}
 
 	if (isset($config['csp']) && $config['csp'])
 	{
@@ -1173,6 +1185,8 @@ function form_confirmation()
 	$action = $_SERVER['PHP_SELF'];
 	if ($page == 'login') {$action .= '?page=' . $page . '&module=' . $module;}
 
+	$button = '<button type="submit" id="form_confirmation_submit" name="submit" value="continue" class="form_button" style="margin-left: 5px;">' . $submit_value . '</button>';
+
 	echo '
 	<br>
 	<form action="' . $action . '" method="post" name="form_confirmation" id="form_confirmation">
@@ -1180,19 +1194,29 @@ function form_confirmation()
 
 	if ($submit_value == 'continue' && $use_captcha)
 	{
-		echo '
-		<p>Now, please take a moment to verify that you are not a robot. This step is necessary to process your submission.</p>
-		<div class="g-recaptcha" id="g-recaptcha" data-sitekey="' . $config['captcha_site_key'] . '"></div>
-		';
+		if ($captcha_version == 2)
+		{
+			echo '
+			<p>Now, please take a moment to verify that you are not a robot. This step is necessary to process your submission.</p>
+			<div class="g-recaptcha" id="g-recaptcha" data-sitekey="' . $config['captcha_site_key'] . '"></div>
+			';
+		}
+
+		if ($captcha_version == 3)
+		{
+			$button = '<button id="form_confirmation_submit" class="form_button g-recaptcha" data-sitekey="' . $config['captcha_site_key'] . '" data-callback="onSubmit" data-action="submit" style="margin: 5px 0px 0px 0px;">' . $submit_value . '</button>';
+		}
 	}
 
 	echo '
-	<p>If the above information is correct, click <button type="submit" id="form_confirmation_submit" name="submit" value="continue" class="form_button" style="margin-left: 5px;">' . $submit_value . '</button></p>
+	<p>If the above information is correct, click ' . $button . '</p>
 	<p>If you wish to make changes, <a href="#" id="form_main_show"><b>click here</b></a>, update the form below, and hit <b>submit</b>.</p>
 	<input type="hidden" id="form_confirmation_submit_hidden" name="submit_hidden" value="continue">
 	<input type="hidden" id="form_hash_confirmation" name="form_hash" value="' . $GLOBALS['form_hash'] . '">
 	</form>
 	';
+
+	if ($submit_value == 'continue' && $use_captcha && $captcha_version == 3) {echo '<script nonce="' . $GLOBALS['nonce'] . '">function onSubmit(token) {document.getElementById("form_confirmation").submit();}</script>';}
 }
 
 function form_login()
@@ -1463,12 +1487,14 @@ function process_captcha()
 	'response' => $_POST['g-recaptcha-response'],
 	'remoteip' => $_SERVER['REMOTE_ADDR']
 	);
-	foreach ($captcha as $key => $value) {$captcha[$key] = $key . '=' . $value;}
-	$url = 'https://www.google.com/recaptcha/api/siteverify?' . implode('&', $captcha);
-	$ch = curl_init($url);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	$response = curl_exec($ch);
-	curl_close($ch);
+	$curl = curl_init('https://www.google.com/recaptcha/api/siteverify');
+	curl_setopt_array($curl, array(
+	CURLOPT_RETURNTRANSFER => 1,
+	CURLOPT_HTTPHEADER => array('Accept: application/json'),
+	CURLOPT_POST => 1,
+	CURLOPT_POSTFIELDS => $captcha));
+	$response = curl_exec($curl);
+	curl_close($curl);
 	$response = json_decode($response);
 	if (!$response->success) {exit_error('CAPTCHA fail');}
 }

@@ -489,7 +489,7 @@ if ($continue)
 		function form_confirmation_check()
 		{
 		';
-			if (isset($use_captcha) && $use_captcha && $submit == 'submit' && ($page == 'home' || ($page == 'login' && $module == 'submit')))
+			if (isset($use_captcha) && $use_captcha && isset($captcha_version) && $captcha_version == 2 && $submit == 'submit' && ($page == 'home' || ($page == 'login' && $module == 'submit')))
 			{
 				echo '
 				var captcha_response = grecaptcha.getResponse();
