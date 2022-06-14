@@ -1,6 +1,7 @@
 <?php
 
 /**
+ VERSION = '6.6.2'
  * PHPMailer Exception class.
  * PHP Version 5.5.
  *

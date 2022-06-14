@@ -24,7 +24,7 @@ if ($page == 'login' && ($module == 'account' || $module == 'submissions' || $mo
 {
 	echo '
 	<div id="tooltip_div"></div>
-	<script src="tooltip.js"></script>
+	<script src="tooltip.js" nonce="' . $GLOBALS['nonce'] . '"></script>
 	';
 }
 
