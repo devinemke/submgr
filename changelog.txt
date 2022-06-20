@@ -1,5 +1,5 @@
-version 3.40 2022-06-14
-- upgraded to PHPMailer 6.6.2 (2022-06-14)
+version 3.40 2022-06-20
+- upgraded to PHPMailer 6.6.3 (2022-06-20)
 - added support for Google reCAPTCHA v3
 - removed unnecessary checks for JavaScript functions to return false before event.preventDefault()
 - added SMTPKeepAlive to mail_setup()
