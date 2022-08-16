@@ -103,6 +103,7 @@ $local_variables = array(
 	'last_name',
 	'name',
 	'email',
+	'company',
 	'address1',
 	'address2',
 	'city',
@@ -1038,6 +1039,8 @@ function get_local_variables($arg)
 		$local_variables_flat['cc_exp_year'] = $cc_exp_year;
 		if ($config['cc_exp_date_format'] == 'MMYYYY') {$local_variables_flat['cc_exp_date'] = $cc_exp_month . $cc_exp_year;}
 		if ($config['cc_exp_date_format'] == 'MM-YYYY') {$local_variables_flat['cc_exp_date'] = $cc_exp_month . '-' . $cc_exp_year;}
+		if ($config['cc_exp_date_format'] == 'YYYYMM') {$local_variables_flat['cc_exp_date'] = $cc_exp_year . $cc_exp_month;}
+		if ($config['cc_exp_date_format'] == 'YYYY-MM') {$local_variables_flat['cc_exp_date'] = $cc_exp_year . '-' . $cc_exp_month;}
 		$local_variables_flat['cc_csc'] = $cc_csc;
 	}
 
@@ -1567,6 +1570,8 @@ function display($arg)
 		{
 			if ($config['cc_exp_date_format'] == 'MMYYYY') {$cc_exp_date = $cc_exp_month . $cc_exp_year;}
 			if ($config['cc_exp_date_format'] == 'MM-YYYY') {$cc_exp_date = $cc_exp_month . '-' . $cc_exp_year;}
+			if ($config['cc_exp_date_format'] == 'YYYYMM') {$cc_exp_date = $cc_exp_year . $cc_exp_month;}
+			if ($config['cc_exp_date_format'] == 'YYYY-MM') {$cc_exp_date = $cc_exp_year . '-' . $cc_exp_month;}
 			$output .= '<tr><td class="row_left">credit card number:</td><td><b>' . $cc_number . '</b></td></tr><tr><td class="row_left">expiration date:</td><td><b>' . $cc_exp_date . '</b></td></tr><tr><td class="row_left">card security code:</td><td><b>' . $cc_csc . '</b></td></tr>';
 		}
 		$output .= '</table>';
@@ -1936,7 +1941,7 @@ function prep_payment_vars($arg)
 		if ($value == '$genre_id' && isset($genre_id)) {$value = $genres['all'][$genre_id]['name'];}
 		if ($value == '$hash' && isset($submission_id)) {$value = get_hash($submission_id);}
 		$value_no_dollar = substr($value, 1);
-		if ($value[0] == '$' && isset($local_variables_flat[$value_no_dollar])) {$prep_value = $local_variables_flat[$value_no_dollar];} else {$prep_value = $value;}
+		if ($value[0] == '$' && isset($local_variables_flat[$value_no_dollar])) {$prep_value = (string) $local_variables_flat[$value_no_dollar];} else {$prep_value = (string) $value;}
 		if ($prep_value[0] != '$')
 		{
 			if ($arg == 'get') {$prep_array[$name] = $name . '=' . urlencode($prep_value);}
@@ -1980,18 +1985,43 @@ function redirect()
 			curl_setopt($ch, CURLOPT_VERBOSE, 1);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+			if ($GLOBALS['IsAuthorizeNet']) {curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));}
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $nvp);
 			$httpResponse = curl_exec($ch);
-
+			curl_close($ch);
 			if (!$httpResponse) {$GLOBALS['error_output'] = str_replace('[error]', $method . ' failed: ' . curl_error($ch) . ' (' . curl_errno($ch) . ')', $GLOBALS['error_output']); exit_error();}
-			$httpResponseAr = explode('&', $httpResponse);
 			$httpParsedResponseAr = array();
-			foreach ($httpResponseAr as $value)
+
+			if ($GLOBALS['IsAuthorizeNet'])
 			{
-				$tmpAr = explode('=', $value);
-				if (count($tmpAr) > 1) {$httpParsedResponseAr[$tmpAr[0]] = urldecode($tmpAr[1]);}
+				$httpResponse = trim($httpResponse, "\xEF\xBB\xBF");
+				$httpResponse = json_decode($httpResponse, true);
+
+				if (isset($httpResponse['refId'])) {$httpParsedResponseAr['refId'] = $httpResponse['refId'];}
+
+				if (isset($httpResponse['transactionResponse']))
+				{
+					if (isset($httpResponse['transactionResponse']['responseCode'])) {$httpParsedResponseAr['responseCode'] = $httpResponse['transactionResponse']['responseCode'];}
+					if (isset($httpResponse['transactionResponse']['errors'][0]['errorCode'])) {$httpParsedResponseAr['errorCode'] = $httpResponse['transactionResponse']['errors'][0]['errorCode'];}
+					if (isset($httpResponse['transactionResponse']['errors'][0]['errorText'])) {$httpParsedResponseAr['errorText'] = $httpResponse['transactionResponse']['errors'][0]['errorText'];}
+				}
+				else
+				{
+					if (isset($httpResponse['messages']['resultCode']) && $httpResponse['messages']['resultCode'] == 'Error') {$httpParsedResponseAr['responseCode'] = 'Error';}
+					if (isset($httpResponse['messages']['message'][0]['code'])) {$httpParsedResponseAr['errorCode'] = $httpResponse['messages']['message'][0]['code'];}
+					if (isset($httpResponse['messages']['message'][0]['text'])) {$httpParsedResponseAr['errorText'] = $httpResponse['messages']['message'][0]['text'];}
+				}
+			}
+			else
+			{
+				$httpResponseAr = explode('&', $httpResponse);
+				foreach ($httpResponseAr as $value)
+				{
+					$tmpAr = explode('=', $value);
+					if (count($tmpAr) > 1) {$httpParsedResponseAr[$tmpAr[0]] = urldecode($tmpAr[1]);}
+				}
 			}
 
 			if (count($httpParsedResponseAr) == 0 || !isset($httpParsedResponseAr[$GLOBALS['result_field']])) {$GLOBALS['error_output'] = str_replace('[error]', 'Invalid HTTP Response for POST request to ' . $url, $GLOBALS['error_output']); exit_error();}
@@ -2007,13 +2037,76 @@ function redirect()
 
 		foreach ($payment_vars['out'] as $key => $value)
 		{
-			if ($value['name'] == 'METHOD') {$GLOBALS['method'] = $value['value']; break;}
+			if ($value['name'] == 'METHOD') {$GLOBALS['method'] = $value['value'];}
+			if ($value['name'] == 'name' || $value['name'] == 'transactionKey' || $value['name'] == 'refId') {$AuthorizeNet_temp[] = $value['name'];}
 		}
 
 		foreach ($payment_vars['in'] as $key => $value)
 		{
 			if ($value['value'] == '$result_code') {$GLOBALS['result_field'] = $value['name'];}
 			if ($value['value'] == '$error') {$GLOBALS['errors'][$value['name']] = '';}
+		}
+
+		$GLOBALS['IsAuthorizeNet'] = false;
+		if (isset($AuthorizeNet_temp) && count($AuthorizeNet_temp) == 3) {$GLOBALS['IsAuthorizeNet'] = true;}
+
+		if ($GLOBALS['IsAuthorizeNet'])
+		{
+			$AuthorizeNet_json = '
+			{
+				"createTransactionRequest":
+				{
+					"merchantAuthentication":
+					{
+						"name": "[name]",
+						"transactionKey": "[transactionKey]"
+					},
+					"refId": "[refId]",
+					"transactionRequest":
+					{
+						"transactionType": "authCaptureTransaction",
+						"amount": "[amount]",
+						"payment":
+						{
+							"creditCard":
+							{
+								"cardNumber": "[cardNumber]",
+								"expirationDate": "[expirationDate]",
+								"cardCode": "[cardCode]"
+							}
+						},
+						"customer":
+						{
+							"id": "[customer_id]",
+							"email": "[email]"
+						},
+						"billTo":
+						{
+							"firstName": "[firstName]",
+							"lastName": "[lastName]",
+							"company": "[company]",
+							"address": "[address]",
+							"city": "[city]",
+							"state": "[state]",
+							"zip": "[zip]",
+							"country": "[country]"
+						},
+						"transactionSettings":
+						{
+							"setting":
+							{
+								"settingName": "duplicateWindow",
+								"settingValue": "10"
+							}
+						}
+					}
+				}
+			}
+			';
+
+			$prep_array = prep_payment_vars('post');
+			foreach ($prep_array as $key => $value) {$AuthorizeNet_json = str_replace("[$key]", $value, $AuthorizeNet_json);}
+			$nvp = $AuthorizeNet_json;
 		}
 
 		$httpParsedResponseAr = PPHttpPost($GLOBALS['method'], $nvp, $url);

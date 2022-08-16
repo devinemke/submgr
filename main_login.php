@@ -4011,7 +4011,7 @@ else // if staff login
 						foreach ($payment_vars_presets as $key => $value)
 						{
 							$key_display = str_replace('_', ' ', $key);
-							$key_display = ucwords($key_display);
+							$key_display = str_replace('AuthorizeNet', 'Authorize.net', $key_display);
 							echo '<li><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&submodule=' . $submodule . '&payment_vars_preset=' . $key . '" class="payment_vars_preset">' . $key_display . '</a></li>';
 						}
 

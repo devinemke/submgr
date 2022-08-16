@@ -2,7 +2,7 @@
 // PayPal Payments Standard
 // redirect_url: GET https://www.paypal.com/cgi-bin/webscr
 // success_result_code: payment_status = Completed
-$payment_vars_presets['paypal_payments_standard'] = 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
+$payment_vars_presets['PayPal_Payments_Standard'] = 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
 (1, "out", "cmd", "_xclick"),
 (2, "out", "business", "paypal@example.com"),
 (3, "out", "item_name", "Submission"),
@@ -30,7 +30,7 @@ $payment_vars_presets['paypal_payments_standard'] = 'INSERT INTO `payment_vars` 
 // PayPal Payments Pro
 // redirect_url: cURL https://api-3t.paypal.com/nvp
 // success_result_code: ACK = Success|SuccessWithWarning
-$payment_vars_presets['paypal_payments_pro'] = 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
+$payment_vars_presets['PayPal_Payments_Pro'] = 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
 (1, "out", "METHOD", "DoDirectPayment"),
 (2, "out", "VERSION", "51.0"),
 (3, "out", "USER", "API_UserName"),
@@ -64,7 +64,7 @@ $payment_vars_presets['paypal_payments_pro'] = 'INSERT INTO `payment_vars` (`pay
 // PayPal Payflow Link
 // redirect_url: POST https://payflowlink.paypal.com
 // success_result_code: RESULT = 0
-$payment_vars_presets['paypal_payflow_link'] = 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
+$payment_vars_presets['PayPal_Payflow_Link'] = 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
 (1, "out", "LOGIN", "login"),
 (2, "out", "PARTNER", "partner"),
 (3, "out", "TYPE", "S"),
@@ -96,7 +96,7 @@ $payment_vars_presets['paypal_payflow_link'] = 'INSERT INTO `payment_vars` (`pay
 // TouchNet uPay
 // redirect_url: POST https://secure.touchnet.net/UPAY_SITE_ID_upay/web/index.jsp
 // success_result_code: pmt_status = success
-$payment_vars_presets['touchnet_upay'] = 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
+$payment_vars_presets['TouchNet_uPay'] = 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
 (1, "out", "UPAY_SITE_ID", "UPAY_SITE_ID"),
 (2, "out", "EXT_TRANS_ID", "$submission_id"),
 (3, "out", "EXT_TRANS_ID_LABEL", "Example Submission"),
@@ -115,4 +115,30 @@ $payment_vars_presets['touchnet_upay'] = 'INSERT INTO `payment_vars` (`payment_v
 (16, "in", "EXT_TRANS_ID", "$submission_id"),
 (17, "in", "pmt_status", "$result_code"),
 (18, "in", "hash", "$hash");';
+
+// Authorize.net
+// redirect_url: cURL https://api.authorize.net/xml/v1/request.api
+// success_result_code: responseCode = 1
+$payment_vars_presets['AuthorizeNet'] = 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
+(1, "out", "name", "AuthorizeNet_APILoginID"),
+(2, "out", "transactionKey", "AuthorizeNet_TransactionKey"),
+(3, "out", "refId", "$submission_id"),
+(4, "out", "amount", "$price"),
+(5, "out", "cardNumber", "$cc_number"),
+(6, "out", "expirationDate", "$cc_exp_date"),
+(7, "out", "cardCode", "$cc_csc"),
+(8, "out", "customer_id", "$contact_id"),
+(9, "out", "email", "$email"),
+(10, "out", "firstName", "$first_name"),
+(11, "out", "lastName", "$last_name"),
+(12, "out", "company", "$company"),
+(13, "out", "address", "$address1"),
+(14, "out", "city", "$city"),
+(15, "out", "state", "$state"),
+(16, "out", "zip", "$zip"),
+(17, "out", "country", "$country"),
+(18, "in", "refId", "$submission_id"),
+(19, "in", "responseCode", "$result_code"),
+(20, "in", "errorCode", "$error"),
+(21, "in", "errorText", "$error");';
 ?>
