@@ -2492,7 +2492,7 @@ else // if staff login
 				{
 					if (!isset($_SESSION['current_contact_array']['access'])) {$_SESSION['current_contact_array']['access'] = '';}
 
-					include('inc_lists.php');
+					include_once('inc_lists.php');
 
 					if ($submodule == 'insert')
 					{
@@ -3018,7 +3018,7 @@ else // if staff login
 							exit_error();
 						}
 
-						include('inc_lists.php');
+						include_once('inc_lists.php');
 
 						function get_minmax($table)
 						{
@@ -3618,7 +3618,7 @@ else // if staff login
 							if (array_key_exists($key, $config_array)) {$config_array_sorted[$key] = $config_array[$key];}
 						}
 
-						include('inc_lists.php');
+						include_once('inc_lists.php');
 
 						echo '
 						<span class="header">General Configuration</span><br><br>
@@ -3897,28 +3897,64 @@ else // if staff login
 
 					if ($submodule == 'payment_vars')
 					{
+						include('payment_vars_presets.php');
+
+						function payment_vars_preset_display($arg)
+						{
+							$arg = str_replace('_', ' ', $arg);
+							$arg = str_replace('AuthorizeNet', 'Authorize.net', $arg);
+							return $arg;
+						}
+
 						if (isset($_GET['payment_vars_preset']) && $_GET['payment_vars_preset'])
 						{
-							include('payment_vars_presets.php');
-
 							if (isset($payment_vars_presets[$_GET['payment_vars_preset']]))
 							{
 								@mysqli_query($GLOBALS['db_connect'], 'TRUNCATE payment_vars') or exit_error('query failure: TRUNCATE payment_vars');
 
-								$sql = $payment_vars_presets[$_GET['payment_vars_preset']];
+								$sql = $payment_vars_presets[$_GET['payment_vars_preset']]['sql'];
 								$sql = str_replace("\n", '', $sql);
 								$sql = str_replace("\r", '', $sql);
-								$result = mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT payment_vars FROM preset');
+								$result = mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT payment_vars FROM payment_vars_preset');
+
+								foreach ($payment_vars_presets[$_GET['payment_vars_preset']]['config'] as $key => $value)
+								{
+									if (strpos($key, 'redirect_url') === false)
+									{
+										$sql = 'UPDATE config SET value = "' . mysqli_real_escape_string($GLOBALS['db_connect'], $value) . '" WHERE name = "' . $key . '"';
+										$result = mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT config FROM payment_vars_preset');
+									}
+								}
+
+								@mysqli_query($GLOBALS['db_connect'], 'ALTER TABLE `payment_vars` COMMENT = "' . $_GET['payment_vars_preset'] . '"') or exit('query failure: ALTER TABLE payment_vars COMMENT');
 							}
 						}
 
 						get_payment_vars();
 
+						$result = @mysqli_query($GLOBALS['db_connect'], 'SHOW TABLE STATUS LIKE "payment_vars"') or exit_error('query failure: SHOW TABLE STATUS payment_vars');
+						$row = mysqli_fetch_assoc($result);
+						$payment_vars_preset_comment = $row['Comment'];
+
 						$colspan = 3;
 						$colspan_plus = $colspan + 1;
 
+						$extra = '';
+						if ($payment_vars_preset_comment)
+						{
+							$payment_vars_preset_comment_display = payment_vars_preset_display($payment_vars_preset_comment);
+							$extra = '
+							<table class="padding_lr_5" style="float: left; margin-left: 20px;">
+							<tr><td class="row_left">Current Payment Variable Preset:</td><td><b>' . $payment_vars_preset_comment_display . '</b></td></tr>
+							<tr><td class="row_left">redirect_url TEST:</td><td><b>' . $payment_vars_presets[$payment_vars_preset_comment]['config']['redirect_url TEST'] . '</b></td></tr>
+							<tr><td class="row_left">redirect_url LIVE:</td><td><b>' . $payment_vars_presets[$payment_vars_preset_comment]['config']['redirect_url LIVE'] . '</b></td></tr>
+							</table>
+							';
+						}
+
 						echo '
-						<span class="header">Payment Variables</span> (' . $payment_vars_count . ')<br><br>
+						<div style="float: left;"><span class="header">Payment Variables</span> (' . $payment_vars_count . ')</div>' . $extra . '<br><br>
+						<div style="clear: both;"></div>
 						<table class="padding_lr_5">
 						';
 
@@ -4001,8 +4037,6 @@ else // if staff login
 
 					if ($submodule == 'payment_vars')
 					{
-						include('payment_vars_presets.php');
-
 						echo '
 						<p style="margin-top: 40px;"><span class="header">Payment Variable Presets</span> (WARNING: These will overwrite your current payment variables)</p>
 						<ul>
@@ -4010,8 +4044,7 @@ else // if staff login
 
 						foreach ($payment_vars_presets as $key => $value)
 						{
-							$key_display = str_replace('_', ' ', $key);
-							$key_display = str_replace('AuthorizeNet', 'Authorize.net', $key_display);
+							$key_display = payment_vars_preset_display($key);
 							echo '<li><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&submodule=' . $submodule . '&payment_vars_preset=' . $key . '" class="payment_vars_preset">' . $key_display . '</a></li>';
 						}
 
@@ -4462,7 +4495,7 @@ else // if staff login
 							// change to country codes. needed after UTF-8 but before country field type is changed.
 							if ($describe['contacts']['country'] != 'char(3)')
 							{
-								include('inc_lists.php');
+								include_once('inc_lists.php');
 								$countries_flipped = array_flip($countries);
 								$sql = 'SELECT contact_id, country FROM contacts WHERE country != "USA"';
 								$result = mysqli_query($db_connect, $sql) or exit_error('query failure: SELECT countries');

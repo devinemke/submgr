@@ -1017,7 +1017,7 @@ if ($_SESSION['contact']['access'])
 				$names = array('Joe','John','Robert','Richard','Tom','William','Charles','Christopher','Kenneth','Jason','Noah','Aaron','Baker','Allen','George','Andrew','Bert','Earnest','James','Stephen','David','Taylor','Fredrick','Brian','Roger','Ann','Sally','Jane','Helen','Jennifer','Rachel','Mary','Hillary','Barbara','Ginger','Judy','Rebecca','Laura','Lauren','Betty','Joan','Margaret','Katherine','Christine','Phoebe','Melissa','May','Dina','Cindy','Lisa');
 				$titles = array('River','Dream','Summer','Winter','Spring','Fall','Autumn','Fine','Joy','Madness','Anger','Clown','Year','Day','Morning','Evening','Night','Future','Past','Ocean','Lake','First','Second','Mother','Father','Brother','Sister','Earth','Sky','Water','Wind','Fire','Why','Depression','Battle','War','Peace','Breakfast','Lunch','Dinner','Up','Down','Left','Right','Black','White','Back','Front','Side','Top');
 
-				include('inc_lists.php');
+				include_once('inc_lists.php');
 				$timestamp_minus3 = $gm_timestamp - (60 * 60 * 24 * 365 * 3);
 				$genres_sample = $genres; // not conflict with global $genres
 

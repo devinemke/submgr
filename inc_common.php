@@ -862,6 +862,21 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 		if ($submit == 'reset defaults')
 		{
 			reset_defaults('payment_vars', 'Payment Variables');
+			@mysqli_query($GLOBALS['db_connect'], 'ALTER TABLE `payment_vars` COMMENT = ""') or exit('query failure: ALTER TABLE payment_vars COMMENT');
+
+			$payment_vars_config = array(
+			'payment_redirect_method',
+			'success_result_code',
+			'cc_exp_date_format',
+			'show_date_paid',
+			'show_payment_fields'
+			);
+
+			foreach ($payment_vars_config as $value)
+			{
+				$sql = 'UPDATE config SET value = "' . $config_defaults[$value] . '" WHERE name = "' . $value . '"';
+				$result = mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT config FROM payment_vars_preset');
+			}
 		}
 
 		if (isset($_GET['payment_var_id']) && $_GET['payment_var_id'] && is_numeric($_GET['payment_var_id']) && isset($_GET['delete']))
@@ -1062,7 +1077,7 @@ function form_main()
 	function form_cc()
 	{
 		global $config, $cc_number, $cc_exp_month, $cc_exp_year, $cc_csc;
-		include('inc_lists.php');
+		include_once('inc_lists.php');
 
 		echo '
 		<tr style="display: none;" id="cc_row_header"><td>&nbsp;</td><td class="header" style="padding-top: 20px;">Payment:</td></tr>
@@ -1086,7 +1101,7 @@ function form_main()
 
 	if ($form_type == 'update' || $form_type == 'submit')
 	{
-		include('inc_lists.php');
+		include_once('inc_lists.php');
 
 		if (isset($config['default_country']) && $config['default_country']) {$default_country = $config['default_country'];} else {$default_country = 'USA';}
 		if (($page == 'home' && !$submit) || !isset($country) || !$country) {$country = $default_country;}
@@ -1525,7 +1540,7 @@ function upload()
 
 function display($arg)
 {
-	include('inc_lists.php');
+	include_once('inc_lists.php');
 	extract($GLOBALS);
 
 	$output = '';
@@ -1670,7 +1685,7 @@ function make_tooltip($arg)
 function get_row_string($table, $field_name, $field_value)
 {
 	global $page, $submodule;
-	include('inc_lists.php');
+	include_once('inc_lists.php');
 
 	$row = '';
 	$result = @mysqli_query($GLOBALS['db_connect'], "SELECT * FROM `$table` WHERE $field_name = $field_value") or exit_error('query failure: get_row_string');
@@ -1994,6 +2009,15 @@ function redirect()
 			if (!$httpResponse) {$GLOBALS['error_output'] = str_replace('[error]', $method . ' failed: ' . curl_error($ch) . ' (' . curl_errno($ch) . ')', $GLOBALS['error_output']); exit_error();}
 			$httpParsedResponseAr = array();
 
+			// invalid EXPDATE from PayPal Payments Pro NVP (single string, not NVP)
+			if (strpos($httpResponse, 'is not a valid uint32') !== false)
+			{
+				$httpParsedResponseAr['ACK'] = 'Failure';
+				$httpParsedResponseAr['L_ERRORCODE0'] = 'ERROR';
+				$httpParsedResponseAr['L_SHORTMESSAGE0'] = 'Invalid EXPDATE';
+				$httpParsedResponseAr['L_LONGMESSAGE0'] = $httpResponse;
+			}
+
 			if ($GLOBALS['IsAuthorizeNet'])
 			{
 				$httpResponse = trim($httpResponse, "\xEF\xBB\xBF");
@@ -2029,8 +2053,8 @@ function redirect()
 		}
 
 		extract($GLOBALS);
-		$GLOBALS['method'] = 'DoDirectPayment';
-		$GLOBALS['result_field'] = 'ACK';
+		$GLOBALS['method'] = 'cURL';
+		$GLOBALS['result_field'] = '';
 		$GLOBALS['error_output'] = '<div>We are sorry. Your credit card payment has failed. Details of the error are below:</div><div style="font-weight: bold; color: red; margin: 10px 0px 10px 0px;">[error]</div><div>Please log back into your account to pay for your existing submission. If you need further help please contact ' . mail_to($config['admin_email']) . '.</div>';
 		if ($page == 'login') {$GLOBALS['error_output'] .= $back_to_account;}
 		$payment_status = false;
@@ -2038,6 +2062,7 @@ function redirect()
 		foreach ($payment_vars['out'] as $key => $value)
 		{
 			if ($value['name'] == 'METHOD') {$GLOBALS['method'] = $value['value'];}
+			if ($value['name'] == 'PayPal_REST_clientID' || $value['name'] == 'PayPal_REST_secret') {$PayPal_REST_temp[$value['name']] = $value['value'];}
 			if ($value['name'] == 'name' || $value['name'] == 'transactionKey' || $value['name'] == 'refId') {$AuthorizeNet_temp[] = $value['name'];}
 		}
 
@@ -2045,6 +2070,106 @@ function redirect()
 		{
 			if ($value['value'] == '$result_code') {$GLOBALS['result_field'] = $value['name'];}
 			if ($value['value'] == '$error') {$GLOBALS['errors'][$value['name']] = '';}
+		}
+
+		$GLOBALS['IsPayPal_REST'] = false;
+		if (isset($PayPal_REST_temp) && count($PayPal_REST_temp) == 2) {$GLOBALS['IsPayPal_REST'] = true;}
+
+		if ($GLOBALS['IsPayPal_REST'])
+		{
+			function curl_paypal($endpoint, $http_header_array, $post_fields)
+			{
+				extract($GLOBALS);
+
+				$curl = curl_init($endpoint);
+				curl_setopt($curl, CURLOPT_USERPWD, $PayPal_REST_clientID . ':' . $PayPal_REST_secret);
+				curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($curl, CURLOPT_HTTPHEADER, $http_header_array);
+				curl_setopt($curl, CURLOPT_POST, 1);
+				curl_setopt($curl, CURLOPT_POSTFIELDS, $post_fields);
+				$response = curl_exec($curl);
+				curl_close($curl);
+				if (!$response) {$GLOBALS['error_output'] = str_replace('[error]', 'cURL failed: ' . curl_error($curl) . ' (' . curl_errno($curl) . ')', $GLOBALS['error_output']); exit_error();}
+				$response = json_decode($response, true);
+				return $response;
+			}
+
+			$GLOBALS['PayPal_REST_clientID'] = $PayPal_REST_temp['PayPal_REST_clientID'];
+			$GLOBALS['PayPal_REST_secret'] = $PayPal_REST_temp['PayPal_REST_secret'];
+			$PayPal_REST_requestID = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(get_token(), 4));
+			include_once('inc_lists.php');
+
+			$endpoint = $url . '/v1/oauth2/token';
+			$http_header_array = array('Content-Type: application/x-www-form-urlencoded');
+			$post_fields = 'grant_type=client_credentials';
+			$response = curl_paypal($endpoint, $http_header_array, $post_fields);
+			if (isset($response['error']) && isset($response['error_description'])) {$GLOBALS['error_output'] = str_replace('[error]', $response['error'] . ' : ' . $response['error_description'], $GLOBALS['error_output']); exit_error();}
+			if (isset($response['access_token'])) {$PayPal_REST_access_token = $response['access_token'];} else {$GLOBALS['error_output'] = str_replace('[error]', 'Invalid access_token', $GLOBALS['error_output']); exit_error();}
+
+			$PayPal_REST_json = '
+			{
+				"intent": "CAPTURE",
+				"purchase_units":
+				[
+					{
+						"custom_id": "[custom_id]",
+						"description": "[description]",
+						"amount":
+						{
+							"currency_code": "[currency_code]",
+							"value": "[value]"
+						}
+					}
+				],
+				"payer":
+				{
+					"name":
+					{
+						"given_name": "[given_name]",
+						"surname": "[surname]"
+					},
+					"email_address": "[email_address]",
+					"address":
+					{
+						"address_line_1": "[address_line_1]",
+						"address_line_2": "[address_line_2]",
+						"admin_area_2": "[admin_area_2]",
+						"admin_area_1": "[admin_area_1]",
+						"postal_code": "[postal_code]",
+						"country_code": "[country_code]"
+					}
+				},
+				"payment_source":
+				{
+					"card":
+					{
+						"number": "[number]",
+						"expiry": "[expiry]",
+						"security_code": "[security_code]"
+					}
+				}
+			}
+			';
+
+			$prep_array = prep_payment_vars('post');
+			foreach ($prep_array as $key => $value)
+			{
+				if ($key == 'country_code') {$value = convert_country_codes($value);}
+				$PayPal_REST_json = str_replace("[$key]", $value, $PayPal_REST_json);
+			}
+
+			$endpoint = $url . '/v2/checkout/orders';
+			$http_header_array = array('Authorization: Bearer ' . $PayPal_REST_access_token, 'PayPal-Request-Id: ' . $PayPal_REST_requestID, 'Content-Type: application/json');
+			$post_fields = $PayPal_REST_json;
+			$response = curl_paypal($endpoint, $http_header_array, $post_fields);
+
+			$httpParsedResponseAr['status'] = '';
+			$httpParsedResponseAr['error'] = '';
+			if (isset($response['id']) && isset($response['status'])) {$httpParsedResponseAr['status'] = $response['status'];}
+			if ($httpParsedResponseAr['status'] != $config['success_result_code'])
+			{
+				if (isset($response['name']) && isset($response['details'])) {$httpParsedResponseAr['error'] .= $response['name']; $httpParsedResponseAr['error'] .= '<pre>' . print_r($response['details'], true) . '</pre>';}
+			}
 		}
 
 		$GLOBALS['IsAuthorizeNet'] = false;
@@ -2109,7 +2234,7 @@ function redirect()
 			$nvp = $AuthorizeNet_json;
 		}
 
-		$httpParsedResponseAr = PPHttpPost($GLOBALS['method'], $nvp, $url);
+		if (!isset($httpParsedResponseAr)) {$httpParsedResponseAr = PPHttpPost($GLOBALS['method'], $nvp, $url);}
 
 		if (strpos($config['success_result_code'], '|') !== false)
 		{
