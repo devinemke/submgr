@@ -2059,14 +2059,14 @@ function redirect()
 		if ($page == 'login') {$GLOBALS['error_output'] .= $back_to_account;}
 		$payment_status = false;
 
-		foreach ($payment_vars['out'] as $key => $value)
+		foreach ($payment_vars['out'] as $value)
 		{
 			if ($value['name'] == 'METHOD') {$GLOBALS['method'] = $value['value'];}
 			if ($value['name'] == 'PayPal_REST_clientID' || $value['name'] == 'PayPal_REST_secret') {$PayPal_REST_temp[$value['name']] = $value['value'];}
 			if ($value['name'] == 'name' || $value['name'] == 'transactionKey' || $value['name'] == 'refId') {$AuthorizeNet_temp[] = $value['name'];}
 		}
 
-		foreach ($payment_vars['in'] as $key => $value)
+		foreach ($payment_vars['in'] as $value)
 		{
 			if ($value['value'] == '$result_code') {$GLOBALS['result_field'] = $value['name'];}
 			if ($value['value'] == '$error') {$GLOBALS['errors'][$value['name']] = '';}
@@ -2079,7 +2079,7 @@ function redirect()
 		{
 			function curl_paypal($endpoint, $http_header_array, $post_fields)
 			{
-				extract($GLOBALS);
+				extract($GLOBALS['PayPal_REST_temp']);
 
 				$curl = curl_init($endpoint);
 				curl_setopt($curl, CURLOPT_USERPWD, $PayPal_REST_clientID . ':' . $PayPal_REST_secret);
@@ -2094,8 +2094,7 @@ function redirect()
 				return $response;
 			}
 
-			$GLOBALS['PayPal_REST_clientID'] = $PayPal_REST_temp['PayPal_REST_clientID'];
-			$GLOBALS['PayPal_REST_secret'] = $PayPal_REST_temp['PayPal_REST_secret'];
+			$GLOBALS['PayPal_REST_temp'] = $PayPal_REST_temp;
 			$PayPal_REST_requestID = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(get_token(), 4));
 			include_once('inc_lists.php');
 

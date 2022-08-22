@@ -2,7 +2,7 @@
 $payment_vars_presets['PayPal_Payments_Standard']['sql'] = 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
 (1, "out", "cmd", "_xclick"),
 (2, "out", "business", "paypal@example.com"),
-(3, "out", "item_name", "Submission"),
+(3, "out", "item_name", "Example Submission"),
 (4, "out", "invoice", "$submission_id"),
 (5, "out", "notify_url", "https://www.example.com/payment.php"),
 (6, "out", "return", "https://www.example.com/payment.php"),
@@ -79,7 +79,7 @@ $payment_vars_presets['PayPal_Payments_Pro_REST']['sql'] = 'INSERT INTO `payment
 (1, "out", "PayPal_REST_clientID", "PayPal_REST_clientID"),
 (2, "out", "PayPal_REST_secret", "PayPal_REST_secret"),
 (3, "out", "custom_id", "$submission_id"),
-(4, "out", "description", "Litmag Submission"),
+(4, "out", "description", "Example Submission"),
 (5, "out", "currency_code", "USD"),
 (6, "out", "value", "$price"),
 (7, "out", "given_name", "$first_name"),
