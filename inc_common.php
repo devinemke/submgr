@@ -874,7 +874,8 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 
 			foreach ($payment_vars_config as $value)
 			{
-				$sql = 'UPDATE config SET value = "' . $config_defaults[$value] . '" WHERE name = "' . $value . '"';
+				if ($config_defaults[$value] == '') {$value_sql = 'NULL';} else {$value_sql = "'" . $config_defaults[$value] . "'";}
+				$sql = "UPDATE config SET value = $value_sql WHERE name = '$value'";
 				$result = mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT config FROM payment_vars_preset');
 			}
 		}
@@ -1583,11 +1584,12 @@ function display($arg)
 		$output .= '<hr><table style="border-collapse: collapse;"><tr><td class="row_left">price:</td><td><b>' . $config['currency_symbol'] . $price . '</b></td></tr>';
 		if (isset($cc_number) && $cc_number)
 		{
+			$cc_number_display = 'ending in ' . substr($cc_number, -4);
 			if ($config['cc_exp_date_format'] == 'MMYYYY') {$cc_exp_date = $cc_exp_month . $cc_exp_year;}
 			if ($config['cc_exp_date_format'] == 'MM-YYYY') {$cc_exp_date = $cc_exp_month . '-' . $cc_exp_year;}
 			if ($config['cc_exp_date_format'] == 'YYYYMM') {$cc_exp_date = $cc_exp_year . $cc_exp_month;}
 			if ($config['cc_exp_date_format'] == 'YYYY-MM') {$cc_exp_date = $cc_exp_year . '-' . $cc_exp_month;}
-			$output .= '<tr><td class="row_left">credit card number:</td><td><b>' . $cc_number . '</b></td></tr><tr><td class="row_left">expiration date:</td><td><b>' . $cc_exp_date . '</b></td></tr><tr><td class="row_left">card security code:</td><td><b>' . $cc_csc . '</b></td></tr>';
+			$output .= '<tr><td class="row_left">credit card number:</td><td><b>' . $cc_number_display . '</b></td></tr><tr><td class="row_left">expiration date:</td><td><b>' . $cc_exp_date . '</b></td></tr><tr><td class="row_left">card security code:</td><td><b>' . $cc_csc . '</b></td></tr>';
 		}
 		$output .= '</table>';
 	}
@@ -2167,7 +2169,12 @@ function redirect()
 			if (isset($response['id']) && isset($response['status'])) {$httpParsedResponseAr['status'] = $response['status'];}
 			if ($httpParsedResponseAr['status'] != $config['success_result_code'])
 			{
-				if (isset($response['name']) && isset($response['details'])) {$httpParsedResponseAr['error'] .= $response['name']; $httpParsedResponseAr['error'] .= '<pre>' . print_r($response['details'], true) . '</pre>';}
+				if (isset($response['name']) && isset($response['details']))
+				{
+					$httpParsedResponseAr['error'] .= $response['name'];
+					foreach ($response['details'] as $value) {$httpParsedResponseAr['error'] .= '<pre>' . print_r($value, true) . '</pre>';}
+					$httpParsedResponseAr['error'] = str_replace('Array', '', $httpParsedResponseAr['error']);
+				}
 			}
 		}
 

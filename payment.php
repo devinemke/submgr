@@ -6,29 +6,29 @@ if (!isset($payment_vars['in']) || (isset($payment_vars['in']) && !$payment_vars
 
 $fields = array(
 'submission_id' => '',
-'result_code' => ''
+'result_code' => '',
+'hash' => ''
 );
 
-foreach ($payment_vars['out'] as $key => $value)
-{
-	if ($value['value'] == '$hash') {$fields['hash'] = $value['name']; break;}
-}
-
-foreach ($payment_vars['in'] as $key => $value)
+foreach ($payment_vars['in'] as $value)
 {
 	foreach ($fields as $sub_key => $sub_value)
 	{
-		if ($value['value'] == '$' . $sub_key) {$fields[$sub_key] = $value['name'];}
+		if ($value['value'] == '$' . $sub_key) {$fields[$sub_key] = $value['name']; break;}
 	}
 }
 
 foreach ($fields as $key => $value)
 {
-	if (isset($_REQUEST[$value])) {$$key = $_REQUEST[$value];} else {$$key = '';}
+	if (isset($_REQUEST[$value])) {$$key = $_REQUEST[$value];} else {exit('unauthorized access: ' . $key . ' not set');}
 }
+
+$hash_compare = get_hash($submission_id);
+if ($hash_compare != $hash) {exit('unauthorized access: invalid hash');}
 
 $ipn = false;
 if (isset($_POST['ipn_track_id'])) {$ipn = true;}
+// if (isset($_POST['txn_id'])) {$ipn = true;}
 
 if ($ipn)
 {
@@ -41,9 +41,11 @@ if ($ipn)
 		$req .= "&$key=$value";
 	}
 
+	// $url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+	$url = 'https://www.paypal.com/cgi-bin/webscr';
+
 	$ch = curl_init();
-	// curl_setopt($ch, CURLOPT_URL, 'https://www.sandbox.paypal.com/cgi-bin/webscr');
-	curl_setopt($ch, CURLOPT_URL, 'https://www.paypal.com/cgi-bin/webscr');
+	curl_setopt($ch, CURLOPT_URL, $url);
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
@@ -74,34 +76,20 @@ if ($ipn)
 	}
 }
 
-if ($submission_id != '' && $result_code != '')
+$sql = 'SELECT date_paid FROM submissions WHERE submission_id = ' . mysqli_real_escape_string($GLOBALS['db_connect'], $submission_id);
+$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit('query failure: SELECT submissions payment');
+if (!mysqli_num_rows($result)) {exit('invalid submission_id');}
+$row = mysqli_fetch_assoc($result);
+
+if (!$row['date_paid'] && strtolower($result_code) == strtolower($config['success_result_code']))
 {
-	if (isset($fields['hash']))
-	{
-		if (!isset($_REQUEST[$fields['hash']])) {exit('unauthorized access: hash not passed');}
-		$hash = get_hash($submission_id);
-		if ($hash != $_REQUEST[$fields['hash']]) {exit('unauthorized access: invalid hash');}
-	}
-
-	$sql = 'SELECT date_paid FROM submissions WHERE submission_id = ' . mysqli_real_escape_string($GLOBALS['db_connect'], $submission_id);
-	$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit('query failure: SELECT submissions payment');
-	if (!mysqli_num_rows($result)) {exit('invalid submission_id');}
-	$row = mysqli_fetch_assoc($result);
-
-	if (!$row['date_paid'] && strtolower($result_code) == strtolower($config['success_result_code']))
-	{
-		$sql = "UPDATE submissions SET date_paid = '$gm_date' WHERE submission_id = " . mysqli_real_escape_string($GLOBALS['db_connect'], $submission_id);
-		$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit('query failure: UPDATE submissions payment');
-	}
-	else
-	{
-		// $sql = 'UPDATE submissions SET date_paid = NULL WHERE submission_id = ' . mysqli_real_escape_string($GLOBALS['db_connect'], $submission_id);
-		// $result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit('query failure: UPDATE submissions payment');
-	}
+	$sql = "UPDATE submissions SET date_paid = '$gm_date' WHERE submission_id = " . mysqli_real_escape_string($GLOBALS['db_connect'], $submission_id);
+	$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit('query failure: UPDATE submissions payment');
 }
 else
 {
-	exit('submission_id or result_code not set');
+	// $sql = 'UPDATE submissions SET date_paid = NULL WHERE submission_id = ' . mysqli_real_escape_string($GLOBALS['db_connect'], $submission_id);
+	// $result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit('query failure: UPDATE submissions payment');
 }
 
 if ($ipn)

@@ -3921,7 +3921,8 @@ else // if staff login
 								{
 									if (strpos($key, 'redirect_url') === false)
 									{
-										$sql = 'UPDATE config SET value = "' . mysqli_real_escape_string($GLOBALS['db_connect'], $value) . '" WHERE name = "' . $key . '"';
+										if ($value == '') {$value_sql = 'NULL';} else {$value_sql = "'" . $value . "'";}
+										$sql = "UPDATE config SET value = $value_sql WHERE name = '$key'";
 										$result = mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT config FROM payment_vars_preset');
 									}
 								}

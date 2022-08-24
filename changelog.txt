@@ -1,4 +1,6 @@
-version 3.40 2022-08-22
+version 3.40 2022-08-24
+- security overhaul of payment.php (hash now required)
+- redacted cc_number in display()
 - upgraded to PHPMailer 6.6.4 (2022-08-22)
 - added support for PayPal Payments Pro REST API (renamed NVP API)
 - added support for Authorize.net
