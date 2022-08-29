@@ -35,7 +35,7 @@ if (INSTALLED)
 	if (isset($_GET['result_code']))
 	{
 		echo '<div class="header">';
-		if (strtolower($_GET['result_code']) == strtolower($config['success_result_code'])) {echo 'Your payment was successfully processed. Thank you for submitting to ' . htmlspecialchars($config['company_name']) . '.';} else {echo 'Your submission was received but your payment was not processed successfully. Please contact ' . mail_to($config['admin_email']) . ' for assistance.';}
+		if (strtolower($_GET['result_code']) == strtolower($config['success_result_code'])) {echo 'Your payment was successfully processed. Thank you for submitting to ' . htmlspecialchars($config['company_name']) . '.';} else {echo '<span class="notice">Your submission was received, but your payment was not processed successfully.<br>Please contact ' . mail_to($config['admin_email']) . ' for assistance.</span>';}
 		echo '</div><br>';
 	}
 }

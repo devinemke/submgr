@@ -635,7 +635,7 @@ if ($continue)
 		// this function is needed because these form buttons will otherwise never get disabled as there are no form check functions
 		function form_submit(arg)
 		{
-			if (typeof submit_clicked == "undefined" || submit_clicked == "cancel")	{return true;}
+			if (typeof submit_clicked == "undefined" || submit_clicked == "cancel") {return true;}
 
 			if (arg == "submissions")
 			{

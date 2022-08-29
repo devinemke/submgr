@@ -567,7 +567,7 @@ $defaults = array(
 	),
 
 	'genres' => array(
-		1	=> array(
+		1 => array(
 			'genre_id' => 1,
 			'name' => 'poetry',
 			'submission_limit' => '0',
@@ -597,37 +597,37 @@ $defaults = array(
 	),
 
 	'groups' => array(
-		'admin'	=> array(
+		'admin' => array(
 			'name' => 'admin',
 			'allowed_forwards' => 'admin,editor,1,2,3,4,5',
 			'blind' => ''
 		),
-		'editor'	=> array(
+		'editor' => array(
 			'name' => 'editor',
 			'allowed_forwards' => 'admin,editor,1,2,3,4,5',
 			'blind' => ''
 		),
-		'1'	=> array(
+		'1' => array(
 			'name' => '1',
 			'allowed_forwards' => 'admin,editor,1,2,3,4,5',
 			'blind' => ''
 		),
-		'2'	=> array(
+		'2' => array(
 			'name' => '2',
 			'allowed_forwards' => 'admin,editor,1,2,3,4,5',
 			'blind' => ''
 		),
-		'3'	=> array(
+		'3' => array(
 			'name' => '3',
 			'allowed_forwards' => 'admin,editor,1,2,3,4,5',
 			'blind' => ''
 		),
-		'4'	=> array(
+		'4' => array(
 			'name' => '4',
 			'allowed_forwards' => 'admin,editor,1,2,3,4,5',
 			'blind' => ''
 		),
-		'5'	=> array(
+		'5' => array(
 			'name' => '5',
 			'allowed_forwards' => 'admin,editor,1,2,3,4,5',
 			'blind' => ''

@@ -220,7 +220,7 @@ function insert_from_array($table, $array)
 function reset_defaults($table, $name, $array = '')
 {
 	@mysqli_query($GLOBALS['db_connect'], "TRUNCATE `$table`") or exit_error('query failure: TRUNCATE ' . $table);
-	if ($array)	{insert_from_array($table, $array);}
+	if ($array) {insert_from_array($table, $array);}
 	$GLOBALS['notice'] = $name . ' settings have been reset to the default values';
 }
 
@@ -1465,7 +1465,7 @@ function form_check()
 
 	if (!$form_check)
 	{
-		echo '<div style="color: red; font-weight: bold;">The following errors were detected:' . $notice_string . 'Please correct these errors and press submit again.</div><br>';
+		echo '<div class="notice">The following errors were detected:' . $notice_string . 'Please correct these errors and press submit again.</div><br>';
 		if ($submodule == 'insert_submission') {form_insert_submission();} else {form_main();}
 		exit_error();
 	}
@@ -1930,7 +1930,7 @@ function get_hash($submission_id)
 {
 	global $defaults, $config;
 
-	foreach ($defaults['config'] as $key => $value)	{if ($value['required']) {$required[$key] = $config[$key];}}
+	foreach ($defaults['config'] as $key => $value) {if ($value['required']) {$required[$key] = $config[$key];}}
 	$required = serialize($required);
 	$required = base64_encode($required);
 	$hash = sha1($required . $submission_id);
@@ -2057,7 +2057,10 @@ function redirect()
 		extract($GLOBALS);
 		$GLOBALS['method'] = 'cURL';
 		$GLOBALS['result_field'] = '';
-		$GLOBALS['error_output'] = '<div>We are sorry. Your credit card payment has failed. Details of the error are below:</div><div style="font-weight: bold; color: red; margin: 10px 0px 10px 0px;">[error]</div><div>Please log back into your account to pay for your existing submission. If you need further help please contact ' . mail_to($config['admin_email']) . '.</div>';
+		$cc_fail_text = '';
+		if ($page == 'home') {$cc_fail_text = 'Your submission was received successfully, but your credit card payment has failed.';}
+		if ($module == 'pay_submission') {$cc_fail_text = 'Your credit card payment has failed.';}
+		$GLOBALS['error_output'] = '<div>We are sorry. ' . $cc_fail_text . ' Details of the error are below:</div><div class="notice" style="margin: 10px 0px 10px 0px;">[error]</div><div>Please log back into your account and click <b>&ldquo;pay now&rdquo;</b> next to your existing unpaid submission to try your payment again.</div><div>If you need further help please contact ' . mail_to($config['admin_email']) . '.</div>';
 		if ($page == 'login') {$GLOBALS['error_output'] .= $back_to_account;}
 		$payment_status = false;
 
@@ -2171,6 +2174,12 @@ function redirect()
 			{
 				if (isset($response['name']) && isset($response['details']))
 				{
+					if ($response['name'] == 'UNPROCESSABLE_ENTITY' && strlen($cc_csc) > 3)
+					{
+						$response['details'][0]['issue'] = 'CSC/CVV LENGTH';
+						$response['details'][0]['description'] = 'Invalid card security code';
+					}
+
 					$httpParsedResponseAr['error'] .= $response['name'];
 					foreach ($response['details'] as $value) {$httpParsedResponseAr['error'] .= '<pre>' . print_r($value, true) . '</pre>';}
 					$httpParsedResponseAr['error'] = str_replace('Array', '', $httpParsedResponseAr['error']);

@@ -36,7 +36,7 @@ echo '
 
 			if ($config)
 			{
-				if ($config['test_mode']) {echo '<div class="small" style="font-weight: bold; color: red;">[ TEST MODE ]</div>';}
+				if ($config['test_mode']) {echo '<div class="small notice">[ TEST MODE ]</div>';}
 				if ($config['logo_path']) {echo '<a href="' . $_SERVER['PHP_SELF'] . '?kill_session=1"><img src="' . $config['logo_path'] . '" alt="' . htmlspecialchars($config['company_name']) . ' logo"></a><br>';}
 				if ($config['company_name'] && $config['show_company_name']) {echo '<div style="font-size: ' . $font_size_plus10 . 'pt; font-weight: bold;"><a href="' . $_SERVER['PHP_SELF'] . '?kill_session=1">' . htmlspecialchars($config['company_name']) . '</a></div>';}
 			}

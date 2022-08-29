@@ -955,7 +955,7 @@ else // if staff login
 					$header1 .= '</b></td></tr>';
 				}
 
-				$header1 .=	'<tr class="foreground"><td class="row_left">total:</td><td><b>' . $result_count . '</b></td></tr></table>';
+				$header1 .= '<tr class="foreground"><td class="row_left">total:</td><td><b>' . $result_count . '</b></td></tr></table>';
 
 				if (isset($_REQUEST['contact_id']) && $_REQUEST['contact_id'])
 				{
