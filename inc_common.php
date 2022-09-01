@@ -70,7 +70,7 @@ $fields = array(
 'cc_number' => array('name' => 'credit card number', 'type' => 'text', 'section' => 'payment', 'maxlength' => '50', 'required' => '', 'error' => ''),
 'cc_exp_month' => array('name' => 'expiration month', 'type' => 'select', 'section' => 'payment', 'maxlength' => '2', 'required' => '', 'error' => '', 'list' => 'months'),
 'cc_exp_year' => array('name' => 'expiration year', 'type' => 'select', 'section' => 'payment', 'maxlength' => '4', 'required' => '', 'error' => '', 'list' => 'years'),
-'cc_csc' => array('name' => 'card security code', 'type' => 'text', 'section' => 'payment', 'maxlength' => '50', 'required' => '', 'error' => '')
+'cc_csc' => array('name' => 'card security code', 'type' => 'text', 'section' => 'payment', 'maxlength' => '4', 'required' => '', 'error' => '')
 );
 
 $modules = array(
@@ -1296,6 +1296,7 @@ function form_post()
 	</form>
 	';
 
+	kill_session();
 	exit_error();
 }
 
@@ -1584,7 +1585,8 @@ function display($arg)
 		$output .= '<hr><table style="border-collapse: collapse;"><tr><td class="row_left">price:</td><td><b>' . $config['currency_symbol'] . $price . '</b></td></tr>';
 		if (isset($cc_number) && $cc_number)
 		{
-			$cc_number_display = 'ending in ' . substr($cc_number, -4);
+			// $cc_number_display = 'ending in ' . substr($cc_number, -4);
+			$cc_number_display = str_repeat('xxxx ', 3) . substr($cc_number, -4);
 			if ($config['cc_exp_date_format'] == 'MMYYYY') {$cc_exp_date = $cc_exp_month . $cc_exp_year;}
 			if ($config['cc_exp_date_format'] == 'MM-YYYY') {$cc_exp_date = $cc_exp_month . '-' . $cc_exp_year;}
 			if ($config['cc_exp_date_format'] == 'YYYYMM') {$cc_exp_date = $cc_exp_year . $cc_exp_month;}
@@ -2058,7 +2060,7 @@ function redirect()
 		$GLOBALS['method'] = 'cURL';
 		$GLOBALS['result_field'] = '';
 		$cc_fail_text = '';
-		if ($page == 'home') {$cc_fail_text = 'Your submission was received successfully, but your credit card payment has failed.';}
+		if ($page == 'home' || ($page == 'login' && $module == 'submit')) {$cc_fail_text = 'Your submission was received successfully, but your credit card payment has failed.';}
 		if ($module == 'pay_submission') {$cc_fail_text = 'Your credit card payment has failed.';}
 		$GLOBALS['error_output'] = '<div>We are sorry. ' . $cc_fail_text . ' Details of the error are below:</div><div class="notice" style="margin: 10px 0px 10px 0px;">[error]</div><div>Please log back into your account and click <b>&ldquo;pay now&rdquo;</b> next to your existing unpaid submission to try your payment again.</div><div>If you need further help please contact ' . mail_to($config['admin_email']) . '.</div>';
 		if ($page == 'login') {$GLOBALS['error_output'] .= $back_to_account;}
@@ -2174,14 +2176,18 @@ function redirect()
 			{
 				if (isset($response['name']) && isset($response['details']))
 				{
-					if ($response['name'] == 'UNPROCESSABLE_ENTITY' && strlen($cc_csc) > 3)
+					if ($response['name'] == 'UNPROCESSABLE_ENTITY' && $response['details'][0]['issue'] == 'UNPROCESSABLE_ENTITY' && $response['details'][0]['description'] == 'UNPROCESSABLE_ENTITY' && !isset($response['details'][0]['field']) && !isset($response['details'][0]['location']) && strlen($cc_csc) > 3)
 					{
 						$response['details'][0]['issue'] = 'CSC/CVV LENGTH';
 						$response['details'][0]['description'] = 'Invalid card security code';
 					}
 
 					$httpParsedResponseAr['error'] .= $response['name'];
-					foreach ($response['details'] as $value) {$httpParsedResponseAr['error'] .= '<pre>' . print_r($value, true) . '</pre>';}
+					foreach ($response['details'] as $value)
+					{
+						unset($value['value']);
+						$httpParsedResponseAr['error'] .= '<pre>' . print_r($value, true) . '</pre>';
+					}
 					$httpParsedResponseAr['error'] = str_replace('Array', '', $httpParsedResponseAr['error']);
 				}
 			}
@@ -2260,6 +2266,9 @@ function redirect()
 		{
 			if ($httpParsedResponseAr[$GLOBALS['result_field']] == $config['success_result_code']) {$payment_status = true;}
 		}
+
+		$keep = array('login', 'contact', 'csrf_token');
+		flush_session($keep);
 
 		if ($payment_status)
 		{

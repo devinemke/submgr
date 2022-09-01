@@ -1438,6 +1438,6 @@ if ($module == 'logout')
 	kill_session('regenerate'); // session needed for form_hash()
 	$page = 'home';
 	$display_login = true;
-	$output = '<div class="header">You have successfully logged out. Thank you for using the ' . htmlspecialchars($config['company_name']) . ' Submission Manager.</div><br>';
+	$output = '<div class="header">You have successfully logged out. Thank you for using the ' . htmlspecialchars((string) $config['company_name']) . ' Submission Manager.</div><br>';
 }
 ?>

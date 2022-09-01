@@ -1,4 +1,5 @@
-version 3.40 2022-08-24
+version 3.40 2022-09-01
+- added kill_session() to form_post() + flush_session() to redirect()
 - security overhaul of payment.php (hash now required)
 - redacted cc_number in display()
 - upgraded to PHPMailer 6.6.4 (2022-08-22)
