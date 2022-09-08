@@ -442,6 +442,14 @@ $defaults = array(
 			'type' => 'checkbox',
 			'required' => '',
 			'allowed' => ''
+		),
+		'check_updates' => array(
+			'name' => 'check_updates',
+			'value' => 'Y',
+			'description' => 'check for new versions of Submission Manager',
+			'type' => 'checkbox',
+			'required' => '',
+			'allowed' => ''
 		)
 	),
 

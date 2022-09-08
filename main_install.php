@@ -215,10 +215,10 @@ if ($step == 4)
 			$result = @mysqli_query($GLOBALS['db_connect'], $value);
 			if (!$result)
 			{
-				echo 'There was an error creating tables. Please speak to your system administrator. Below is a description of the error:<p style="font-weight: bold;">' . mysqli_error($GLOBALS['db_connect']) . '</p>';
+				echo '<p>There was an error creating tables. Please speak to your system administrator. Below is a description of the error:</p><p class="notice">' . mysqli_error($GLOBALS['db_connect']) . '</p>';
 				$step = 0;
 				break;
-				exit();
+				exit_error();
 			}
 		}
 	}

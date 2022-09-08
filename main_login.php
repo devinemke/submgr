@@ -4438,7 +4438,7 @@ else // if staff login
 							$sql = 'SHOW VARIABLES LIKE "%database%"';
 							$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: SHOW VARIABLES');
 							while ($row = mysqli_fetch_assoc($result)) {$show_varibles[$row['Variable_name']] = $row['Value'];}
-							if (strpos($show_varibles['character_set_database'], 'utf8') === false || $show_varibles['collation_database'] != 'utf8_unicode_ci')
+							if (strpos($show_varibles['character_set_database'], 'utf8') === false || strpos($show_varibles['collation_database'], 'utf8') === false)
 							{
 								$sql = 'ALTER DATABASE `' . $config_db['name'] . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
 								$result = @mysqli_query($GLOBALS['db_connect'], $sql);
@@ -4477,19 +4477,16 @@ else // if staff login
 							}
 
 							// check tables for UTF-8
-							foreach ($show_tables as $key => $value)
+							$result = @mysqli_query($GLOBALS['db_connect'], 'SHOW TABLE STATUS') or exit_error('query failure: SHOW TABLE STATUS');
+							while ($row = mysqli_fetch_assoc($result))
 							{
-								$result = @mysqli_query($GLOBALS['db_connect'], 'SHOW TABLE STATUS') or exit_error('query failure: SHOW TABLE STATUS');
-								while ($row = mysqli_fetch_assoc($result))
-								{
-									$show_tables_status[$row['Name']] = $row;
+								$show_tables_status[$row['Name']] = $row;
 
-									if ($row['Collation'] && $row['Collation'] != 'utf8_unicode_ci')
-									{
-										$sql = 'ALTER TABLE `' . $row['Name'] . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
-										@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: ALTER TABLE UTF-8');
-										$updates[] = 'table altered to UTF-8: ' . $row['Name'];
-									}
+								if ($row['Collation'] && strpos($row['Collation'], 'utf8') === false)
+								{
+									$sql = 'ALTER TABLE `' . $row['Name'] . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
+									@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: ALTER TABLE UTF-8');
+									$updates[] = 'table altered to UTF-8: ' . $row['Name'];
 								}
 							}
 
@@ -4550,7 +4547,7 @@ else // if staff login
 									// mySQL >= 8 deprecated parentheses in integer types
 									if (preg_match('~\(.*\)~', $describe[$key][$sub_key]['Type'])) {$type_compare = $sub_value['type'];} else {$type_compare = preg_replace('~\(.*\)~', '', $sub_value['type']);}
 									if (strtolower($type_compare) != strtolower($describe[$key][$sub_key]['Type'])) {$needs[] = 'type';}
-									if ($describe[$key][$sub_key]['Collation'] && $describe[$key][$sub_key]['Collation'] != 'utf8_unicode_ci') {$needs[] = 'utf8';}
+									if ($describe[$key][$sub_key]['Collation'] && strpos($describe[$key][$sub_key]['Collation'], 'utf8') === false) {$needs[] = 'utf8';}
 									if ($needs)
 									{
 										if (in_array('utf8', $needs)) {$utf8 = ' CHARACTER SET utf8 COLLATE utf8_unicode_ci';} else {$utf8 = '';}
@@ -4570,7 +4567,6 @@ else // if staff login
 								{
 									if ($row['Key_name'] != 'PRIMARY') {$db_indexes[$key][$row['Key_name']][] = $row['Column_name'];}
 								}
-
 								foreach ($value['indexes'] as $sub_key => $sub_value)
 								{
 									if ($sub_value['type'] != 'PRIMARY KEY') {$schema_indexes[$key][$sub_key] = $sub_value['fields'];}

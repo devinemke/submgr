@@ -70,11 +70,14 @@ echo '
 
 				if ($_SESSION['contact']['access'] == 'admin' && $submit == 'login')
 				{
-					check_version('SubMgr', true);
-					if ($version_remote != '???' && $version_local < $version_remote) {echo '<div class="small" style="font-weight: bold;"><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=maintenance&submodule=versions" style="color: red;">new Submission Manager version available!</a></div>';}
+					if ($config['check_updates'])
+					{
+						check_version('SubMgr', true);
+						if ($version_remote != '???' && $version_local < $version_remote) {echo '<div class="small notice"><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=maintenance&submodule=versions" style="color: red;">new Submission Manager version available!</a></div>';}
+					}
 
 					check_version('structure');
-					if ($version_structure && $version_structure < $version_local) {echo '<div class="small" style="font-weight: bold;"><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=maintenance&submodule=update_structure" style="color: red;">Data Structure update required!</a></div>';}
+					if ($version_structure && $version_structure < $version_local) {echo '<div class="small notice"><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=maintenance&submodule=update_structure" style="color: red;">Data Structure update required!</a></div>';}
 				}
 			}
 
