@@ -1,10 +1,10 @@
-version 3.40 2022-09-09
+version 3.40 2022-10-07
+- upgraded to PHPMailer 6.6.5 (2022-10-07)
 - added more fuzzy checks for "utf8" in /maintenance/update data structure/ to allow for other UTF-8 character sets + collations
 - added $config['check_updates'] (default = Y)
 - added kill_session() to form_post() + flush_session() to redirect()
 - security overhaul of payment.php (hash now required)
 - redacted cc_number in display()
-- upgraded to PHPMailer 6.6.4 (2022-08-22)
 - added support for PayPal Payments Pro REST API (renamed NVP API)
 - added support for Authorize.net
 - added support for Google reCAPTCHA v3
