@@ -461,7 +461,7 @@ $defaults = array(
 			'status' => 'accepted',
 			'active' => 'Y',
 			'access_groups' => '1,2,3,4,5',
-			'from_reader' => 'Y',
+			'from_reader' => '',
 			'subject' => 'Congratulations from [company_name]!',
 			'body' => 'Dear [writer]:' . "\n\n" . 'Congratulations! Your submission "[title]" has been selected for publication in [company_name].' . "\n\n" . '[message]' . "\n\n" . 'Sincerely,' . "\n\n" . 'The Editors of [company_name]'
 		),
@@ -472,7 +472,7 @@ $defaults = array(
 			'status' => 'withdrawn',
 			'active' => 'Y',
 			'access_groups' => '1,2,3,4,5',
-			'from_reader' => 'Y',
+			'from_reader' => '',
 			'subject' => 'Your submission to [company_name]',
 			'body' => 'Dear [writer]:' . "\n\n" . 'Your submission "[title]" has been withdrawn from consideration by [company_name].' . "\n\n" . '[message]' . "\n\n" . 'Sincerely,' . "\n\n" . 'The Editors of [company_name]'
 		),
@@ -483,7 +483,7 @@ $defaults = array(
 			'status' => 'received',
 			'active' => 'Y',
 			'access_groups' => '1,2,3,4,5',
-			'from_reader' => 'Y',
+			'from_reader' => '',
 			'subject' => '[company_name] submission #[submission_id] forwarded by [reader]',
 			'body' => '[reader] has forwarded you the submission "[title]" by [writer]. Please visit [app_url] to log in and check your forwarded submissions.' . "\n\n" . '[message]'
 		),
@@ -494,7 +494,7 @@ $defaults = array(
 			'status' => 'received',
 			'active' => 'Y',
 			'access_groups' => '1,2,3,4,5',
-			'from_reader' => 'Y',
+			'from_reader' => '',
 			'subject' => '[company_name] submission #[submission_id] forwarded by [reader]',
 			'body' => '[reader] has forwarded you the submission "[title]" by [writer]. Please visit [app_url] to log in and check your forwarded submissions.' . "\n\n" . '[message]'
 		),
@@ -505,7 +505,7 @@ $defaults = array(
 			'status' => 'received',
 			'active' => 'Y',
 			'access_groups' => '1,2,3,4,5',
-			'from_reader' => 'Y',
+			'from_reader' => '',
 			'subject' => '[company_name] submission #[submission_id] forwarded by [reader]',
 			'body' => '[reader] has forwarded you the submission "[title]" by [writer]. Please visit [app_url] to log in and check your forwarded submissions.' . "\n\n" . '[message]'
 		),
@@ -516,7 +516,7 @@ $defaults = array(
 			'status' => 'received',
 			'active' => 'Y',
 			'access_groups' => '1,2,3,4,5',
-			'from_reader' => 'Y',
+			'from_reader' => '',
 			'subject' => '[company_name] submission #[submission_id] forwarded by [reader]',
 			'body' => '[reader] has forwarded you the submission "[title]" by [writer]. Please visit [app_url] to log in and check your forwarded submissions.' . "\n\n" . '[message]'
 		),
