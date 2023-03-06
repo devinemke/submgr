@@ -1,6 +1,6 @@
-version 3.40 2022-12-15
+version 3.40 2023-03-06
+- upgraded to PHPMailer 6.8.0 (2023-03-06)
 - Action Types: "from_reader" all off by default
-- upgraded to PHPMailer 6.7.1 (2022-12-08)
 - added more fuzzy checks for "utf8" in /maintenance/update data structure/ to allow for other UTF-8 character sets + collations
 - added $config['check_updates'] (default = Y)
 - added kill_session() to form_post() + flush_session() to redirect()
