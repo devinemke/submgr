@@ -96,7 +96,7 @@ a:hover
 <div style="text-align: center;">
 <div style="font-size: 25pt; font-weight: bold;">Submission Manager</div>
 <div style="font-size: 15pt;">System Documentation</div>
-<div style="font-size: 10pt;">updated 2022-09-07<br>&copy;2022 Devin Emke</div>
+<div style="font-size: 10pt;">updated 2023-04-16<br>&copy;2023 Devin Emke</div>
 </div>
 
 <hr>
@@ -193,15 +193,15 @@ a:hover
 	</ul>
 
 	<p>Submission Manager is designed to be accessed by a web browser. It has been tested on a wide variety of current browsers including Chrome, Firefox, Safari, Internet Explorer, and Edge. Some features may not work on earlier versions of these browsers, but newer versions of all of these browsers are freely available.</p>
-	<p>Submission Manager requires that a user&rsquo;s browser be set to accept cookies, and to allow popup windows. Some popular browsers do not do either of these by default. Staff members can change these defaults in the browser settings. For information on how to do this, refer to the browser&rsquo;s documentation.</p>
+	<p>Submission Manager requires that a user&rsquo;s browser is set to accept cookies. Some popular browsers do not do enable this by default. Staff members can change these defaults in the browser settings. For information on how to do this, refer to the browser&rsquo;s documentation.</p>
 	<p><b>A brief note about file permissions:</b> Submission Manager is written in PHP and needs to be able to read and write files and folders to your web server. In a UNIX environment it is necessary that the PHP user has full read/write access to the parts of your server&rsquo;s file system where Submission Manager stores its files. This can usually be accomplished by configuring PHP to run as the same UNIX user as the one that owns your files/folders.</p>
 
 	<div class="header_clear" id="installation_2">Before You Install Submission Manager</div>
 
 	<ul>
 	<li>Create a directory on your server where Submission Manager will be stored: (for example: <b>https://www.example.com/submissions</b>).<br><b>Important:</b> This installation directory must be readable and writeable to the web server. Refer to your server&rsquo;s documentation for help with changing read/write permissions.</li>
-	<li>Create a MySQL database. Submission Manager does not create the MySQL database for you. Before you begin installation, you should create an empty named database (for example: submgr). If you have databases on the server for other uses, it is recommend that you create a separate database for Submission Manager.</li>
-	<li>Know your MySQL user information. You will need to know your MySQL host name, and know the username and password of a MySQL user who has full read and write privileges to your server.</li>
+	<li>Create a mySQL database. Submission Manager does not create the mySQL database for you. Before you begin installation, you should create an empty named database (for example: <b>submgr</b>). If you have databases on the server for other uses, it is recommend that you create a separate database for Submission Manager.</li>
+	<li>Know your mySQL user information. You will need to know your mySQL host name, and know the username and password of a mySQL user who has full read and write privileges to your server.</li>
 	<li>Know the first name, last name, email address, and password of the first admin level contact you would like to create (the person who will do the initial configuration of the system). The password must be 8-20 characters and cannot contian spaces.</li>
 	</ul>
 
@@ -210,8 +210,8 @@ a:hover
 	<p>The rest of the installation process is done using a web browser. To start the process, type the exact URL of the installation directory (for example: <b>https://www.example.com/submissions</b>) into your web browser&rsquo;s address bar and hit return. You will be led through a 5-step installation process.</p>
 
 	<div class="indent_2">
-		<p><b>Step 1: Database Connection</b><br>Submission Manager needs to be told how to connect to your MySQL database server. You will be asked for your MySQL host name, MySQL username, and MySQL password.</p>
-		<p><b>Step 2: Database Name</b><br>Submission Manager will ask you for the name of the database you intend to use to store Submission Manager data. This is the database you created prior to installation (submgr).</p>
+		<p><b>Step 1: Database Connection</b><br>Submission Manager needs to be told how to connect to your mySQL database server. You will be asked for your mySQL host name, username, and password.</p>
+		<p><b>Step 2: Database Name</b><br>Submission Manager will ask you for the name of the database you intend to use to store Submission Manager data. This is the database you created prior to installation (<b>submgr</b>).</p>
 		<p><b>Step 3: Table Creation</b><br>Submission Manager will create the necessary tables in the database named in step 2. It will also enter default information into some of the tables.</p>
 		<p><b>Step 4: Admin Account Creation</b><br>Submission Manager will now ask you to set up one admin contact to configure the program. More staff accounts can be set up later. To create this admin user you will need to input the first name, last name, email address and password for this contact.</p>
 		<p><b>Step 5: Configuration</b><br>Admin Login: You will be asked to log in to the account you just created to configure the system.</p>
@@ -235,7 +235,7 @@ a:hover
 		<tr class="table"><td class="row_left"><span style="color: red;">*</span> <b>company_name:</b></td><td>Fill in your company name here.</td></tr>
 		<tr class="table"><td class="row_left"><b>show_company_name:</b></td><td>Checking this will display your company name (as listed above) in the upper left corner of the screen on all pages of Submission Manager.</td></tr>
 		<tr class="table"><td class="row_left"><b>logo_path:</b></td><td>Fill in the server path to your company&rsquo;s logo graphic (.gif or .jpeg) for it to appear in the upper left hand corner. The logo can appear in addition to the company name or instead of the company name.</td></tr>
-		<tr class="table"><td class="row_left"><span style="color: red;">*</span> <b>app_url:</b></td><td>The absolute URL to your installation of Submission Manager. (<b>https://www.example.com/submissions/</b>).</td></tr>
+		<tr class="table"><td class="row_left"><span style="color: red;">*</span> <b>app_url:</b></td><td>The absolute URL to your installation of Submission Manager. (<b>https://www.example.com/submissions</b>).</td></tr>
 		<tr class="table"><td class="row_left"><b>fonts:</b></td><td>A comma separated list of fonts to use. Browsers will use the first font available on a user&rsquo;s computer.</td></tr>
 		<tr class="table"><td class="row_left"><b>font_size:</b></td><td>Base font size. Other fonts will be larger/smaller relative to the base.</td></tr>
 		<tr class="table"><td class="row_left"><b>color_background:</b></td><td>The color of the background of the page. The default for this area is white.</td></tr>
@@ -305,7 +305,7 @@ define('INSTALLED', true);
 ?&gt;
 </pre>
 
-		<p>Update the [host], [username], [password], [name], and [port] to match your mySQL connection parameters. The [name] field is the name of the database where you are storing Submission Manager data. Be sure to use a plain ASCII text editor when editing this file (like Windows Notepad). When you have finished editing the file upload it to your web server in the directory where you installed Submission Manager.</p>
+		<p>Update the [host], [username], [password], [name], and [port] to match your mySQL connection parameters. The [name] field is the name of the database where you are storing Submission Manager data. Be sure to use a plain ASCII text editor when editing this file. When you have finished editing the file upload it to your web server in the directory where you installed Submission Manager.</p>
 	</div>
 
 </div>
@@ -313,7 +313,7 @@ define('INSTALLED', true);
 <div class="header_grey" id="backup_header">Backup</div>
 
 <div class="indent_1">
-<p>Submission Manager stores all of your data (contacts, submissions, actions, configuration, etc.) in your mySQL database. <b>It is critical that you regularly backup your data!</b> MySQL comes with a backup utility called <a href="https://dev.mysql.com/doc/refman/5.0/en/mysqldump.html" target="_blank">mysqldump</a>. You can run this utility directly from Submission Manager in the <a href="#staff_5">Maintenance Area</a>. It is highly recommended that you run this backup utility often to make sure that your data is safe. It is further recommended that you automate this process (using cron on a UNIX server or the Task Scheduler on a Windows server). Check with your server administrator or read your server&rsquo;s documentation for more information on how to automate this process.</p>
+<p>Submission Manager stores all of your data (contacts, submissions, actions, configuration, etc.) in your mySQL database. <b>It is critical that you regularly backup your data!</b> mySQL comes with a backup utility called <a href="https://dev.mysql.com/doc/refman/5.0/en/mysqldump.html" target="_blank">mysqldump</a>. You can run this utility directly from Submission Manager in the <a href="#staff_5">Maintenance Area</a>. It is highly recommended that you run this backup utility often to make sure that your data is safe. It is further recommended that you automate this process (using cron on a UNIX server or the Task Scheduler on a Windows server). Check with your server administrator or read your server&rsquo;s documentation for more information on how to automate this process.</p>
 <p style="font-size: 8pt;">The authors of Submission Manager are not responsible for any data loss.</p>
 </div>
 
@@ -324,10 +324,10 @@ define('INSTALLED', true);
 	<p>Submission Manager stores all of your submission data online. It is up to you to protect this data. This is crucial if you are using Submission Manager to collect submission payments.</p>
 	<p>Two important ways to make your Submission Manager installation for more secure:</p>
 	<ol>
-	<li>Run your Submission Manager on a secure server using SSL/TLS (HTTPS). You may have to pay your web host extra for this service.</li>
-	<li>Make sure that you are storing your uploaded submission files (upload_path) in a non-public directory above your server&rsquo;s document root. If you must use a public directory then make sure that this directory and its contents are non-world readable.</li>
+	<li>Run your Submission Manager on a secure server using SSL/TLS (HTTPS).</li>
+	<li>Make sure that you are storing your uploaded submission files (<b>upload_path</b>) in a non-public directory above your server&rsquo;s document root. If you must use a public directory then make sure that this directory and its contents are non-world readable.</li>
 	</ol>
-	<p><b>Security note for those accepting payments with Submission Manager:</b> If you are using submission manager to process payments, you must be running the entire installation over an SSL/TLS encrypted connection. And any links on your website to your Submission Manager installation must use a secure URL. So if you link to your submission page from your home page, the URL should be <b>https://www.example.com/submissions/</b> rather than <b>http://www.example.com/submissions/</b>. It is further recommended that you put in place an automatic redirect for all <b>HTTP</b> traffic to <b>HTTPS</b>. This can done using an Apache .htaccess file.</p>
+	<p><b>Security note for those accepting payments with Submission Manager:</b> If you are using submission manager to process payments, you must be running the entire installation over an SSL/TLS encrypted connection. And any links on your website to your Submission Manager installation must use a secure URL. So if you link to your submission page from your home page, the URL should be <b>https://www.example.com/submissions</b> rather than <b>http://www.example.com/submissions</b>. It is further recommended that you put in place an automatic redirect for all <b>HTTP</b> traffic to <b>HTTPS</b>. This can done using an Apache <b>.htaccess</b> file.</p>
 
 </div>
 
@@ -337,7 +337,7 @@ define('INSTALLED', true);
 
 	<p>You should now point your browser to the directory where Submission Manager is installed. (for example: <b>https://www.example.com/submissions</b>) This page should now contain the form a submitter will see when they enter the system.</p>
 	<p>To understand this process, take some time to make a few test submissions.</p>
-	<p><b>Important Note:</b> If you want to be able to easily remove test contacts and submissions make sure that all test contacts have email addresses that end in <b>@example.com</b> (for example: <b>sally123@example.com</b>). A function included in the maintenance area will allow you to delete all contacts and submissions that come from <b>example.com</b>.</p>
+	<p><b>Important Note:</b> If you want to be able to easily remove test contacts and submissions make sure that all test contacts have email addresses that end in <b>@example.com</b> (for example: <b>sally123@example.com</b>). A function included in the maintenance area will allow you to delete all contacts and submissions that come from <b>@example.com</b>.</p>
 	<p>To create a submission, a contact must first enter all of their data, and then use the &ldquo;choose file&rdquo; button to find their submission file on their computer. When they hit enter, they will be asked to review their data. If their email address is already in the system, they will be prompted to log in to their existing account.</p>
 	<p>Contacts will now be given an opportunity to review their submission information. If they decide it is okay, they can click on &ldquo;continue&rdquo; and their submission will be entered into the system and their account will be created.</p>
 	<p><b>Submission Notes:</b></p>
@@ -699,7 +699,7 @@ define('INSTALLED', true);
 <div class="header_grey" id="payment_header">Using Submission Manager to Collect Payments</div>
 	<div class="indent_1">
 
-		<p>Submission Manager can be used to collect payments for submissions. This can be done globally, or for a specific genre. Before collecting payments, you must first set up an account with a payment gateway, such as PayPal. Your payment configuration will be determined by the requirements of your payment gateway. Submission Manager will send payment information to this gateway, and will receive payment confirmation from this gateway. Your payment gateway will require a return URL. This URL will be the absolute URL of submission manager installation followed by /payment.php. For example: If your submission manager is installed in <b>https://www.example.com/submisssions/</b>, the return URL will be <b>https://www.example.com/submissions/payment.php</b>. In addition to the information above, the areas of the documentation that specifically refer to working with payments and a payment gateway are as follows:</p>
+		<p>Submission Manager can be used to collect payments for submissions. This can be done globally, or for a specific genre. Before collecting payments, you must first set up an account with a payment gateway, such as PayPal. Your payment configuration will be determined by the requirements of your payment gateway. Submission Manager will send payment information to this gateway, and will receive payment confirmation from this gateway. Your payment gateway will require a return URL. This URL will be the absolute URL of submission manager installation followed by /payment.php. For example: If your submission manager is installed in <b>https://www.example.com/submisssions</b>, the return URL will be <b>https://www.example.com/submissions/payment.php</b>. In addition to the information above, the areas of the documentation that specifically refer to working with payments and a payment gateway are as follows:</p>
 
 		<ul>
 		<li><a href="#security_header">Security</a></li>
@@ -723,6 +723,6 @@ define('INSTALLED', true);
 	</div>
 
 <hr>
-<div style="font-size: 8pt;"><b>Submission Manager</b><br>&copy;2022 Devin Emke</div>
+<div style="font-size: 8pt;"><b>Submission Manager</b><br>&copy;2023 Devin Emke</div>
 </body>
 </html>
