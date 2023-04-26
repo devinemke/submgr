@@ -312,7 +312,7 @@ if ($page == 'update')
 		{
 			echo '
 			var action_text = document.getElementById("row_action_type_id").options[document.getElementById("row_action_type_id").selectedIndex].text;
-			if (action_text.match("forward") && !document.getElementById("row_receiver_id").value)
+			if (action_text.indexOf("forward") >= 0 && !document.getElementById("row_receiver_id").value)
 			{
 				document.getElementById("row_receiver_id").className = "error";
 				document.getElementById("label_row_receiver_id").className = "error";
@@ -350,7 +350,7 @@ if ($page == 'update')
 		function nullify_receiver()
 		{
 			var action_text = document.getElementById("row_action_type_id").options[document.getElementById("row_action_type_id").selectedIndex].text;
-			if (!action_text.match("forward")) {document.getElementById("row_receiver_id").value = "";}
+			if (action_text.indexOf("forward") < 0) {document.getElementById("row_receiver_id").value = "";}
 		}
 
 		event_listener("change", "row_action_type_id", function(event) { nullify_receiver(); });

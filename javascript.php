@@ -738,7 +738,7 @@ if ($continue)
 				}
 
 				var action_text = document.getElementById("tag_action_type_id").options[document.getElementById("tag_action_type_id").selectedIndex].text;
-				if (action_text.match("forward") && !document.getElementById("tag_receiver_id").value)
+				if (action_text.indexOf("forward") >= 0 && !document.getElementById("tag_receiver_id").value)
 				{
 					document.getElementById("tag_receiver_id").className = "error";
 					document.getElementById("label_tag_receiver_id").className = "error";
@@ -895,7 +895,7 @@ if ($continue)
 				}
 
 				var action_text = document.getElementById("new_action_type_id").options[document.getElementById("new_action_type_id").selectedIndex].text;
-				if (action_text.match("forward") && !document.getElementById("new_receiver_id").value)
+				if (action_text.indexOf("forward") >= 0 && !document.getElementById("new_receiver_id").value)
 				{
 					document.getElementById("new_receiver_id").className = "error";
 					document.getElementById("label_new_receiver_id").className = "error";
@@ -922,7 +922,7 @@ if ($continue)
 				{
 					var action_text = document.getElementById("search_action_type_id").options[document.getElementById("search_action_type_id").selectedIndex].text;
 
-					if (action_text.match("forward"))
+					if (action_text.indexOf("forward") >= 0)
 					{
 						document.getElementById("search_receiver_id").disabled = false;
 						document.getElementById("search_receiver_id").options[0].text = "anyone";
@@ -940,7 +940,7 @@ if ($continue)
 				{
 					var action_text = document.getElementById("tag_action_type_id").options[document.getElementById("tag_action_type_id").selectedIndex].text;
 
-					if (action_text.match("forward"))
+					if (action_text.indexOf("forward") >= 0)
 					{
 						document.getElementById("tag_receiver_id").disabled = false;
 						document.getElementById("tag_receiver_id").options[0].text = "";
@@ -958,7 +958,7 @@ if ($continue)
 				{
 					var action_text = document.getElementById("new_action_type_id").options[document.getElementById("new_action_type_id").selectedIndex].text;
 
-					if (action_text.match("forward"))
+					if (action_text.indexOf("forward") >= 0)
 					{
 						document.getElementById("new_receiver_id").disabled = false;
 						document.getElementById("new_receiver_id").options[0].text = "";
@@ -1269,7 +1269,7 @@ if ($continue)
 						var id = document.getElementById("form_configuration").elements[i].id;
 						document.getElementById(id).value = document.getElementById(id).value.trim();
 
-						if (document.getElementById(id).name.match("action_type") && !document.getElementById(id).name.match("description") && !document.getElementById(id).name.match("status") && document.getElementById(id).value == "")
+						if (document.getElementById(id).name.indexOf("action_type") >= 0 && document.getElementById(id).name.indexOf("description") < 0 && document.getElementById(id).name.indexOf("status") < 0 && document.getElementById(id).value == "")
 						{
 							document.getElementById(id).className = "error";
 							document.getElementById("label_" + id).className = "error";
@@ -1311,10 +1311,10 @@ if ($continue)
 					{
 						var id = document.getElementById("form_configuration").elements[i].id;
 						document.getElementById(id).value = document.getElementById(id).value.trim();
-						if (document.getElementById(id).name.match("submission_limit")) {document.getElementById(id).value = document.getElementById(id).value.replace(/[^0-9]/g, "");}
-						if (document.getElementById(id).name.match("price")) {document.getElementById(id).value = document.getElementById(id).value.replace(/[^0-9.]/g, "");}
+						if (document.getElementById(id).name.indexOf("submission_limit") >= 0) {document.getElementById(id).value = document.getElementById(id).value.replace(/[^0-9]/g, "");}
+						if (document.getElementById(id).name.indexOf("price") >= 0) {document.getElementById(id).value = document.getElementById(id).value.replace(/[^0-9.]/g, "");}
 
-						if (document.getElementById(id).name.match("name") && !document.getElementById(id).name.match("new") && document.getElementById(id).value == "")
+						if (document.getElementById(id).name.indexOf("name") >= 0 && document.getElementById(id).name.indexOf("new") < 0 && document.getElementById(id).value == "")
 						{
 							document.getElementById(id).className = "error";
 							error += "You cannot use blank genre names";
@@ -1322,7 +1322,7 @@ if ($continue)
 							break;
 						}
 
-						if ((document.getElementById(id).name.match("submission_limit") || document.getElementById(id).name.match("price")) && isNaN(document.getElementById(id).value))
+						if ((document.getElementById(id).name.indexOf("submission_limit") >= 0 || document.getElementById(id).name.indexOf("price") >= 0) && isNaN(document.getElementById(id).value))
 						{
 							document.getElementById(id).className = "error";
 							error += "Submission Limits and Prices must be numeric";
@@ -1330,7 +1330,7 @@ if ($continue)
 							break;
 						}
 
-						if (document.getElementById(id).name.match("submission_limit") && parseInt(document.getElementById(id).value) > 255)
+						if (document.getElementById(id).name.indexOf("submission_limit") >= 0 && parseInt(document.getElementById(id).value) > 255)
 						{
 							document.getElementById(id).className = "error";
 							error += "Maximum submission limit is 255";
@@ -1338,7 +1338,7 @@ if ($continue)
 							break;
 						}
 
-						if (document.getElementById(id).name.match("price") && parseFloat(document.getElementById(id).value) > 9999.99)
+						if (document.getElementById(id).name.indexOf("price") >= 0 && parseFloat(document.getElementById(id).value) > 9999.99)
 						{
 							document.getElementById(id).className = "error";
 							error += "Maximum price is $9999.99";
@@ -1346,7 +1346,7 @@ if ($continue)
 							break;
 						}
 
-						if (document.getElementById(id).name.match("name")) {genre_names[i] = document.getElementById(id).value;}
+						if (document.getElementById(id).name.indexOf("name") >= 0) {genre_names[i] = document.getElementById(id).value;}
 					}
 
 					genre_names.sort();
@@ -1396,16 +1396,16 @@ if ($continue)
 						document.getElementById(id).value = document.getElementById(id).value.trim();
 
 						// get the row index
-						if (document.getElementById(id).id.match("payment_vars"))
+						if (document.getElementById(id).id.indexOf("payment_vars") >= 0)
 						{
 							var split = document.getElementById(id).id.split("_");
 							var payment_var_index = split[2];
 						}
 
 						// build the object properties
-						if (document.getElementById(id).name.match("name") && document.getElementById(id).value) {payment_var_name = document.getElementById(id).value;}
-						if (document.getElementById(id).name.match("value") && document.getElementById(id).value) {payment_var_value = document.getElementById(id).value;}
-						if (document.getElementById(id).name.match("direction") && document.getElementById(id).value) {payment_var_direction = document.getElementById(id).value;}
+						if (document.getElementById(id).name.indexOf("name") >= 0 && document.getElementById(id).value) {payment_var_name = document.getElementById(id).value;}
+						if (document.getElementById(id).name.indexOf("value") >= 0 && document.getElementById(id).value) {payment_var_value = document.getElementById(id).value;}
+						if (document.getElementById(id).name.indexOf("direction") >= 0 && document.getElementById(id).value) {payment_var_direction = document.getElementById(id).value;}
 
 						// if the "new" row has any blanks then exclude from object
 						if (document.getElementById(id).name == "payment_vars[new][name]" && document.getElementById(id).value == "") {payment_var_name = "";}
@@ -1414,7 +1414,7 @@ if ($continue)
 						// add row to object
 						if (typeof payment_var_name != "undefined" && payment_var_name && typeof payment_var_value != "undefined" && payment_var_value && typeof payment_var_direction != "undefined" && payment_var_direction) {payment_vars[payment_var_index] = {name: payment_var_name, value: payment_var_value, direction: payment_var_direction};}
 
-						if (document.getElementById(id).name.match("payment_vars") && !document.getElementById(id).name.match("new") && document.getElementById(id).value == "")
+						if (document.getElementById(id).name.indexOf("payment_vars") >= 0 && document.getElementById(id).name.indexOf("new") < 0 && document.getElementById(id).value == "")
 						{
 							document.getElementById(id).className = "error";
 							error += "Both name and value must not be blank. ";

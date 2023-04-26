@@ -1,4 +1,5 @@
-version 3.40 2023-03-06
+version 3.40 2023-04-25
+- replaced all JavaScript calls to match() with indexOf() that do not require RegEx
 - upgraded to PHPMailer 6.8.0 (2023-03-06)
 - Action Types: "from_reader" all off by default
 - added more fuzzy checks for "utf8" in /maintenance/update data structure/ to allow for other UTF-8 character sets + collations
