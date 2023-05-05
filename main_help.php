@@ -58,7 +58,8 @@ if ($submit == 'reset password')
 		$result = @mysqli_query($GLOBALS['db_connect'], "SELECT contact_id, first_name, last_name, email FROM contacts WHERE email = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $reset_email) . "'") or exit_error('query failure: SELECT FROM contacts');
 		if (!mysqli_num_rows($result))
 		{
-			$notice = 'ERROR: The email address that you entered <b>' . $reset_email . '</b> is not in our database. Please make sure you have entered your email address correctly.';
+			//Mimic successful reset so we don't tell potential attackers any information.
+			$notice = 'Password reset link will be sent to <b>' . $reset_email . '</b> if it exists. The message containing your password reset link comes from <b>' . $config['general_dnr_email'] . '</b>. Please make sure to check your bulk mail folders in case this message was marked as spam.'
 		}
 		else
 		{
@@ -92,8 +93,8 @@ if ($submit == 'reset password')
 				foreach ($sql_array as $key => $value) {$sql_array[$key] = "$key = '$value'";}
 				$sql = 'INSERT INTO resets SET ' . implode(',', $sql_array);
 				@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('INSERT reset');
-
-				$notice = 'Your password reset link has been sent to <b>' . $reset_email . '</b>. The message containing your password reset link was sent from <b>' . $config['general_dnr_email'] . '</b>. Please make sure to check your bulk mail folders in case this message was marked as spam.';
+				//Successful reset
+				$notice = 'Password reset link will be sent to <b>' . $reset_email . '</b> if it exists. The message containing your password reset link comes from <b>' . $config['general_dnr_email'] . '</b>. Please make sure to check your bulk mail folders in case this message was marked as spam.';
 			}
 		}
 	}
