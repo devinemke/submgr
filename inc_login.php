@@ -177,12 +177,13 @@ if ($submit == 'login')
 		$notice .= '</ul></div>';
 		exit_error();
 	}
-
+	
+	$error_output_generic = 'Invalid login. If you have forgotten your password, please visit our <a href="' . $_SERVER['PHP_SELF'] . '?page=help">help page</a>.';
+	
 	$result = @mysqli_query($GLOBALS['db_connect'], "SELECT * FROM contacts WHERE email = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $login_email) . "'") or exit_error('query failure: SELECT FROM contacts');
-	//If we can't find the username
 	if (!mysqli_num_rows($result))
 	{
-		$error_output = 'Invalid login. If you have forgotten your password, please visit our <a href="' . $_SERVER['PHP_SELF'] . '?page=help">help page</a>.';
+		$error_output = $error_output_generic;
 		exit_error();
 	}
 	else
@@ -192,7 +193,7 @@ if ($submit == 'login')
 		if ($login_password != '') {$password_compare = $login_password;} else {$password_compare = $_SESSION['contact']['password'];}
 		if (!password_wrapper('verify', $password_compare, $_SESSION['contact']['password']))
 		{
-			$error_output = 'Invalid login. If you have forgotten your password, please visit our <a href="' . $_SERVER['PHP_SELF'] . '?page=help">help page</a>.';
+			$error_output = $error_output_generic;
 			exit_error();
 		}
 
