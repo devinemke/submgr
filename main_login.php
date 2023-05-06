@@ -964,7 +964,7 @@ else // if staff login
 					{
 						foreach ($first_submission['contact'] as $key => $value)
 						{
-							$value = htmlspecialchars($value);
+							$value = htmlspecialchars((string) $value);
 							if ($key == 'email' && $value) {$value = mail_to($value);}
 							$GLOBALS[$key] = $value;
 						}
@@ -4724,7 +4724,7 @@ else // if staff login
 	}
 
 	echo '
-	<input type="hidden" id="form_hash_login" name="form_hash" value="' . $GLOBALS['form_hash'] . '">
+	<input type="hidden" id="form_hash_login" name="form_hash" value="' . $_SESSION['csrf_token'] . '">
 	</form>
 	';
 }

@@ -1,4 +1,5 @@
-version 3.40 2023-04-25
+version 3.40 2023-05-06
+- simplified form_hash() to eliminate the need for $GLOBALS['form_hash']
 - replaced all JavaScript calls to match() with indexOf() that do not require RegEx
 - upgraded to PHPMailer 6.8.0 (2023-03-06)
 - Action Types: "from_reader" all off by default

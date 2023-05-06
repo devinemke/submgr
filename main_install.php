@@ -71,11 +71,10 @@ function form_install($step)
 		';
 	}
 
-	if (in_array($step, $form_steps)) {echo '<input type="hidden" id="form_hash_install" name="form_hash" value="' . $GLOBALS['form_hash'] . '"></form>';}
+	if (in_array($step, $form_steps)) {echo '<input type="hidden" id="form_hash_install" name="form_hash" value="' . $_SESSION['csrf_token'] . '"></form>';}
 
 	if ($step == 5)
 	{
-		// $submit = ''; // otherwise form_hash('session') will not run | NO LONGER NEEDED since form_login() always runs form_hash('session')
 		form_login();
 	}
 }

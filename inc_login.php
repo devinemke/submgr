@@ -113,7 +113,6 @@ if (isset($_SESSION['login']) && $_SESSION['login'] && $module == 'update' && $s
 	extract($_SESSION['post']);
 	if ($config['send_mail_staff']) {send_mail('staff', 'updates');}
 	$_POST = $_SESSION['post'];
-	$_POST['form_hash'] = $GLOBALS['form_hash']; // otherwise form_hash('validate') below will fail
 	$login_email = $email; $login_password = $password; // for login routine below
 	unset($title); // to hide the last submission from display()
 	$submit = 'login';
@@ -124,8 +123,7 @@ if (isset($_GET['first_submission']) && isset($_SESSION['post']['email']) && iss
 {
 	$_POST['login_email'] = $_SESSION['post']['email'];
 	$_POST['login_password'] = $_SESSION['post']['password'];
-	form_hash('session'); // needs to happen before form_hash is referenced in GLOBALS
-	$_POST['form_hash'] = $GLOBALS['form_hash']; // otherwise form_hash('validate') below will fail
+	$_POST['form_hash'] = $_SESSION['csrf_token']; // otherwise form_hash('validate') below will fail
 	$submit = 'login';
 }
 
@@ -256,7 +254,7 @@ elseif (isset($_SESSION['contact_reset']))
 		<tr><td>&nbsp;</td><td><input type="submit" id="form_new_password_submit" name="submit" value="submit" class="form_button" style="margin-top: 10px;"></tr>
 		</table>
 		<input type="hidden" id="form_new_password_submit_hidden" name="submit_hidden" value="submit">
-		<input type="hidden" id="form_hash_new_password" name="form_hash" value="' . $GLOBALS['form_hash'] . '">
+		<input type="hidden" id="form_hash_new_password" name="form_hash" value="' . $_SESSION['csrf_token'] . '">
 		</form>
 		';
 
@@ -309,7 +307,6 @@ elseif (isset($_SESSION['contact_reset']))
 		@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('DELETE reset');
 
 		$email = htmlspecialchars($_SESSION['contact_reset']['email']); // to pre-populate login form
-		// $submit = ''; // otherwise form_hash('session') will not run | NO LONGER NEEDED since form_login() always runs form_hash('session')
 		$display_login = true;
 		kill_session('regenerate'); // session needed for form_hash()
 		$error_output = '<img src="arrow_left_2.png" alt="arrow left" width="16" height="13" style="vertical-align: middle;"> Your password has been updated successfully. Please log in to access your account.';

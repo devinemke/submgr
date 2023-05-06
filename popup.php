@@ -195,7 +195,7 @@ if ($page == 'update')
 	</td>
 	</tr>
 	</table>
-	<input type="hidden" id="form_hash_popup" name="form_hash" value="' . $GLOBALS['form_hash'] . '">
+	<input type="hidden" id="form_hash_popup" name="form_hash" value="' . $_SESSION['csrf_token'] . '">
 	</form>
 	';
 }
