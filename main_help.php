@@ -55,8 +55,8 @@ if ($submit == 'reset password')
 	}
 	else
 	{
-		$notice_generic = 'Password reset link will be sent to <b>' . $reset_email . '</b> if it exists. The message containing your password reset link comes from <b>' . $config['general_dnr_email'] . '</b>. Please make sure to check your bulk mail folders in case this message was marked as spam.';
-		
+		$notice_generic = 'Password reset link will be sent to <b>' . htmlspecialchars($reset_email) . '</b> if it exists.<br>The message containing your password reset link will come from <b>' . htmlspecialchars($config['general_dnr_email']) . '</b>.<br>Please make sure to check your bulk mail folders in case this message is marked as spam.';
+
 		$result = @mysqli_query($GLOBALS['db_connect'], "SELECT contact_id, first_name, last_name, email FROM contacts WHERE email = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $reset_email) . "'") or exit_error('query failure: SELECT FROM contacts');
 		if (!mysqli_num_rows($result))
 		{
@@ -73,7 +73,7 @@ if ($submit == 'reset password')
 			if (mysqli_num_rows($result_reset))
 			{
 				$row_reset = mysqli_fetch_assoc($result_reset);
-				if ($gm_timestamp - strtotime($row_reset['date_time'] . ' GMT') <= 3600) {$errors[] = 'This account password was reset within the last hour. For security, passwords can only be reset once per hour. Please try again later. If you have recently reset your password and have not yet received your password reset link please check your spam folder.';}
+				if ($gm_timestamp - strtotime($row_reset['date_time'] . ' GMT') <= 3600) {$errors[] = 'This account password was reset within the last hour. For security, passwords can only be reset once per hour. Please try again later.<br>If you have recently reset your password, and have not yet received your password reset link, please check your spam folder.';}
 			}
 
 			if ($errors)
@@ -94,7 +94,7 @@ if ($submit == 'reset password')
 				foreach ($sql_array as $key => $value) {$sql_array[$key] = "$key = '$value'";}
 				$sql = 'INSERT INTO resets SET ' . implode(',', $sql_array);
 				@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('INSERT reset');
-				
+
 				$notice = $notice_generic;
 			}
 		}
