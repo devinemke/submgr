@@ -30,7 +30,7 @@ if ($submit == 'submit')
 	extract($_SESSION['post_display']); // has to follow upload() which adds filename to $_SESSION['post_display']
 	form_check();
 	get_price();
-	echo 'You entered:<br>' . display('html');
+	echo '<p>You entered:</p>' . display('html');
 	form_confirmation();
 	echo '<div style="margin-left: 100px;">';
 	form_main();
@@ -60,7 +60,7 @@ if ($submit == 'continue')
 	else
 	{
 		$keep = array('csrf_token');
-		flush_session($keep); // cannot kill_session because form_login has already been rendered with form_hash
+		flush_session($keep); // cannot kill_session() because form_login() has already been rendered with form_hash()
 	}
 }
 ?>

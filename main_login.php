@@ -57,10 +57,24 @@ function address_check()
 {
 	extract($GLOBALS);
 
-	if
-	(
-		(!$first_name || !$last_name || !$address1 || !$city) || (!$country && (!$state || !$zip))
-	)
+	$address_check = true;
+
+	foreach ($fields as $key => $value)
+	{
+		if ($value['section'] == 'contact' && $key != 'password2')
+		{
+			if ($value['required'] && !$_SESSION['contact'][$key]) {$address_check = false; break;}
+		}
+	}
+
+	foreach ($_SESSION['contact'] as $key => $value)
+	{
+		if (!$value && isset($fields[$key]) && $fields[$key]['required']) {$address_check = false; break;}
+	}
+
+	// if ((!$first_name || !$last_name || !$address1 || !$city) || (!$country && (!$state || !$zip)))
+
+	if (!$address_check)
 	{
 		header('location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=update&address_check=1');
 		exit();
@@ -163,7 +177,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 
 	if ($notice)
 	{
-		echo '<div class="notice">' . $notice . '</div><br>';
+		echo '<p class="notice">' . $notice . '</p>';
 		$notice = ''; // kill notice in login form
 	}
 
@@ -297,7 +311,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 	if ($module == 'update')
 	{
 		$form_type = 'update';
-		if (isset($_GET['address_check'])) {echo '<b>We do not have your complete contact information. In order for you to continue you must update your account.</b><br><br>';}
+		if (isset($_GET['address_check'])) {echo '<p><b>We do not have your complete contact information. In order for you to continue you must update your account.</b></p>';}
 
 		if (!$submit)
 		{
@@ -313,7 +327,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 			extract($_SESSION['post_display']);
 			if (!isset($_SESSION['post_display']['mailing_list'])) {unset($mailing_list);} // only checkbox in form
 			form_check();
-			echo 'You entered:<br>' . display('html');
+			echo '<p>You entered:</p>' . display('html');
 			form_confirmation();
 			form_main();
 		}
@@ -355,7 +369,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 			exit_error();
 		}
 
-		$form_type = 'login submit';
+		$form_type = 'login_submit';
 
 		if (!$submit)
 		{
@@ -388,7 +402,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 			extract($_SESSION['post_display']);
 			form_check();
 			get_price();
-			echo 'You entered:<br>' . display('html');
+			echo '<p>You entered:</p>' . display('html');
 			form_confirmation();
 			form_main();
 		}
@@ -420,12 +434,12 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 			if ($config['payment_redirect_method'] == 'POST' && (float) $price) {form_post();} else {redirect();}
 		}
 
-		$form_type = 'pay submission';
+		$form_type = 'pay_submission';
 
 		if (!$submit)
 		{
 			address_check();
-			echo display('html') . '<br>To pay for your submission please fill out the form below and then hit <b>submit</b>.<br><br>';
+			echo display('html') . '<p>To pay for your submission please fill out the form below and then hit <b>submit</b>.</p>';
 			form_main();
 		}
 		else
@@ -439,7 +453,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 			$_SESSION['post_display'] = array_map('htmlspecialchars', $_SESSION['post']);
 			extract($_SESSION['post_display']);
 			form_check();
-			echo 'You entered:<br>' . display('html');
+			echo '<p>You entered:</p>' . display('html');
 			form_confirmation();
 			form_main();
 		}
@@ -2479,9 +2493,9 @@ else // if staff login
 						$_SESSION['post_display'] = array_map('htmlspecialchars', $_SESSION['post']);
 						if ($_FILES['file']['name']) {upload();} // run upload() if first time submit or re-submit with new file
 						extract($_SESSION['post_display']);
-						$form_type = 'login submit';
+						$form_type = 'login_submit';
 						form_check();
-						echo 'You entered:<br>' . display('html') . '<br><br>If the above information is correct, click <input type="submit" id="submit_continue" name="submit" value="continue" class="form_button"><input type="hidden" id="submit_continue_hidden" name="submit_hidden" value="continue">';
+						echo '<p>You entered:</p>' . display('html') . '<br><br>If the above information is correct, click <input type="submit" id="submit_continue" name="submit" value="continue" class="form_button"><input type="hidden" id="submit_continue_hidden" name="submit_hidden" value="continue">';
 						if ($contact['email']) {echo '<input type="checkbox" id="send_action_mail" name="send_action_mail" value="Y" checked style="margin-left: 10px;"><label for="send_action_mail" id="label_send_action_mail">send mail?</label>';}
 						echo '<p>If you wish to make changes, please update the information below and hit the <b>submit</b> button.</p>';
 						form_insert_submission();

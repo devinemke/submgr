@@ -59,7 +59,7 @@ $fields = array(
 'phone' => array('name' => 'phone', 'type' => 'text', 'section' => 'contact', 'maxlength' => '50', 'required' => '', 'error' => ''),
 'password' => array('name' => 'password', 'type' => 'password', 'section' => 'contact', 'maxlength' => '20', 'required' => 'Y', 'error' => ''),
 'password2' => array('name' => 'confirm password', 'type' => 'password', 'section' => 'contact', 'maxlength' => '20', 'required' => 'Y', 'error' => ''),
-'mailing_list' => array('name' => 'join our mailing list', 'type' => 'checkbox', 'section' => 'contact', 'maxlength' => '1', 'required' => '', 'error' => ''),
+'mailing_list' => array('name' => 'mailing list', 'type' => 'checkbox', 'section' => 'contact', 'maxlength' => '1', 'required' => '', 'error' => ''),
 
 'writer' => array('name' => 'writer name', 'type' => 'text', 'section' => 'submission', 'maxlength' => '50', 'required' => '', 'error' => ''),
 'title' => array('name' => 'submission title', 'type' => 'text', 'section' => 'submission', 'maxlength' => '255', 'required' => 'Y', 'error' => ''),
@@ -88,8 +88,6 @@ $modules_admin = array(
 'configuration',
 'maintenance'
 );
-
-$required_fields = array('first_name', 'last_name', 'email', 'address1', 'city', 'password', 'password2', 'title');
 
 $login_required_fields = array(
 'submissions' => array('submitter_id', 'title'),
@@ -1071,23 +1069,87 @@ function get_local_variables($arg)
 function form_main()
 {
 	if (!ini_get('file_uploads')) {exit_error('Your web server is not configured to accept file uploads.');}
+	include_once('inc_lists.php');
 	extract($GLOBALS);
 	form_hash('session');
 
-	function form_cc()
+	function display_form_row($key, $value)
 	{
-		global $config, $cc_number, $cc_exp_month, $cc_exp_year, $cc_csc;
-		include_once('inc_lists.php');
+		global $config, $genres, $submit;
+		$output = '';
+		$extra_tr = '';
+		$extra_before = '';
+		$extra_after = '';
 
-		echo '
-		<tr style="display: none;" id="cc_row_header"><td>&nbsp;</td><td class="header" style="padding-top: 20px;">Payment:</td></tr>
-		<tr style="display: none;" id="cc_row_number"><td class="row_left"><label for="cc_number" id="label_cc_number">credit card number:</label></td><td><input type="text" name="cc_number" value="'; if (isset($cc_number)) {echo $cc_number;} echo '" maxlength="50" id="cc_number" disabled> price: ' . $config['currency_symbol'] . '<span style="font-weight: bold;" id="price_display">0.00</span></td></tr>
-		<tr style="display: none;" id="cc_row_exp_month"><td class="row_left"><label for="cc_exp_month" id="label_cc_exp_month">expiration month:</label></td><td><select name="cc_exp_month" id="cc_exp_month" disabled><option value="">&nbsp;</option>'; foreach ($GLOBALS['months'] as $value) {echo '<option value="' . $value . '"'; if (isset($cc_exp_month) && $cc_exp_month == $value) {echo ' selected';} echo '>' . $value . '</option>' . "\n";} echo '</select></td></tr>
-		<tr style="display: none;" id="cc_row_exp_year"><td class="row_left"><label for="cc_exp_year" id="label_cc_exp_year">expiration year:</label></td><td><select name="cc_exp_year" id="cc_exp_year" disabled><option value="">&nbsp;</option>'; foreach ($GLOBALS['years'] as $value) {echo '<option value="' . $value . '"'; if (isset($cc_exp_year) && $cc_exp_year == $value) {echo ' selected';} echo '>' . $value . '</option>' . "\n";} echo '</select></td></tr>
-		<tr style="display: none;" id="cc_row_csc"><td class="row_left"><label for="cc_csc" id="label_cc_csc">card security code:</label></td><td><input type="text" name="cc_csc" value="'; if (isset($cc_csc)) {echo $cc_csc;} echo '" maxlength="4" id="cc_csc" disabled></td></tr>
-		';
+		if ($key == 'writer') {$extra_after = ' <span class="small">(if different from above)</span>';}
 
-		$GLOBALS['form_cc'] = true;
+		if ($key == 'file')
+		{
+			$extra_before = '<input type="hidden" name="MAX_FILE_SIZE" value="' . $config['max_file_size'] . '">';
+			if ($config['max_file_size']) {$extra_after .= ' <span class="small">(' . $GLOBALS['max_file_size_formatted'] . ' max)</span>';}
+			if (isset($_SESSION['file_upload']['filename'])) {$extra_after .= '<span class="small" style="margin-left: 5px;">file selected: <b>' . $_SESSION['file_upload']['filename'] . '</b></span>';}
+		}
+
+		if ($key == 'genre_id' && $config['use_genres'] && isset($genres['active']) && $genres['active'])
+		{
+			if (isset($_GET['genre_id']) && $_GET['genre_id'] && isset($genres['all'][$_GET['genre_id']]) && !$submit) {$GLOBALS['genre_id'] = (int) $_GET['genre_id'];}
+			foreach ($genres['active'] as $sub_value) {$genres_form[$sub_value] = $genres['all'][$sub_value]['name'];}
+			$GLOBALS['genres'] = $genres_form;
+		}
+
+		if ($key == 'comments') {$extra_after = ' <span class="small">(' . $config['max_comments_size'] . ' characters max)</span>';}
+
+		if (strpos($key, 'cc_') !== false) {$extra_tr = ' style="display: none;" id="row_' . $key . '"';}
+		if ($key == 'cc_number') {$extra_after = ' price: ' . $config['currency_symbol'] . '<span style="font-weight: bold;" id="price_display">0.00</span>';}
+
+		$output .= '<tr' . $extra_tr . '><td class="row_left"><label for="' . $key . '" id="label_' . $key . '">' . $value['name'] . ':</label></td><td>' . $extra_before;
+		if ($value['type'] == 'text' || $value['type'] == 'password' || $value['type'] == 'file') {$output .= '<input type="' . $value['type'] . '" id="' . $key . '" name="' . $key . '"'; if ($value['type'] != 'file') {$output .= ' value="'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '" maxlength="' . $value['maxlength'] . '"';} $output .='>';}
+		if ($value['type'] == 'select') {$output .= '<select id="' . $key . '" name="' . $key . '">'; if ($key != 'genre_id') {$output .= '<option value="">&nbsp;</option>';} foreach ($GLOBALS[$value['list']] as $sub_key => $sub_value) {$output .= '<option value="' . $sub_key . '"'; if (isset($GLOBALS[$key]) && $GLOBALS[$key] == $sub_key) {$output .= ' selected';} $output .= '>' . $sub_value . '</option>' . "\n";} $output .= '</select>';}
+		if ($value['type'] == 'checkbox') {$output .= '<input type="' . $value['type'] . '" id="' . $key . '" name="' . $key . '" value="Y"'; if (isset($GLOBALS[$key]) && $GLOBALS[$key]) {$output .= ' checked';} $output .= '>';}
+		if ($value['type'] == 'textarea') {$output .= '<textarea id="' . $key . '" name="' . $key . '" cols="30" rows="4">'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '</textarea>';}
+		$output .= $extra_after . '</td></tr>' . "\n";
+
+		return $output;
+	}
+
+	function display_form_block($section)
+	{
+		$extra_tr = '';
+		if ($section == 'payment') {$extra_tr = ' style="display: none;"';}
+		$output = '<tr' . $extra_tr . ' id="header_' . $section . '"><td>&nbsp;</td><td class="header" style="padding-top: 20px;">' . ucfirst($section) . ':</td></tr>' . $GLOBALS['form_rows_array'][$section];
+		return $output;
+	}
+
+	if (isset($config['default_country']) && $config['default_country']) {$default_country = $config['default_country'];} else {$default_country = 'USA';}
+	if (($page == 'home' && !$submit) || !isset($GLOBALS['country']) || !$GLOBALS['country']) {$GLOBALS['country'] = $default_country;}
+	if (isset($config['exclude_countries']) && $config['exclude_countries'])
+	{
+		if ($config['exclude_countries'] == 'USA_only')
+		{
+			$GLOBALS['countries'] = array('USA' => 'United States');
+		}
+		else
+		{
+			$exclude_countries = explode(',', $config['exclude_countries']);
+			foreach ($GLOBALS['countries'] as $key => $value)
+			{
+				if (in_array($key, $exclude_countries)) {unset($GLOBALS['countries'][$key]);}
+			}
+		}
+	}
+
+	if ($page == 'home' && !$submit && isset($config['default_mailing_list']) && $config['default_mailing_list']) {$GLOBALS['mailing_list'] = 'Y';}
+	if (isset($_SESSION['post']['password']) && $_SESSION['post']['password']) {$GLOBALS['password'] = $_SESSION['post']['password'];} else {$GLOBALS['password'] = '';}
+
+	$GLOBALS['form_rows_array']['contact'] = '';
+	$GLOBALS['form_rows_array']['submission'] = '';
+	$GLOBALS['form_rows_array']['payment'] = '';
+
+	foreach ($fields as $key => $value)
+	{
+		if ($value['section'] == 'contact') {$GLOBALS['form_rows_array']['contact'] .= display_form_row($key, $value);}
+		if ($value['section'] == 'submission') {$GLOBALS['form_rows_array']['submission'] .= display_form_row($key, $value);}
+		if ($value['section'] == 'payment') {$GLOBALS['form_rows_array']['payment'] .= display_form_row($key, $value);}
 	}
 
 	$action = $_SERVER['PHP_SELF'] . '?page=' . $page;
@@ -1099,80 +1161,21 @@ function form_main()
 	<table class="padding_lr_5">
 	';
 
-	if ($form_type == 'update' || $form_type == 'submit')
+	if ($form_type == 'submit' || $form_type == 'update')
 	{
-		include_once('inc_lists.php');
-
-		if (isset($config['default_country']) && $config['default_country']) {$default_country = $config['default_country'];} else {$default_country = 'USA';}
-		if (($page == 'home' && !$submit) || !isset($country) || !$country) {$country = $default_country;}
-		if (isset($config['exclude_countries']) && $config['exclude_countries'])
-		{
-			if ($config['exclude_countries'] == 'USA_only')
-			{
-				$GLOBALS['countries'] = array('USA' => 'United States');
-			}
-			else
-			{
-				$exclude_countries = explode(',', $config['exclude_countries']);
-				foreach ($GLOBALS['countries'] as $key => $value)
-				{
-					if (in_array($key, $exclude_countries)) {unset($GLOBALS['countries'][$key]);}
-				}
-			}
-		}
-
-		if ($page == 'home' && !$submit && isset($config['default_mailing_list']) && $config['default_mailing_list']) {$mailing_list = 'Y';}
-
-		if ($form_type == 'update')
-		{
-			if (isset($_SESSION['post']['password']) && $_SESSION['post']['password']) {$password = $_SESSION['post']['password'];} else {$password = '';}
-		}
-
-		echo '
-		<tr><td>&nbsp;</td><td class="header" style="padding-top: 20px;">Contact:</td></tr>
-		<tr><td class="row_left"><label for="first_name" id="label_first_name">first name:</label></td><td><input type="text" id="first_name" name="first_name" value="'; if (isset($first_name)) {echo $first_name;} echo '" maxlength="50"></td></tr>
-		<tr><td class="row_left"><label for="last_name" id="label_last_name">last name:</label></td><td><input type="text" id="last_name" name="last_name" value="'; if (isset($last_name)) {echo $last_name;} echo '" maxlength="50"></td></tr>
-		<tr><td class="row_left"><label for="email" id="label_email">email:</label></td><td><input type="text" id="email" name="email" value="'; if (isset ($email)) {echo $email;} echo '" maxlength="50"></td></tr>
-		<tr><td class="row_left"><label for="company" id="label_company">company:</label></td><td><input type="text" id="company" name="company" value="'; if (isset($company)) {echo $company;} echo '" maxlength="50"></td></tr>
-		<tr><td class="row_left"><label for="address1" id="label_address1">address 1:</label></td><td><input type="text" id="address1" name="address1" value="'; if (isset($address1)) {echo $address1;} echo '" maxlength="50"></td></tr>
-		<tr><td class="row_left"><label for="address2" id="label_address2">address 2:</label></td><td><input type="text" id="address2" name="address2" value="'; if (isset($address2)) {echo $address2;} echo '" maxlength="50"></td></tr>
-		<tr><td class="row_left"><label for="city" id="label_city">city</label>:</td><td><input type="text" id="city" name="city" value="'; if (isset($city)) {echo $city;} echo '" maxlength="50"></td></tr>
-		<tr><td class="row_left"><label for="state" id="label_state">state:</label></td><td><select id="state" name="state"><option value="">&nbsp;</option>'; foreach ($GLOBALS['states'] as $value) {echo '<option value="' . $value . '"'; if (isset($state) && $state == $value) {echo ' selected';} echo '>' . $value . '</option>' . "\n";} echo '</select></td></tr>
-		<tr><td class="row_left"><label for="zip" id="label_zip">zip:</label></td><td><input type="text" id="zip" name="zip" value="'; if (isset($zip)) {echo $zip;} echo '" maxlength="50"></td></tr>
-		<tr><td class="row_left"><label for="country" id="label_country">country:</label></td><td><select id="country" name="country">'; foreach ($GLOBALS['countries'] as $key => $value) {echo '<option value="' . $key . '"'; if (isset($country) && $country == $key) {echo ' selected';} echo '>' . $value . '</option>' . "\n";} echo '</select></td></tr>
-		<tr><td class="row_left"><label for="phone" id="label_phone">phone:</label></td><td><input type="text" id="phone" name="phone" value="'; if (isset($phone)) {echo $phone;} echo '" maxlength="50"></td></tr>
-		<tr><td class="row_left"><label for="password" id="label_password">password:</label></td><td><input type="password" id="password" name="password" value="'; if (isset($password)) {echo $password;} echo '" maxlength="20"></td></tr>
-		<tr><td class="row_left"><label for="password2" id="label_password2">confirm password:</label></td><td><input type="password" id="password2" name="password2" value="'; if (isset($password2)) {echo $password2;} echo '" maxlength="20"></td></tr>
-		<tr><td class="row_left"><label for="mailing_list" id="label_mailing_list">mailing list:</label></td><td><input type="checkbox" id="mailing_list" name="mailing_list" value="Y"'; if (isset($mailing_list) && $mailing_list) {echo ' checked';} echo '></td></tr>
-		';
+		echo display_form_block('contact');
 	}
 
-	if ($form_type == 'submit' || $form_type == 'login submit')
+	if ($form_type == 'submit' || $form_type == 'login_submit')
 	{
-		echo '
-		<tr><td>&nbsp;</td><td class="header" style="padding-top: 20px;">Submission:</td></tr>
-		<tr><td class="row_left"><label for="writer" id="label_writer">writer name:</label></td><td><input type="text" id="writer" name="writer" value="'; if (isset($writer)) {echo $writer;} echo '" maxlength="50"> <span class="small">(if different from above)</span></td></tr>
-		<tr><td class="row_left"><label for="title" id="label_title">submission title:</label></td><td><input type="text" id="title" name="title" value="'; if (isset($title)) {echo $title;} echo '" maxlength="255"></td></tr>
-		';
-
-		if ($config['use_genres'] && isset($genres['active']) && $genres['active'])
-		{
-			if (isset($_GET['genre_id']) && $_GET['genre_id'] && isset($genres['all'][$_GET['genre_id']]) && !$submit) {$genre_id = (int) $_GET['genre_id'];}
-
-			echo '<tr><td class="row_left"><label for="genre_id" id="label_genre_id">genre:</label></td><td><select id="genre_id" name="genre_id">';
-			foreach ($genres['active'] as $value)
-			{
-				echo '<option value="' . $value . '"'; if (isset($genre_id) && $genre_id == $value) {echo ' selected';} echo '>' . $genres['all'][$value]['name'] . '</option>' . "\n";
-			}
-			echo '</select></td></tr>';
-		}
-
-		echo '<tr><td class="row_left"><label for="file" id="label_file">file:</label></td><td>'; if ($config['max_file_size']) {echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $config['max_file_size'] . '">';} echo '<input type="file" id="file" name="file">'; if ($config['max_file_size']) {echo ' <span class="small">(' . $max_file_size_formatted . ' max)'; if (isset($_SESSION['file_upload']['filename'])) {echo '<span style="margin-left: 5px;">file selected:</span> <b>' . $_SESSION['file_upload']['filename'] . '</b>';} echo '</span>';} echo '</td></tr>';
-		echo '<tr><td class="row_left"><label for="comments" id="label_comments">comments:</label></td><td><textarea id="comments" name="comments" cols="30" rows="4">'; if (isset($comments)) {echo $comments;} echo '</textarea>'; if ($config['max_comments_size']) {echo ' <span class="small">(' . $config['max_comments_size'] . ' characters max)</span>';} echo '</td></tr>';
-		form_cc();
+		echo display_form_block('submission');
+		echo display_form_block('payment');
 	}
 
-	if ($form_type == 'pay submission') {form_cc();}
+	if ($form_type == 'pay_submission')
+	{
+		echo display_form_block('payment');
+	}
 
 	echo '
 	<tr>
@@ -1383,17 +1386,17 @@ function form_check()
 	'cc_expired' => array('status' => true, 'warning' => 'The expiration date that you have entered indicates that your credit card has expired')
 	);
 
-	if (isset($_SESSION['post']['genre_id']) && (float) $genres['all'][$_SESSION['post']['genre_id']]['price'] && $config['show_payment_fields'])
+	if ((isset($_SESSION['post']['genre_id']) && (float) $genres['all'][$_SESSION['post']['genre_id']]['price'] && $config['show_payment_fields']) || $form_type == 'pay_submission')
 	{
-		$required_fields[] = 'cc_number';
-		$required_fields[] = 'cc_exp_month';
-		$required_fields[] = 'cc_exp_year';
-		$required_fields[] = 'cc_csc';
+		$fields['cc_number']['required'] = 'Y';
+		$fields['cc_exp_month']['required'] = 'Y';
+		$fields['cc_exp_year']['required'] = 'Y';
+		$fields['cc_csc']['required'] = 'Y';
 	}
 
 	foreach ($_SESSION['post'] as $key => $value)
 	{
-		if ($value == '' && in_array($key, $required_fields))
+		if ($value == '' && isset($fields[$key]) && $fields[$key]['required'])
 		{
 			$key_display = str_replace('_', ' ', $key);
 			$checks['blank']['status'] = false;
@@ -1408,8 +1411,8 @@ function form_check()
 
 	if (isset($_SESSION['post']['country']) && $_SESSION['post']['country'] == 'USA')
 	{
-		if (!$state) {$checks['blank']['status'] = false; $checks['blank']['warning'] .= '<br><span style="margin-left: 10px;">&bull; state</span>';}
-		if (strlen($zip) < 5) {$checks['zip']['status'] = false;}
+		if (isset($_SESSION['post']['state']) && !$_SESSION['post']['state']) {$checks['blank']['status'] = false; $checks['blank']['warning'] .= '<br><span style="margin-left: 10px;">&bull; state</span>';}
+		if (isset($_SESSION['post']['zip']) && strlen($_SESSION['post']['zip']) < 5) {$checks['zip']['status'] = false;}
 	}
 
 	if (isset($_SESSION['post']['password']))
@@ -1426,7 +1429,7 @@ function form_check()
 		if (isset($password2) && $password != $password2) {$checks['password_match']['status'] = false;}
 	}
 
-	if (($form_type == 'submit' || $form_type == 'login submit') && isset($_SESSION['file_upload']))
+	if (($form_type == 'submit' || $form_type == 'login_submit') && isset($_SESSION['file_upload']))
 	{
 		$_FILES['file'] = $_SESSION['file_upload'];
 
@@ -1541,19 +1544,26 @@ function display($arg)
 {
 	include_once('inc_lists.php');
 	extract($GLOBALS);
-
+	$display_source = $GLOBALS; // need to work with a copy
 	$output = '';
-	if ($first_name && $last_name) {$output .= $first_name . ' ' . $last_name . "\n";}
-	if ($email) {$output .= $email . "\n";}
-	if ($company) {$output .= $company . "\n";}
-	if ($address1) {$output .= $address1 . "\n";}
-	if ($address2) {$output .= $address2 . "\n";}
-	if ($city) {$output .= $city;}
-	if ($state) {$output .= ', ' . $state;}
-	if ($zip) {$output .= ' ' . $zip;} $output .= "\n";
-	if ($country) {$output .= $countries[$country] . ' (' . $country . ')' . "\n";}
-	if ($phone) {$output .= $phone . "\n";}
-	if ($page == 'login' && $module == 'update' && $_SESSION['post']['password'] && password_wrapper('hash', $_SESSION['post']['password']) != $_SESSION['contact']['password']) {$output .= '<span class="notice"><i>* new password detected</i></span>';}
+	$display_template = '[first_name] [last_name]' . "\n" . '[email]' . "\n" . '[company]' . "\n" . '[address1]' . "\n" . '[address2]' . "\n" . '[city], [state] [zip]' . "\n" . '[country]' . "\n" . '[phone]';
+
+	foreach ($fields as $key => $value)
+	{
+		if ($value['section'] == 'contact' && $key != 'password2')
+		{
+			if ($key == 'country') {$display_source[$key] = $countries[$country] . ' (' . $country . ')';}
+			if (isset($display_source[$key]) && $display_source[$key]) {$search_replace['[' . $key . ']'] = $display_source[$key];}
+		}
+	}
+
+	$display = str_replace(array_keys($search_replace), $search_replace, $display_template);
+	$display = preg_replace('~\[.*?\]~', '', $display);
+	$display = preg_replace("~[\n]{2,}~", "\n", $display);
+	$display = preg_replace("~[ ]{2,}~", '', $display);
+	$display = str_replace(",\n", ' ', $display);
+	$output .= trim($display);
+	if ($page == 'login' && $module == 'update' && $_SESSION['post']['password'] && password_wrapper('hash', $_SESSION['post']['password']) != $_SESSION['contact']['password']) {$output .= '<div class="notice"><i>* new password detected</i></div>';}
 
 	if (isset($title) && $title)
 	{
@@ -1606,27 +1616,21 @@ function db_update()
 	extract($GLOBALS);
 	foreach ($_SESSION['post'] as $key => $value) {$_SESSION['post_escaped'][$key] = mysqli_real_escape_string($GLOBALS['db_connect'], $value);}
 	extract($_SESSION['post_escaped']);
-	if (!$first_name && !$last_name) {exit_error('blank db entry');}
+	// if (!$first_name && !$last_name) {exit_error('blank db entry');}
 	$args = func_get_args();
 
 	if (in_array('insert contact', $args))
 	{
-		$sql = "INSERT INTO contacts SET
-		date_time = '$gm_date_time',
-		first_name = '$first_name',
-		last_name = '$last_name',
-		email = '$email',
-		address1 = '$address1',
-		city = '$city'";
-		if ($company) {$sql .= ", company = '$company'";}
-		if ($address2) {$sql .= ", address2 = '$address2'";}
-		if ($state) {$sql .= ", state = '$state'";}
-		if ($zip) {$sql .= ", zip = '$zip'";}
-		if ($country) {$sql .= ", country = '$country'";}
-		if ($phone) {$sql .= ", phone = '$phone'";}
-		if ($password) {$sql .= ", password = '" . password_wrapper('hash', $password) . "'";}
-		if (isset($mailing_list)) {$sql .= ", mailing_list = 'Y'";}
+		foreach ($fields as $key => $value)
+		{
+			if ($value['section'] == 'contact' && $key != 'password2')
+			{
+				if ($key == 'password') {$_SESSION['post_escaped'][$key] = password_wrapper('hash', $_SESSION['post_escaped'][$key]);}
+				if (isset($_SESSION['post_escaped'][$key]) && $_SESSION['post_escaped'][$key]) {$sql_array[$key] = $key . ' = "' . $_SESSION['post_escaped'][$key] . '"';} else {$sql_array[$key] = $key . ' = NULL';}
+			}
+		}
 
+		$sql = 'INSERT INTO contacts SET date_time = "' . $gm_date_time . '",' . implode(', ', $sql_array);
 		@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT contact');
 		$contact_id = mysqli_insert_id($GLOBALS['db_connect']);
 		$GLOBALS['contact_id'] = $contact_id;

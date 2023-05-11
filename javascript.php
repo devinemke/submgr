@@ -326,35 +326,10 @@ if ($continue)
 				if (isset($_SESSION['file_upload']['filename']) || isset($_FILES['file']['name'])) {$fields['file']['required'] = '';}
 			}
 
-			if ($page == 'login' && $module == 'submit')
-			{
-				foreach ($fields as $key => $value)
-				{
-					if ($value['section'] == 'contact') {unset($fields[$key]);}
-				}
-			}
-
 			if ($page == 'login' && $module == 'update')
 			{
-				unset($required_fields[array_search('title', $required_fields)]);
-				unset($required_fields[array_search('password', $required_fields)]);
-				unset($required_fields[array_search('password2', $required_fields)]);
-				unset($fields['title']);
-				unset($fields['password']);
-				unset($fields['password2']);
-
-				foreach ($fields as $key => $value)
-				{
-					if ($value['section'] != 'contact') {unset($fields[$key]);}
-				}
-			}
-
-			if ($page == 'login' && $module == 'pay_submission')
-			{
-				foreach ($fields as $key => $value)
-				{
-					if ($value['section'] != 'payment') {unset($fields[$key]);}
-				}
+				$fields['password']['required'] = '';
+				$fields['password2']['required'] = '';
 			}
 
 			// build the fields object
@@ -365,13 +340,13 @@ if ($continue)
 			{
 				if (document.getElementById("country").value == "USA")
 				{
-					fields["state"]["required"] = "Y";
-					fields["zip"]["required"] = "Y";
+					if (document.getElementById("state")) {fields["state"]["required"] = "Y";}
+					if (document.getElementById("zip")) {fields["zip"]["required"] = "Y";}
 				}
 				else
 				{
-					fields["state"]["required"] = "";
-					fields["zip"]["required"] = "";
+					if (document.getElementById("state")) {fields["state"]["required"] = "";}
+					if (document.getElementById("zip")) {fields["zip"]["required"] = "";}
 				}
 			}
 
@@ -450,9 +425,8 @@ if ($continue)
 
 			if (document.getElementById("country") && document.getElementById("country").value == "USA")
 			{
-				document.getElementById("zip").value = document.getElementById("zip").value.replace(/[^0-9]/g, "");
-
-				if (document.getElementById("zip").value.length < 5)
+				if (document.getElementById("zip")) {document.getElementById("zip").value = document.getElementById("zip").value.replace(/[^0-9]/g, "");}
+				if (document.getElementById("zip") && document.getElementById("zip").value.length < 5)
 				{
 					document.getElementById("zip").className = "error";
 					document.getElementById("label_zip").className = "error";
@@ -591,11 +565,11 @@ if ($continue)
 			echo '
 			if (price && show_payment_fields)
 			{
-				document.getElementById("cc_row_header").style.display = "";
-				document.getElementById("cc_row_number").style.display = "";
-				document.getElementById("cc_row_exp_month").style.display = "";
-				document.getElementById("cc_row_exp_year").style.display = "";
-				document.getElementById("cc_row_csc").style.display = "";
+				document.getElementById("header_payment").style.display = "";
+				document.getElementById("row_cc_number").style.display = "";
+				document.getElementById("row_cc_exp_month").style.display = "";
+				document.getElementById("row_cc_exp_year").style.display = "";
+				document.getElementById("row_cc_csc").style.display = "";
 				document.getElementById("cc_number").disabled = false;
 				document.getElementById("cc_exp_month").disabled = false;
 				document.getElementById("cc_exp_year").disabled = false;
@@ -604,11 +578,11 @@ if ($continue)
 			}
 			else
 			{
-				document.getElementById("cc_row_header").style.display = "none";
-				document.getElementById("cc_row_number").style.display = "none";
-				document.getElementById("cc_row_exp_month").style.display = "none";
-				document.getElementById("cc_row_exp_year").style.display = "none";
-				document.getElementById("cc_row_csc").style.display = "none";
+				document.getElementById("header_payment").style.display = "none";
+				document.getElementById("row_cc_number").style.display = "none";
+				document.getElementById("row_cc_exp_month").style.display = "none";
+				document.getElementById("row_cc_exp_year").style.display = "none";
+				document.getElementById("row_cc_csc").style.display = "none";
 				document.getElementById("cc_number").disabled = true;
 				document.getElementById("cc_exp_month").disabled = true;
 				document.getElementById("cc_exp_year").disabled = true;

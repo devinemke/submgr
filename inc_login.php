@@ -90,29 +90,20 @@ if (isset($_SESSION['login']) && $_SESSION['login'] && $module == 'update' && $s
 {
 	form_hash('validate');
 
-	foreach ($_SESSION['post'] as $key => $value) {$_SESSION['post_escaped'][$key] = mysqli_real_escape_string($GLOBALS['db_connect'], $value);}
-	extract($_SESSION['post_escaped']);
-	$sql = "UPDATE contacts SET
-	first_name = '$first_name',
-	last_name = '$last_name',
-	email = '$email',
-	address1 = '$address1',
-	city = '$city'";
-	if ($company) {$sql .= ", company = '$company'";} else {$sql .= ', company = NULL';}
-	if ($address2) {$sql .= ", address2 = '$address2'";} else {$sql .= ', address2 = NULL';}
-	if ($state) {$sql .= ", state = '$state'";} else {$sql .= ', state = NULL';}
-	if ($zip) {$sql .= ", zip = '$zip'";} else {$sql .= ', zip = NULL';}
-	if ($country) {$sql .= ", country = '$country'";}
-	if ($phone) {$sql .= ", phone = '$phone'";} else {$sql .= ', phone = NULL';}
-	if ($password) {$sql .= ", password = '" . password_wrapper('hash', $password) . "'";}
-	if (isset($mailing_list)) {$sql .= ", mailing_list = 'Y'";} else {$sql .= ', mailing_list = NULL';}
-	$sql .= " WHERE contact_id = '" . $_SESSION['contact']['contact_id'] . "'";
+	if (isset($_SESSION['post']['password']) && $_SESSION['post']['password']) {$_SESSION['post']['password'] = password_wrapper('hash', $_SESSION['post']['password']);} else {unset($fields['password']);}
+	foreach ($fields as $key => $value)
+	{
+		if ($value['section'] == 'contact' && $key != 'password2')
+		{
+			if (isset($_SESSION['post'][$key]) && $_SESSION['post'][$key]) {$sql_array[$key] = $key . ' = "' . mysqli_real_escape_string($GLOBALS['db_connect'], $_SESSION['post'][$key]) . '"';} else {$sql_array[$key] = $key . ' = NULL';}
+		}
+	}
 
+	$sql = 'UPDATE contacts SET ' . implode(', ', $sql_array) . ' WHERE contact_id = ' . $_SESSION['contact']['contact_id'];
 	@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: UPDATE contacts');
 	$notice = 'Your information has been successfully updated.';
 	extract($_SESSION['post']);
 	if ($config['send_mail_staff']) {send_mail('staff', 'updates');}
-	$_POST = $_SESSION['post'];
 	$login_email = $email; $login_password = $password; // for login routine below
 	unset($title); // to hide the last submission from display()
 	$submit = 'login';
@@ -153,7 +144,7 @@ if ($submit == 'login')
 		}
 	}
 
-	if ($notice != 'Your information has been successfully updated.')
+	if (isset($_SESSION['post']))
 	{
 		if (!$login_password)
 		{
@@ -1433,10 +1424,10 @@ $display_login = false;
 if ($module == 'logout')
 {
 	foreach ($_SESSION['contact'] as $key => $value) {unset($$key);} // so forms are blank
-	if (isset($_SESSION['contact_display']['email'])) {$_REQUEST['email'] = $_SESSION['contact_display']['email'];} // to pre-populate login form (but not main form)
+	if (isset($_SESSION['contact_display']['email'])) {$_REQUEST['email'] = $_SESSION['contact_display']['email'];} // to pre-populate form_login() but not form_main()
 	kill_session('regenerate'); // session needed for form_hash()
 	$page = 'home';
 	$display_login = true;
-	$output = '<div class="header">You have successfully logged out. Thank you for using the ' . htmlspecialchars((string) $config['company_name']) . ' Submission Manager.</div><br>';
+	$output = '<p class="header">You have successfully logged out. Thank you for using the ' . htmlspecialchars((string) $config['company_name']) . ' Submission Manager.</p>';
 }
 ?>

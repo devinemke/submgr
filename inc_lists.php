@@ -372,9 +372,11 @@ $lists['months'] = array(
 );
 $lists['months_long'] = $lists['months'];
 $lists['months'] = array_keys($lists['months']);
+$lists['months'] = array_combine($lists['months'], $lists['months']);
 
 $year = gmdate('Y');
 $lists['years'] = range($year, $year + 10);
+$lists['years'] = array_combine($lists['years'], $lists['years']);
 
 foreach ($lists as $key => $value) {$GLOBALS[$key] = $value;}
 

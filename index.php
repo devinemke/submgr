@@ -40,7 +40,7 @@ if (INSTALLED)
 	}
 }
 
-if ($output) {echo $output . '<br>';}
+if ($output) {echo $output;}
 if (file_exists('main_' . $page . '.php')) {include('main_' . $page . '.php');} else {exit_error('page not found');}
 include('footer.php');
 
