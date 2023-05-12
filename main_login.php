@@ -57,25 +57,26 @@ function address_check()
 {
 	extract($GLOBALS);
 
-	$address_check = true;
+	$address_check_fields = array();
 
 	foreach ($fields as $key => $value)
 	{
 		if ($value['section'] == 'contact' && $key != 'password2')
 		{
-			if ($value['required'] && !$_SESSION['contact'][$key]) {$address_check = false; break;}
+			if ($value['required'] && !$_SESSION['contact'][$key]) {$address_check_fields[$key] = $key;}
 		}
 	}
 
 	foreach ($_SESSION['contact'] as $key => $value)
 	{
-		if (!$value && isset($fields[$key]) && $fields[$key]['required']) {$address_check = false; break;}
+		if (!$value && isset($fields[$key]) && $fields[$key]['required']) {$address_check_fields[$key] = $key;}
 	}
 
 	// if ((!$first_name || !$last_name || !$address1 || !$city) || (!$country && (!$state || !$zip)))
 
-	if (!$address_check)
+	if ($address_check_fields)
 	{
+		$_SESSION['address_check_fields'] = $address_check_fields;
 		header('location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=update&address_check=1');
 		exit();
 	}
@@ -2495,7 +2496,8 @@ else // if staff login
 						extract($_SESSION['post_display']);
 						$form_type = 'login_submit';
 						form_check();
-						echo '<p>You entered:</p>' . display('html') . '<br><br>If the above information is correct, click <input type="submit" id="submit_continue" name="submit" value="continue" class="form_button"><input type="hidden" id="submit_continue_hidden" name="submit_hidden" value="continue">';
+						echo '<p>You entered:</p>' . display('html') . '<br><br>If the above information is correct, click <input type="submit" id="submit_continue" name="submit" value="continue" class="form_button">';
+						// echo '<input type="hidden" id="submit_continue_hidden" name="submit_hidden" value="continue">'; // this breaks "make changes" submit button below due to line added to top of inc_common.php for captcha v3 that makes submit_hidden = continue
 						if ($contact['email']) {echo '<input type="checkbox" id="send_action_mail" name="send_action_mail" value="Y" checked style="margin-left: 10px;"><label for="send_action_mail" id="label_send_action_mail">send mail?</label>';}
 						echo '<p>If you wish to make changes, please update the information below and hit the <b>submit</b> button.</p>';
 						form_insert_submission();

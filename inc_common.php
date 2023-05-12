@@ -1080,6 +1080,8 @@ function form_main()
 		$extra_tr = '';
 		$extra_before = '';
 		$extra_after = '';
+		$class = '';
+		if (isset($_GET['address_check']) && isset($_SESSION['address_check_fields']) && in_array($key, $_SESSION['address_check_fields'])) {$class = 'error';}
 
 		if ($key == 'writer') {$extra_after = ' <span class="small">(if different from above)</span>';}
 
@@ -1102,9 +1104,9 @@ function form_main()
 		if (strpos($key, 'cc_') !== false) {$extra_tr = ' style="display: none;" id="row_' . $key . '"';}
 		if ($key == 'cc_number') {$extra_after = ' price: ' . $config['currency_symbol'] . '<span style="font-weight: bold;" id="price_display">0.00</span>';}
 
-		$output .= '<tr' . $extra_tr . '><td class="row_left"><label for="' . $key . '" id="label_' . $key . '">' . $value['name'] . ':</label></td><td>' . $extra_before;
-		if ($value['type'] == 'text' || $value['type'] == 'password' || $value['type'] == 'file') {$output .= '<input type="' . $value['type'] . '" id="' . $key . '" name="' . $key . '"'; if ($value['type'] != 'file') {$output .= ' value="'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '" maxlength="' . $value['maxlength'] . '"';} $output .='>';}
-		if ($value['type'] == 'select') {$output .= '<select id="' . $key . '" name="' . $key . '">'; if ($key != 'genre_id') {$output .= '<option value="">&nbsp;</option>';} foreach ($GLOBALS[$value['list']] as $sub_key => $sub_value) {$output .= '<option value="' . $sub_key . '"'; if (isset($GLOBALS[$key]) && $GLOBALS[$key] == $sub_key) {$output .= ' selected';} $output .= '>' . $sub_value . '</option>' . "\n";} $output .= '</select>';}
+		$output .= '<tr' . $extra_tr . '><td class="row_left"><label for="' . $key . '" id="label_' . $key . '" class="' . $class . '">' . $value['name'] . ':</label></td><td>' . $extra_before;
+		if ($value['type'] == 'text' || $value['type'] == 'password' || $value['type'] == 'file') {$output .= '<input type="' . $value['type'] . '" id="' . $key . '" name="' . $key . '"'; if ($value['type'] != 'file') {$output .= ' value="'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '" maxlength="' . $value['maxlength'] . '"';} $output .=' class="' . $class . '">';}
+		if ($value['type'] == 'select') {$output .= '<select id="' . $key . '" name="' . $key . '" class="' . $class . '">'; if ($key != 'genre_id') {$output .= '<option value="">&nbsp;</option>';} foreach ($GLOBALS[$value['list']] as $sub_key => $sub_value) {$output .= '<option value="' . $sub_key . '"'; if (isset($GLOBALS[$key]) && $GLOBALS[$key] == $sub_key) {$output .= ' selected';} $output .= '>' . $sub_value . '</option>' . "\n";} $output .= '</select>';}
 		if ($value['type'] == 'checkbox') {$output .= '<input type="' . $value['type'] . '" id="' . $key . '" name="' . $key . '" value="Y"'; if (isset($GLOBALS[$key]) && $GLOBALS[$key]) {$output .= ' checked';} $output .= '>';}
 		if ($value['type'] == 'textarea') {$output .= '<textarea id="' . $key . '" name="' . $key . '" cols="30" rows="4">'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '</textarea>';}
 		$output .= $extra_after . '</td></tr>' . "\n";
@@ -1552,16 +1554,16 @@ function display($arg)
 	{
 		if ($value['section'] == 'contact' && $key != 'password2')
 		{
-			if ($key == 'country') {$display_source[$key] = $countries[$country] . ' (' . $country . ')';}
+			if ($key == 'country' && $display_source[$key]) {$display_source[$key] = $countries[$country] . ' (' . $country . ')';}
 			if (isset($display_source[$key]) && $display_source[$key]) {$search_replace['[' . $key . ']'] = $display_source[$key];}
 		}
 	}
 
 	$display = str_replace(array_keys($search_replace), $search_replace, $display_template);
+	$display = str_replace('[city],', '', $display);
 	$display = preg_replace('~\[.*?\]~', '', $display);
 	$display = preg_replace("~[\n]{2,}~", "\n", $display);
 	$display = preg_replace("~[ ]{2,}~", '', $display);
-	$display = str_replace(",\n", ' ', $display);
 	$output .= trim($display);
 	if ($page == 'login' && $module == 'update' && $_SESSION['post']['password'] && password_wrapper('hash', $_SESSION['post']['password']) != $_SESSION['contact']['password']) {$output .= '<div class="notice"><i>* new password detected</i></div>';}
 
@@ -1592,7 +1594,6 @@ function display($arg)
 		$output .= '<hr><table style="border-collapse: collapse;"><tr><td class="row_left">price:</td><td><b>' . $config['currency_symbol'] . $price . '</b></td></tr>';
 		if (isset($cc_number) && $cc_number)
 		{
-			// $cc_number_display = 'ending in ' . substr($cc_number, -4);
 			$cc_number_display = str_repeat('xxxx ', 3) . substr($cc_number, -4);
 			if ($config['cc_exp_date_format'] == 'MMYYYY') {$cc_exp_date = $cc_exp_month . $cc_exp_year;}
 			if ($config['cc_exp_date_format'] == 'MM-YYYY') {$cc_exp_date = $cc_exp_month . '-' . $cc_exp_year;}
