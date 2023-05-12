@@ -169,7 +169,7 @@ if ($submit == 'login')
 		exit_error();
 	}
 
-	$error_output_generic = '<span class="notice">Invalid login:</span> If you have forgotten your password, please visit our <a href="' . $_SERVER['PHP_SELF'] . '?page=help">help page</a>.';
+	$error_output_generic = '<p><span class="notice">Invalid login:</span> If you have forgotten your password, please visit our <a href="' . $_SERVER['PHP_SELF'] . '?page=help">help page</a>.</p>';
 
 	$result = @mysqli_query($GLOBALS['db_connect'], "SELECT * FROM contacts WHERE email = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $login_email) . "'") or exit_error('query failure: SELECT FROM contacts');
 	if (!mysqli_num_rows($result))

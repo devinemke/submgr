@@ -1482,7 +1482,7 @@ function form_check()
 			{
 				if ($page != 'login')
 				{
-					echo 'The email address that you entered, <b>' . $email . '</b>, is already in our database.<br><img src="arrow_left_2.png" alt="arrow left" width="16" height="13" style="vertical-align: middle;"> If you have already have an account, please login using the form to the left.';
+					echo '<p>The email address that you entered, <b>' . $email . '</b>, is already in our database.<br><img src="arrow_left_2.png" alt="arrow left" width="16" height="13" style="vertical-align: middle;"> If you have already have an account, please login using the form to the left.</p>';
 					$GLOBALS['email'] = $_POST['email'];
 					exit_error();
 				}
@@ -1490,7 +1490,7 @@ function form_check()
 				$row = mysqli_fetch_assoc($result);
 				if ($page == 'login' && $module == 'update' && ($row['contact_id'] != $_SESSION['contact']['contact_id']))
 				{
-					echo 'The email address that you entered, <b>' . $email . '</b>, is already in our database.<br>You must choose a unique email address.';
+					echo '<p>The email address that you entered, <b>' . $email . '</b>, is already in our database.<br>You must choose a unique email address.</p>';
 					$GLOBALS['email'] = $_SESSION['contact']['email'];
 					form_main();
 					exit_error();
@@ -1563,7 +1563,7 @@ function display($arg)
 	$display = str_replace('[city],', '', $display);
 	$display = preg_replace('~\[.*?\]~', '', $display);
 	$display = preg_replace("~[\n]{2,}~", "\n", $display);
-	$display = preg_replace("~[ ]{2,}~", '', $display);
+	$display = preg_replace("~[ ]{2,}~", ' ', $display);
 	$output .= trim($display);
 	if ($page == 'login' && $module == 'update' && $_SESSION['post']['password'] && password_wrapper('hash', $_SESSION['post']['password']) != $_SESSION['contact']['password']) {$output .= '<div class="notice"><i>* new password detected</i></div>';}
 

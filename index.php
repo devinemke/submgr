@@ -26,7 +26,7 @@ if (INSTALLED)
 		}
 		else
 		{
-			if ($config['offline_text']) {echo replace_placeholders($config['offline_text']) . '<br><br>';}
+			if ($config['offline_text']) {echo '<p>' . replace_placeholders($config['offline_text']) . '</p>';}
 			echo '<div class="small" style="display: inline-block; padding: 10px; background-color: ' . $config['color_foreground'] . ';">' . $admin_only_text . '</div>';
 			exit_error();
 		}
