@@ -2472,7 +2472,7 @@ else // if staff login
 
 						echo '
 						<tr><td class="row_left"><label for="file" id="label_file">file:</label></td><td>'; if ($config['max_file_size']) {echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $config['max_file_size'] . '">';} echo '<input type="file" id="file" name="file">'; if ($config['max_file_size']) {echo ' <span class="small">(' . $max_file_size_formatted . ' max)'; if (isset($_SESSION['file_upload']['filename'])) {echo '<span style="margin-left: 5px;">file selected:</span> <b>' . $_SESSION['file_upload']['filename'] . '</b>';} echo '</span>';} echo '</td></tr>
-						<tr><td class="row_left"><label for="comments" id="label_comments">comments:</label></td><td><textarea id="comments" name="comments" cols="30" rows="4">'; if (isset($comments)) {echo $comments;} echo '</textarea>'; if ($config['max_comments_size']) {echo ' <span class="small">(' . $config['max_comments_size'] . ' characters max)</span>';} echo '</td></tr>
+						<tr><td class="row_left"><label for="comments" id="label_comments">comments:</label></td><td><textarea id="comments" name="comments" cols="30" rows="4" maxlength="' . $fields['comments']['maxlength'] . '">'; if (isset($comments)) {echo $comments;} echo '</textarea>'; if ($fields['comments']['maxlength']) {echo ' <span class="small">(' . $fields['comments']['maxlength'] . ' characters max)</span>';} echo '</td></tr>
 						<tr>
 						<td>&nbsp;</td>
 						<td><input type="submit" id="submit_insert_submission" name="submit" value="submit" class="form_button" style="margin-top: 10px;"> <input type="submit" name="submit" value="cancel" id="cancel" class="form_button" style="margin-top: 10px;"></td>
@@ -3555,6 +3555,7 @@ else // if staff login
 		'general' => 'general configuration',
 		'action_types' => 'action types',
 		'file_types' => 'file types',
+		'fields' => 'fields',
 		'groups' => 'groups',
 		'genres' => 'genres',
 		'payment_vars' => 'payment variables'
@@ -3624,7 +3625,7 @@ else // if staff login
 
 					if ($submodule == 'general')
 					{
-						$colspan = '2';
+						$colspan = 2;
 						$_SESSION['config'] = $config;
 
 						if ($submit == 'update' && !$form_check) {$config_array = $post_config;} else {$config_array = $config;}
@@ -3698,7 +3699,7 @@ else // if staff login
 
 					if ($submodule == 'action_types')
 					{
-						$colspan = '0';
+						$colspan = 0;
 						if (!in_array('action_types', $show_tables)) {exit_error('action_types table unavailable');}
 						$_SESSION['action_types'] = $action_types['all'];
 						if ($submit == 'update' && !$form_check) {$action_types_array = $post_action_types;} else {$action_types_array = $action_types['all'];}
@@ -3761,7 +3762,7 @@ else // if staff login
 							exit_error();
 						}
 
-						$colspan = '0';
+						$colspan = 0;
 
 						echo '
 						<span class="header">File Types</span> (' . count($file_types) . ')<br><br>
@@ -3792,6 +3793,75 @@ else // if staff login
 						';
 					}
 
+					if ($submodule == 'fields')
+					{
+						if (!isset($describe['fields']))
+						{
+							echo 'fields table unavailable';
+							exit_error();
+						}
+
+						$colspan = 7;
+
+						echo '
+						<span class="header">Fields</span> (' . count($fields) . ')<br><br>
+						<table class="table_list">
+						<tr>
+						<th>Field</th>
+						<th>Name</th>
+						<th>Type</th>
+						<th>Section</th>
+						<th>Default Value</th>
+						<th>Max Length</th>
+						<th>Enabled</th>
+						<th>Required</th>
+						</tr>
+						';
+
+						foreach ($fields as $key => $value)
+						{
+							unset($value['error']);
+							unset($value['list']);
+
+							$row = '<tr>'. "\n";
+
+							foreach ($value as $sub_key => $sub_value)
+							{
+								$sub_value = htmlspecialchars((string) $sub_value);
+
+								$row .= '<td>';
+
+								if (isset($fields_editable[$sub_key]))
+								{
+									$width = 150;
+									if ($sub_key == 'value') {$width = 100;}
+									if ($sub_key == 'maxlength') {$width = 50;}
+
+									$checked = '';
+									if ($sub_value) {$checked = ' checked';}
+
+									$disabled = '';
+									if (in_array($key, $fields_checkbox_disabled) && ($sub_key == 'enabled' || $sub_key == 'required')) {$disabled = ' disabled';}
+
+									$row .= '<input type="' . $fields_editable[$sub_key] . '" id="' . $key . '_' . $sub_key . '" name="fields[' . $key . '][' . $sub_key . ']" ';
+									if ($fields_editable[$sub_key] == 'text') {$row .= 'value="' . $sub_value . '" style="width: ' . $width . 'px;"';}
+									if ($fields_editable[$sub_key] == 'checkbox') {$row .= 'value="Y"' . $checked;}
+									$row .= $disabled . '>';
+								}
+								else
+								{
+									$row .= $sub_value;
+								}
+
+								$row .= '</td>'. "\n";
+							}
+
+							$row .= '</tr>' . "\n";
+
+							echo $row;
+						}
+					}
+
 					if ($submodule == 'groups')
 					{
 						if (!$groups)
@@ -3800,7 +3870,7 @@ else // if staff login
 							exit_error();
 						}
 
-						$colspan = '0';
+						$colspan = 0;
 						$groups_keys = array_keys($groups);
 
 						echo '
@@ -4038,9 +4108,9 @@ else // if staff login
 						if ($colspan) {$colspan_tag = ' colspan="' . $colspan . '"';} else {$colspan_tag = '';}
 
 						echo '
-						<tr>
-						<td>&nbsp;</td>
-						<td' . $colspan_tag . ' style="padding-top: 10px;">
+						<tr class="transparent_row">
+						<td style="border: 0px;">&nbsp;</td>
+						<td' . $colspan_tag . ' style="text-align: left; padding-top: 10px; border: 0px;">
 							<input type="submit" id="submit_update" name="submit" value="update" class="form_button">
 							<input type="reset" id="submit_reset" name="reset" value="reset" class="form_button">
 							<input type="submit" id="submit_reset_defaults" name="submit" value="reset defaults" class="form_button">

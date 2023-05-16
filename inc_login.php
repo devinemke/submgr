@@ -242,8 +242,8 @@ elseif (isset($_SESSION['contact_reset']))
 		Please enter a new password.<br><br>
 		<form action="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '" method="post" name="form_new_password" id="form_new_password">
 		<table>
-		<tr><td class="row_left"><label for="password" id="label_password">password:</label></td><td><input type="password" id="password" name="password" value="" maxlength="20"> <span class="small">(8-20 characters)</span></td></tr>
-		<tr><td class="row_left"><label for="password2" id="label_password2">confirm password:</label></td><td><input type="password" id="password2" name="password2" value="" maxlength="20"></td></tr>
+		<tr><td class="row_left"><label for="password" id="label_password">password:</label></td><td><input type="password" id="password" name="password" value="" maxlength="' . $password_length_max . '"> <span class="small">(' . $password_length_min . '-' . $password_length_max . ' characters)</span></td></tr>
+		<tr><td class="row_left"><label for="password2" id="label_password2">confirm password:</label></td><td><input type="password" id="password2" name="password2" value="" maxlength="' . $password_length_max . '"></td></tr>
 		<tr><td>&nbsp;</td><td><input type="submit" id="form_new_password_submit" name="submit" value="submit" class="form_button" style="margin-top: 10px;"></tr>
 		</table>
 		<input type="hidden" id="form_new_password_submit_hidden" name="submit_hidden" value="submit">
@@ -411,14 +411,7 @@ if ($_SESSION['contact']['access'])
 		$GLOBALS['deletes'] = $deletes;
 	}
 
-	// get groups
-	$groups = array();
-	$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM `groups`');
-	if ($result && mysqli_num_rows($result))
-	{
-		while ($row = mysqli_fetch_assoc($result)) {$groups[$row['name']] = $row;}
-		$_SESSION['groups'] = $groups;
-	}
+	get_groups();
 
 	if ($module == 'submissions')
 	{

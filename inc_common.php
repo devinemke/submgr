@@ -35,6 +35,7 @@ $display_login = true;
 $continue = true;
 $form_check = true;
 $errors = array();
+$password_length_min = 8; $password_length_max = 72; // needed here globally for install, will be overwritten by $fields
 $no_submissions_text = 'Submission Manager is currently in <b>&ldquo;no submissions&rdquo;</b> mode.<br>Submitters and staff may log into their accounts however no new submissions are being accepted at this time.';
 $admin_only_text = 'Submission Manager is currently in <b>admin only</b> mode.<br>Only the system administrators have access at this time.';
 $no_cookies_text = '<b>Submission Manager</b> requires that cookies be enabled in your web browser. Please enable cookies and try again. You may also need to empty your browser cache and restart your browser.';
@@ -44,34 +45,6 @@ if (!$session_start) {$display_login = false; exit_error('session_start failed')
 if (file_exists('config_defaults.php')) {include('config_defaults.php'); $config = $config_defaults;} else {$display_login = false; exit_error('missing config_defaults.php');}
 if (file_exists('config_db.php')) {include('config_db.php');} elseif (file_exists('config_db_default.php')) {include('config_db_default.php');} else {$display_login = false; exit_error('missing config_db.php');}
 if (file_exists('db_schema.php')) {include('db_schema.php');} else {$display_login = false; exit_error('missing db_schema.php');}
-
-$fields = array(
-'first_name' => array('name' => 'first name', 'type' => 'text', 'section' => 'contact', 'maxlength' => '50', 'required' => 'Y', 'error' => ''),
-'last_name' => array('name' => 'last name', 'type' => 'text', 'section' => 'contact', 'maxlength' => '50', 'required' => 'Y', 'error' => ''),
-'email' => array('name' => 'email', 'type' => 'text', 'section' => 'contact', 'maxlength' => '50', 'required' => 'Y', 'error' => ''),
-'company' => array('name' => 'company', 'type' => 'text', 'section' => 'contact', 'maxlength' => '50', 'required' => '', 'error' => ''),
-'address1' => array('name' => 'address 1', 'type' => 'text', 'section' => 'contact', 'maxlength' => '50', 'required' => 'Y', 'error' => ''),
-'address2' => array('name' => 'address 2', 'type' => 'text', 'section' => 'contact', 'maxlength' => '50', 'required' => '', 'error' => ''),
-'city' => array('name' => 'city', 'type' => 'text', 'section' => 'contact', 'maxlength' => '50', 'required' => 'Y', 'error' => ''),
-'state' => array('name' => 'state', 'type' => 'select', 'section' => 'contact', 'maxlength' => '2', 'required' => '', 'error' => '', 'list' => 'states'),
-'zip' => array('name' => 'zip', 'type' => 'text', 'section' => 'contact', 'maxlength' => '50', 'required' => '', 'error' => ''),
-'country' => array('name' => 'country', 'type' => 'select', 'section' => 'contact', 'maxlength' => '3', 'required' => 'Y', 'error' => '', 'list' => 'countries'),
-'phone' => array('name' => 'phone', 'type' => 'text', 'section' => 'contact', 'maxlength' => '50', 'required' => '', 'error' => ''),
-'password' => array('name' => 'password', 'type' => 'password', 'section' => 'contact', 'maxlength' => '20', 'required' => 'Y', 'error' => ''),
-'password2' => array('name' => 'confirm password', 'type' => 'password', 'section' => 'contact', 'maxlength' => '20', 'required' => 'Y', 'error' => ''),
-'mailing_list' => array('name' => 'mailing list', 'type' => 'checkbox', 'section' => 'contact', 'maxlength' => '1', 'required' => '', 'error' => ''),
-
-'writer' => array('name' => 'writer name', 'type' => 'text', 'section' => 'submission', 'maxlength' => '50', 'required' => '', 'error' => ''),
-'title' => array('name' => 'submission title', 'type' => 'text', 'section' => 'submission', 'maxlength' => '255', 'required' => 'Y', 'error' => ''),
-'genre_id' => array('name' => 'genre', 'type' => 'select', 'section' => 'submission', 'maxlength' => '100', 'required' => '', 'error' => '', 'list' => 'genres'),
-'file' => array('name' => 'file', 'type' => 'file', 'section' => 'submission', 'maxlength' => '50', 'required' => 'Y', 'error' => ''),
-'comments' => array('name' => 'comments', 'type' => 'textarea', 'section' => 'submission', 'maxlength' => '3000', 'required' => '', 'error' => ''),
-
-'cc_number' => array('name' => 'credit card number', 'type' => 'text', 'section' => 'payment', 'maxlength' => '50', 'required' => '', 'error' => ''),
-'cc_exp_month' => array('name' => 'expiration month', 'type' => 'select', 'section' => 'payment', 'maxlength' => '2', 'required' => '', 'error' => '', 'list' => 'months'),
-'cc_exp_year' => array('name' => 'expiration year', 'type' => 'select', 'section' => 'payment', 'maxlength' => '4', 'required' => '', 'error' => '', 'list' => 'years'),
-'cc_csc' => array('name' => 'card security code', 'type' => 'text', 'section' => 'payment', 'maxlength' => '4', 'required' => '', 'error' => '')
-);
 
 $modules = array(
 'account' => 'account summary',
@@ -210,7 +183,7 @@ function insert_from_array($table, $array)
 			if ($field_value != '') {$field_value = "'" . mysqli_real_escape_string($GLOBALS['db_connect'], $field_value) . "'";} else {$field_value = 'NULL';}
 			$sql_array[] = $field_name . ' = ' . $field_value;
 		}
-		$sql = "INSERT INTO `$table` SET " . implode(',', $sql_array);
+		$sql = "INSERT INTO `$table` SET " . implode(', ', $sql_array);
 		@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT INTO ' . $table);
 	}
 }
@@ -621,6 +594,82 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 		}
 	}
 
+	if ($module == 'configuration' && $submodule == 'fields')
+	{
+		$fields_editable = array(
+		'name' => 'text',
+		'value' => 'text',
+		'maxlength' => 'text',
+		'enabled' => 'checkbox',
+		'required' => 'checkbox'
+		);
+
+		$fields_checkbox_disabled = array('email', 'password', 'password2', 'cc_number', 'cc_exp_month', 'cc_exp_year', 'cc_csc');
+
+		if ($submit) {form_hash('validate');}
+
+		if ($submit == 'update')
+		{
+			foreach ($_POST['fields'] as $key => $value)
+			{
+				$value = cleanup($value, 'strip_tags', 'stripslashes');
+				if ($value['maxlength']) {$value['maxlength'] = preg_replace('/[^0-9]/i', '', $value['maxlength']);}
+				if (isset($value['enabled'])) {$value['enabled'] = 'Y';} else {$value['enabled'] = '';}
+				if (isset($value['required'])) {$value['required'] = 'Y';} else {$value['required'] = '';}
+				if (!$value['enabled']) {$value['required'] = '';}
+				if ($defaults['fields'][$key]['type'] == 'checkbox' && $value['value']) {$value['value'] = 'Y';}
+
+				if (in_array($key, $fields_checkbox_disabled))
+				{
+					$value['enabled'] = $defaults['fields'][$key]['enabled'];
+					$value['required'] = $defaults['fields'][$key]['required'];
+				}
+
+				if (!$value['name'])
+				{
+					$form_check = false;
+					$notice = 'ERROR: You cannot use blank field names';
+				}
+
+				if (!is_numeric($value['maxlength']) || $value['maxlength'] == 0)
+				{
+					$form_check = false;
+					$notice = 'ERROR: field Max Lengths must be numeric and greater than 0';
+				}
+
+				if (strpos($key, 'password') !== false && $value['maxlength'] > 72)
+				{
+					$form_check = false;
+					$notice = 'ERROR: Password Max Length is 72';
+				}
+
+				$post_fields[$key] = $value;
+			}
+
+			if ($form_check)
+			{
+				foreach ($post_fields as $key => $value)
+				{
+					$sql_array = array();
+					foreach ($value as $sub_key => $sub_value)
+					{
+						if ($sub_value != '') {$sub_value = "'" . mysqli_real_escape_string($GLOBALS['db_connect'], $sub_value) . "'";} else {$sub_value = 'NULL';}
+						$sql_array[] = $sub_key . ' = ' . $sub_value;
+					}
+					$sql = 'UPDATE fields SET ' . implode(', ', $sql_array) . ' WHERE field = "' . $key . '"';
+					@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: UPDATE fields');
+				}
+
+				$notice = 'Fields settings updated successfully';
+			}
+		}
+
+		if ($submit == 'reset defaults')
+		{
+			reset_defaults('fields', 'Fields', $defaults['fields']);
+		}
+	}
+
 	if ($module == 'configuration' && $submodule == 'groups')
 	{
 		if ($submit) {form_hash('validate');}
@@ -891,7 +940,10 @@ if (INSTALLED && $GLOBALS['db_connect'])
 {
 	get_genres();
 	get_file_types();
+	get_fields();
 	get_action_types();
+
+	$password_length_max = $fields['password']['maxlength'];
 
 	$timezone = $config['timezone'];
 	$timezone_safe = (float) $timezone;
@@ -940,6 +992,47 @@ function get_file_types()
 		{
 			while ($row = mysqli_fetch_assoc($result)) {$GLOBALS['file_types'][] = $row['ext'];}
 			$_SESSION['file_types'] = $GLOBALS['file_types'];
+		}
+	}
+}
+
+function get_fields()
+{
+	global $show_tables;
+
+	$GLOBALS['fields'] = array();
+	if (in_array('fields', $show_tables))
+	{
+		$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM `fields`') or exit_error('query failure: SELECT fields');
+		if ($result && mysqli_num_rows($result))
+		{
+			while ($row = mysqli_fetch_assoc($result))
+			{
+				$row['error'] = '';
+				if ($row['field'] == 'state') {$row['list'] = 'states';}
+				if ($row['field'] == 'country') {$row['list'] = 'countries';}
+				if ($row['field'] == 'genre_id') {$row['list'] = 'genres';}
+				if ($row['field'] == 'cc_exp_month') {$row['list'] = 'months';}
+				if ($row['field'] == 'cc_exp_year') {$row['list'] = 'years';}
+				$GLOBALS['fields'][$row['field']] = $row;
+			}
+			$_SESSION['fields'] = $GLOBALS['fields'];
+		}
+	}
+}
+
+function get_groups()
+{
+	global $show_tables;
+
+	$GLOBALS['groups'] = array();
+	if (in_array('groups', $show_tables))
+	{
+		$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM `groups`') or exit_error('query failure: SELECT groups');
+		if ($result && mysqli_num_rows($result))
+		{
+			while ($row = mysqli_fetch_assoc($result)) {$GLOBALS['groups'][$row['name']] = $row;}
+			$_SESSION['groups'] = $GLOBALS['groups'];
 		}
 	}
 }
@@ -1075,7 +1168,7 @@ function form_main()
 
 	function display_form_row($key, $value)
 	{
-		global $config, $genres, $submit;
+		global $config, $genres, $submit, $form_type;
 		$output = '';
 		$extra_tr = '';
 		$extra_before = '';
@@ -1099,16 +1192,18 @@ function form_main()
 			$GLOBALS['genres'] = $genres_form;
 		}
 
-		if ($key == 'comments') {$extra_after = ' <span class="small">(' . $config['max_comments_size'] . ' characters max)</span>';}
+		if ($key == 'comments' && $value['maxlength']) {$extra_after = ' <span class="small">(' . $value['maxlength'] . ' characters max)</span>';}
 
 		if (strpos($key, 'cc_') !== false) {$extra_tr = ' style="display: none;" id="row_' . $key . '"';}
 		if ($key == 'cc_number') {$extra_after = ' price: ' . $config['currency_symbol'] . '<span style="font-weight: bold;" id="price_display">0.00</span>';}
+
+		if ($form_type == 'submit' && !$submit && $value['value']) {$GLOBALS[$key] = htmlspecialchars($value['value']);}
 
 		$output .= '<tr' . $extra_tr . '><td class="row_left"><label for="' . $key . '" id="label_' . $key . '" class="' . $class . '">' . $value['name'] . ':</label></td><td>' . $extra_before;
 		if ($value['type'] == 'text' || $value['type'] == 'password' || $value['type'] == 'file') {$output .= '<input type="' . $value['type'] . '" id="' . $key . '" name="' . $key . '"'; if ($value['type'] != 'file') {$output .= ' value="'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '" maxlength="' . $value['maxlength'] . '"';} $output .=' class="' . $class . '">';}
 		if ($value['type'] == 'select') {$output .= '<select id="' . $key . '" name="' . $key . '" class="' . $class . '">'; if ($key != 'genre_id') {$output .= '<option value="">&nbsp;</option>';} foreach ($GLOBALS[$value['list']] as $sub_key => $sub_value) {$output .= '<option value="' . $sub_key . '"'; if (isset($GLOBALS[$key]) && $GLOBALS[$key] == $sub_key) {$output .= ' selected';} $output .= '>' . $sub_value . '</option>' . "\n";} $output .= '</select>';}
 		if ($value['type'] == 'checkbox') {$output .= '<input type="' . $value['type'] . '" id="' . $key . '" name="' . $key . '" value="Y"'; if (isset($GLOBALS[$key]) && $GLOBALS[$key]) {$output .= ' checked';} $output .= '>';}
-		if ($value['type'] == 'textarea') {$output .= '<textarea id="' . $key . '" name="' . $key . '" cols="30" rows="4">'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '</textarea>';}
+		if ($value['type'] == 'textarea') {$output .= '<textarea id="' . $key . '" name="' . $key . '" cols="30" rows="4" maxlength="' . $value['maxlength'] . '">'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '</textarea>';}
 		$output .= $extra_after . '</td></tr>' . "\n";
 
 		return $output;
@@ -1118,12 +1213,15 @@ function form_main()
 	{
 		$extra_tr = '';
 		if ($section == 'payment') {$extra_tr = ' style="display: none;"';}
-		$output = '<tr' . $extra_tr . ' id="header_' . $section . '"><td>&nbsp;</td><td class="header" style="padding-top: 20px;">' . ucfirst($section) . ':</td></tr>' . $GLOBALS['form_rows_array'][$section];
+		$output = '<tr' . $extra_tr . ' id="header_' . $section . '"><td>&nbsp;</td><td class="header" style="padding-top: 20px;">' . ucfirst($section) . ':</td></tr>' . $GLOBALS['form_rows'][$section];
 		return $output;
 	}
 
-	if (isset($config['default_country']) && $config['default_country']) {$default_country = $config['default_country'];} else {$default_country = 'USA';}
-	if (($page == 'home' && !$submit) || !isset($GLOBALS['country']) || !$GLOBALS['country']) {$GLOBALS['country'] = $default_country;}
+	foreach ($fields as $key => $value)
+	{
+		if (!$value['enabled']) {unset($fields[$key]);}
+	}
+
 	if (isset($config['exclude_countries']) && $config['exclude_countries'])
 	{
 		if ($config['exclude_countries'] == 'USA_only')
@@ -1141,19 +1239,18 @@ function form_main()
 		}
 	}
 
-	if ($page == 'home' && !$submit && isset($config['default_mailing_list']) && $config['default_mailing_list']) {$GLOBALS['mailing_list'] = 'Y';}
 	if (isset($_SESSION['post']['password']) && $_SESSION['post']['password']) {$GLOBALS['password'] = $_SESSION['post']['password'];} else {$GLOBALS['password'] = '';}
 	if (!$config['use_genres'] || !isset($genres['active'])) {unset($fields['genre_id']);}
 
-	$GLOBALS['form_rows_array']['contact'] = '';
-	$GLOBALS['form_rows_array']['submission'] = '';
-	$GLOBALS['form_rows_array']['payment'] = '';
+	$GLOBALS['form_rows']['contact'] = '';
+	$GLOBALS['form_rows']['submission'] = '';
+	$GLOBALS['form_rows']['payment'] = '';
 
 	foreach ($fields as $key => $value)
 	{
-		if ($value['section'] == 'contact') {$GLOBALS['form_rows_array']['contact'] .= display_form_row($key, $value);}
-		if ($value['section'] == 'submission') {$GLOBALS['form_rows_array']['submission'] .= display_form_row($key, $value);}
-		if ($value['section'] == 'payment') {$GLOBALS['form_rows_array']['payment'] .= display_form_row($key, $value);}
+		if ($value['section'] == 'contact') {$GLOBALS['form_rows']['contact'] .= display_form_row($key, $value);}
+		if ($value['section'] == 'submission') {$GLOBALS['form_rows']['submission'] .= display_form_row($key, $value);}
+		if ($value['section'] == 'payment') {$GLOBALS['form_rows']['payment'] .= display_form_row($key, $value);}
 	}
 
 	$action = $_SERVER['PHP_SELF'] . '?page=' . $page;
@@ -1259,7 +1356,7 @@ function form_login()
 	<tr>
 	<td>
 	<label for="login_email" id="label_login_email">email:</label><br><input type="text" id="login_email" name="login_email" value="' . $email . '" maxlength="50" style="width: 180px;"><br>
-	<label for="login_password" id="label_login_password">password:</label><br><input type="password" id="login_password" name="login_password" maxlength="20" style="width: 180px;">
+	<label for="login_password" id="label_login_password">password:</label><br><input type="password" id="login_password" name="login_password" maxlength="' . $password_length_max . '" style="width: 180px;">
 	<br>
 	<div style="text-align: center;">
 	<input type="submit" name="submit" value="login" class="form_button" style="width: 50px; margin-top: 5px;">
@@ -1321,7 +1418,7 @@ function form_hash($arg)
 
 function cleanup()
 {
-	global $config;
+	global $fields;
 
 	$args = func_get_args();
 	$array = array_shift($args);
@@ -1346,7 +1443,7 @@ function cleanup()
 			if ($key == 'zip') {$value = strtoupper($value);}
 			if ($key == 'comments')
 			{
-				if ($config['max_comments_size']) {$value = substr($value, 0, $config['max_comments_size']);}
+				if ($fields['comments']['maxlength']) {$value = substr($value, 0, $fields['comments']['maxlength']);}
 				$value = preg_replace("~[\n]{2,}~", "\n\n", $value);
 			}
 			$array[$key] = $value;
@@ -1363,13 +1460,10 @@ function email_check($email)
 
 function password_check($password)
 {
-	global $submit;
-
-	$GLOBALS['password_length_min'] = 8;
-	$GLOBALS['password_length_max'] = 20;
+	global $password_length_min, $password_length_max;
 
 	$length = strlen($password);
-	if ($length >= $GLOBALS['password_length_min'] && $length <= $GLOBALS['password_length_max'] && strpos($password, ' ') === false) {return true;} else {return false;}
+	if ($length >= $password_length_min && $length <= $password_length_max && strpos($password, ' ') === false) {return true;} else {return false;}
 }
 
 function form_check()
@@ -1381,7 +1475,7 @@ function form_check()
 	'blank' => array('status' => true, 'warning' => 'Required field(s) missing'),
 	'email' => array('status' => true, 'warning' => 'Invalid email address'),
 	'zip' => array('status' => true, 'warning' => 'Incomplete zip code'),
-	'password' => array('status' => true, 'warning' => 'Passwords must be 8-20 characters and cannot contain spaces'),
+	'password' => array('status' => true, 'warning' => 'Passwords must be ' . $password_length_min . '-' . $password_length_max . ' characters and cannot contain spaces'),
 	'password_match' => array('status' => true, 'warning' => 'Passwords do not match'),
 	'file' => array('status' => true, 'warning' => 'No upload file selected'),
 	'filesize_big' => array('status' => true, 'warning' => 'Uploaded file exceeds the maximum file size limit of ' . $max_file_size_formatted),
@@ -1556,7 +1650,7 @@ function display($arg)
 	{
 		if ($value['section'] == 'contact' && $key != 'password2')
 		{
-			if ($key == 'country' && $display_source[$key]) {$display_source[$key] = $countries[$country] . ' (' . $country . ')';}
+			if ($key == 'country' && isset($display_source[$key]) && $display_source[$key]) {$display_source[$key] = $countries[$country] . ' (' . $country . ')';}
 			if (isset($display_source[$key]) && $display_source[$key]) {$search_replace['[' . $key . ']'] = $display_source[$key];}
 		}
 	}

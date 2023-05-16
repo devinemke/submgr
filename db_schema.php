@@ -91,6 +91,23 @@ $schema = array(
 	)
 	),
 
+'fields' => array(
+	'fields' => array(
+		'field' => array('type' => 'varchar(20)', 'extra' => 'NOT NULL DEFAULT \'\''),
+		'name' => array('type' => 'varchar(50)', 'extra' => 'DEFAULT NULL'),
+		'type' => array('type' => 'varchar(10)', 'extra' => 'DEFAULT NULL'),
+		'section' => array('type' => 'varchar(10)', 'extra' => 'DEFAULT NULL'),
+		'value' => array('type' => 'varchar(50)', 'extra' => 'DEFAULT NULL'),
+		'maxlength' => array('type' => 'smallint(5) unsigned', 'extra' => 'DEFAULT NULL'),
+		'enabled' => array('type' => 'char(1)', 'extra' => 'DEFAULT NULL'),
+		'required' => array('type' => 'char(1)', 'extra' => 'DEFAULT NULL')
+	),
+	'indexes' => array(
+		'field' => array('type' => 'PRIMARY KEY', 'fields' => 'field')
+	)
+	),
+
+
 'genres' => array(
 	'fields' => array(
 		'genre_id' => array('type' => 'tinyint(3) unsigned', 'extra' => 'NOT NULL AUTO_INCREMENT'),

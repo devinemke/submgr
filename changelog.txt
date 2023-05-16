@@ -1,6 +1,13 @@
+version 3.41 2023-05-16
+- added $password_length_min (8) + $password_length_max (72) global variables (will be derived from $fields)
+- removed $config['max_comments_size'] $config['default_country'] $config['default_mailing_list'] (all now reside in $fields)
+- added get_groups() function
+- added get_fields() function
+- added "fields" table to store all form_main() properties
+- refactoring of form_main() and all associated validation/display logic to allow customization of form fields
+
 version 3.40 2023-05-13
 - added getimagesize() to $config['logo_path'] in header.php
-- refactoring of form_main() and all associated validation/display logic to allow customization of form fields
 - changed login / password reset messaging (thanks @jayyx2)
 - simplified form_hash() to eliminate the need for $GLOBALS['form_hash']
 - replaced all JavaScript calls to match() with indexOf() that do not require RegEx

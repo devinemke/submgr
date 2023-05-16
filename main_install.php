@@ -7,7 +7,7 @@ $copy = array(
 1 => 'Welcome to the <b>Submission Manager</b> installation. Basic information is needed for your database connection. Please fill out the form below. If you do not know this information, please speak to your system administrator.',
 2 => 'Now please eneter the name of the database that you wish to use for the <b>Submission Manager</b>',
 3 => 'The <b>Submission Manager</b> installation will now attempt to create the necessary tables in your database.<br><br><span class="notice"><i>WARNING!</i> all data in existing tables will be overwritten. If necessary, please backup your database tables before going forward.</span>',
-4 => 'Please enter your name, email address and a password of your choice. This info will be used to create a adminstrator level account in the <b>Submission Manager</b>. Passwords must be 8-20 characters (no spaces).',
+4 => 'Please enter your name, email address and a password of your choice. This info will be used to create a adminstrator level account in the <b>Submission Manager</b>. Passwords must be ' . $password_length_min . '-' . $password_length_max . ' characters (no spaces).',
 5 => 'The final step in the <b>Submission Manager</b> installation is to configure some of the program&rsquo;s basic settings. Please verify your account login info below and you will be taken to the main configuration page.'
 );
 
@@ -15,7 +15,7 @@ $config_db_string = file_get_contents('config_db_default.php');
 
 function form_install($step)
 {
-	global $config_db, $admin;
+	global $config_db, $admin, $password_length_min, $password_length_max;
 
 	form_hash('session');
 	$form_steps = range(1, 4);
@@ -64,7 +64,7 @@ function form_install($step)
 		<tr><td class="row_left"><label for="admin_first_name" id="label_admin_first_name">first name:</label></td><td><input type="text" id="admin_first_name" name="admin[first_name]" value="'; if (isset($admin['first_name'])) {echo $admin['first_name'];} echo '"></td></tr>
 		<tr><td class="row_left"><label for="admin_last_name" id="label_admin_last_name">last name:</label></td><td><input type="text" id="admin_last_name" name="admin[last_name]" value="'; if (isset($admin['last_name'])) {echo $admin['last_name'];} echo '"></td></tr>
 		<tr><td class="row_left"><label for="admin_email" id="label_admin_email">email:</label></td><td><input type="text" id="admin_email" name="admin[email]" value="'; if (isset($admin['email'])) {echo $admin['email'];} echo '"></td></tr>
-		<tr><td class="row_left"><label for="admin_password" id="label_admin_password">password:</label></td><td><input type="password" id="admin_password" name="admin[password]" value="'; if (isset($admin['password'])) {echo $admin['password'];} echo '" maxlength="20"></td></tr>
+		<tr><td class="row_left"><label for="admin_password" id="label_admin_password">password:</label></td><td><input type="password" id="admin_password" name="admin[password]" value="'; if (isset($admin['password'])) {echo $admin['password'];} echo '" maxlength="' . $password_length_max . '"></td></tr>
 		<tr><td>&nbsp;</td><td><input type="submit" id="submit" name="submit" value="go to step 5" class="form_button"></td></tr>
 		</table>
 		<input type="hidden" id="step" name="step" value="5">
@@ -270,7 +270,7 @@ if ($step == 5)
 		if ($key == 'password' && $value && !password_check($value))
 		{
 			$form_check = false;
-			$errors[] = 'Passwords must be 8-20 characters (no spaces)';
+			$errors[] = 'Passwords must be ' . $password_length_min . '-' . $password_length_max . ' characters (no spaces)';
 		}
 
 		$admin[$key] = $value;

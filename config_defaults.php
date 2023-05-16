@@ -179,14 +179,6 @@ $defaults = array(
 			'required' => '',
 			'allowed' => 'zero'
 		),
-		'max_comments_size' => array(
-			'name' => 'max_comments_size',
-			'value' => 3000,
-			'description' => 'maximum character length for comments (0 for no limit)',
-			'type' => 'text',
-			'required' => '',
-			'allowed' => 'zero'
-		),
 		'submission_limit' => array(
 			'name' => 'submission_limit',
 			'value' => 3,
@@ -371,14 +363,6 @@ $defaults = array(
 			'required' => '',
 			'allowed' => ''
 		),
-		'default_country' => array(
-			'name' => 'default_country',
-			'value' => 'USA',
-			'description' => 'default country',
-			'type' => 'select|countries',
-			'required' => '',
-			'allowed' => ''
-		),
 		'exclude_countries' => array(
 			'name' => 'exclude_countries',
 			'value' => '',
@@ -399,14 +383,6 @@ $defaults = array(
 			'name' => 'send_mail_contact',
 			'value' => 'Y',
 			'description' => 'send submitter email notifications',
-			'type' => 'checkbox',
-			'required' => '',
-			'allowed' => ''
-		),
-		'default_mailing_list' => array(
-			'name' => 'default_mailing_list',
-			'value' => 'Y',
-			'description' => 'default state of mailing list checkbox',
 			'type' => 'checkbox',
 			'required' => '',
 			'allowed' => ''
@@ -572,6 +548,239 @@ $defaults = array(
 		'pdf' => array('ext' => 'pdf'),
 		'rtf' => array('ext' => 'rtf'),
 		'txt' => array('ext' => 'txt')
+	),
+
+	'fields' => array(
+		'first_name' => array(
+			'field' => 'first_name',
+			'name' => 'first name',
+			'type' => 'text',
+			'section' => 'contact',
+			'value' => '',
+			'maxlength' => 50,
+			'enabled' => 'Y',
+			'required' => 'Y'
+		),
+		'last_name' => array(
+			'field' => 'last_name',
+			'name' => 'last name',
+			'type' => 'text',
+			'section' => 'contact',
+			'value' => '',
+			'maxlength' => 50,
+			'enabled' => 'Y',
+			'required' => 'Y'
+		),
+		'email' => array(
+			'field' => 'email',
+			'name' => 'email',
+			'type' => 'text',
+			'section' => 'contact',
+			'value' => '',
+			'maxlength' => 50,
+			'enabled' => 'Y',
+			'required' => 'Y'
+		),
+		'company' => array(
+			'field' => 'company',
+			'name' => 'company',
+			'type' => 'text',
+			'section' => 'contact',
+			'value' => '',
+			'maxlength' => 50,
+			'enabled' => 'Y',
+			'required' => ''
+		),
+		'address1' => array(
+			'field' => 'address1',
+			'name' => 'address 1',
+			'type' => 'text',
+			'section' => 'contact',
+			'value' => '',
+			'maxlength' => 50,
+			'enabled' => 'Y',
+			'required' => 'Y'
+		),
+		'address2' => array(
+			'field' => 'address2',
+			'name' => 'address 2',
+			'type' => 'text',
+			'section' => 'contact',
+			'value' => '',
+			'maxlength' => 50,
+			'enabled' => 'Y',
+			'required' => ''
+		),
+		'city' => array(
+			'field' => 'city',
+			'name' => 'city',
+			'type' => 'text',
+			'section' => 'contact',
+			'value' => '',
+			'maxlength' => 50,
+			'enabled' => 'Y',
+			'required' => 'Y'
+		),
+		'state' => array(
+			'field' => 'state',
+			'name' => 'state',
+			'type' => 'select',
+			'section' => 'contact',
+			'value' => '',
+			'maxlength' => 2,
+			'enabled' => 'Y',
+			'required' => ''
+		),
+		'zip' => array(
+			'field' => 'zip',
+			'name' => 'zip',
+			'type' => 'text',
+			'section' => 'contact',
+			'value' => '',
+			'maxlength' => 50,
+			'enabled' => 'Y',
+			'required' => ''
+		),
+		'country' => array(
+			'field' => 'country',
+			'name' => 'country',
+			'type' => 'select',
+			'section' => 'contact',
+			'value' => 'USA',
+			'maxlength' => 3,
+			'enabled' => 'Y',
+			'required' => 'Y'
+		),
+		'phone' => array(
+			'field' => 'phone',
+			'name' => 'phone',
+			'type' => 'text',
+			'section' => 'contact',
+			'value' => '',
+			'maxlength' => 50,
+			'enabled' => 'Y',
+			'required' => ''
+		),
+		'password' => array(
+			'field' => 'password',
+			'name' => 'password',
+			'type' => 'password',
+			'section' => 'contact',
+			'value' => '',
+			'maxlength' => 72,
+			'enabled' => 'Y',
+			'required' => 'Y'
+		),
+		'password2' => array(
+			'field' => 'password2',
+			'name' => 'confirm password',
+			'type' => 'password',
+			'section' => 'contact',
+			'value' => '',
+			'maxlength' => 72,
+			'enabled' => 'Y',
+			'required' => 'Y'
+		),
+		'mailing_list' => array(
+			'field' => 'mailing_list',
+			'name' => 'mailing list',
+			'type' => 'checkbox',
+			'section' => 'contact',
+			'value' => 'Y',
+			'maxlength' => 1,
+			'enabled' => 'Y',
+			'required' => ''
+		),
+		'writer' => array(
+			'field' => 'writer',
+			'name' => 'writer name',
+			'type' => 'text',
+			'section' => 'submission',
+			'value' => '',
+			'maxlength' => 50,
+			'enabled' => 'Y',
+			'required' => ''
+		),
+		'title' => array(
+			'field' => 'title',
+			'name' => 'submission title',
+			'type' => 'text',
+			'section' => 'submission',
+			'value' => '',
+			'maxlength' => 255,
+			'enabled' => 'Y',
+			'required' => 'Y'
+		),
+		'genre_id' => array(
+			'field' => 'genre_id',
+			'name' => 'genre',
+			'type' => 'select',
+			'section' => 'submission',
+			'value' => '',
+			'maxlength' => 100,
+			'enabled' => 'Y',
+			'required' => ''
+		),
+		'file' => array(
+			'field' => 'file',
+			'name' => 'file',
+			'type' => 'file',
+			'section' => 'submission',
+			'value' => '',
+			'maxlength' => 50,
+			'enabled' => 'Y',
+			'required' => 'Y'
+		),
+		'comments' => array(
+			'field' => 'comments',
+			'name' => 'comments',
+			'type' => 'textarea',
+			'section' => 'submission',
+			'value' => '',
+			'maxlength' => 3000,
+			'enabled' => 'Y',
+			'required' => ''
+		),
+		'cc_number' => array(
+			'field' => 'cc_number',
+			'name' => 'credit card number',
+			'type' => 'text',
+			'section' => 'payment',
+			'value' => '',
+			'maxlength' => 50,
+			'enabled' => 'Y',
+			'required' => ''
+		),
+		'cc_exp_month' => array(
+			'field' => 'cc_exp_month',
+			'name' => 'expiration month',
+			'type' => 'select',
+			'section' => 'payment',
+			'value' => '',
+			'maxlength' => 2,
+			'enabled' => 'Y',
+			'required' => ''
+		),
+		'cc_exp_year' => array(
+			'field' => 'cc_exp_year',
+			'name' => 'expiration year',
+			'type' => 'select',
+			'section' => 'payment',
+			'value' => '',
+			'maxlength' => 4,
+			'enabled' => 'Y',
+			'required' => ''
+		),
+		'cc_csc' => array(
+			'field' => 'cc_csc',
+			'name' => 'card security code',
+			'type' => 'text',
+			'section' => 'payment',
+			'value' => '',
+			'maxlength' => 4,
+			'enabled' => 'Y',
+			'required' => ''
+		)
 	),
 
 	'genres' => array(

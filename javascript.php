@@ -48,7 +48,10 @@ function email_check(email)
 
 function password_check(password)
 {
-	if (password.value.length < 8 || password.value.length > 20) {alert("ERROR: Passwords must be 8-20 characters"); return false;}
+	var password_length_min = ' . $password_length_min . ';
+	var password_length_max = ' . $password_length_max . ';
+
+	if (password.value.length < password_length_min || password.value.length > password_length_max) {alert("ERROR: Passwords must be " + password_length_min + "-" + password_length_max + " characters"); return false;}
 	if (password.value.indexOf(" ") != -1) {alert("ERROR: Passwords cannot contain spaces"); return false;}
 
 	return true;
@@ -333,7 +336,11 @@ if ($continue)
 			}
 
 			// build the fields object
-			foreach ($fields as $key => $value) {echo 'fields["' . $key . '"] = {name: "' . $value['name'] . '", type: "' . $value['type'] . '", required: "' . $value['required'] . '"};' . "\n";}
+			foreach ($fields as $key => $value)
+			{
+				$value = array_map('json_encode', $value);
+				echo 'fields["' . $key . '"] = {name: ' . $value['name'] . ', type: ' . $value['type'] . ', required: ' . $value['required'] . '};' . "\n";
+			}
 
 			echo '
 			if (document.getElementById("country"))
@@ -499,20 +506,19 @@ if ($continue)
 
 	if ($page == 'home' || ($page == 'login' && $module == 'submit' || $module == 'pay_submission'))
 	{
-		if ($config['max_comments_size'])
+		if ($fields['comments']['maxlength'])
 		{
 			echo '
 			function comments_limit()
 			{
-				if (document.getElementById("comments").value.length > ' . $config['max_comments_size'] . ')
+				if (document.getElementById("comments").value.length >= ' . $fields['comments']['maxlength'] . ')
 				{
-					document.getElementById("comments").value = document.getElementById("comments").value.substring(0, ' . $config['max_comments_size'] . ');
-					alert("Comments can only be ' . $config['max_comments_size'] . ' characters long");
+					document.getElementById("comments").value = document.getElementById("comments").value.substring(0, ' . $fields['comments']['maxlength'] . ');
+					alert("Comments can only be ' . $fields['comments']['maxlength'] . ' characters long");
 				}
 			}
 
-			event_listener("keydown", "comments", function(event) { comments_limit(); });
-			event_listener("keyup", "comments", function(event) { comments_limit(); });
+			event_listener("input", "comments", function(event) { comments_limit(); });
 			';
 		}
 
@@ -1269,6 +1275,60 @@ if ($continue)
 				}
 
 				event_listener("click", "submit_update", function(event) { if (!form_action_types_check()) {event.preventDefault();} });
+				';
+			}
+
+			if ($submodule == 'fields')
+			{
+				echo '
+				function form_fields_check()
+				{
+					var form_check = true;
+					var error = "ERROR: ";
+
+					for (i = 0; i < document.getElementById("form_configuration").length; i++)
+					{
+						var id = document.getElementById("form_configuration").elements[i].id;
+						document.getElementById(id).value = document.getElementById(id).value.trim();
+						if (document.getElementById(id).id.indexOf("maxlength") >= 0) {document.getElementById(id).value = document.getElementById(id).value.replace(/[^0-9]/g, "");}
+
+						if (document.getElementById(id).id.slice(-5) == "_name" && document.getElementById(id).value == "")
+						{
+							document.getElementById(id).className = "error";
+							error += "You cannot use blank field names";
+							form_check = false;
+							break;
+						}
+
+						if (document.getElementById(id).id.indexOf("maxlength") >= 0 && (isNaN(document.getElementById(id).value) || document.getElementById(id).value == 0))
+						{
+							document.getElementById(id).className = "error";
+							error += "Field Max Lengths must be numeric and greater than 0";
+							form_check = false;
+							break;
+						}
+
+						if ((document.getElementById(id).id == "password_maxlength" || document.getElementById(id).id == "password2_maxlength") && document.getElementById(id).value > 72)
+						{
+							document.getElementById(id).className = "error";
+							error += "Password Max Length is 72";
+							form_check = false;
+							break;
+						}
+					}
+
+					if (!form_check)
+					{
+						alert(error);
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+				}
+
+				event_listener("click", "submit_update", function(event) { if (!form_fields_check()) {event.preventDefault();} });
 				';
 			}
 
