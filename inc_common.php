@@ -5,7 +5,7 @@ header('X-Frame-Options: SAMEORIGIN');
 if (!isset($_COOKIE['submgr_cookie_test'])) {setcookie('submgr_cookie_test', '1');}
 session_name('submgr');
 $session_start = session_start();
-$GLOBALS['nonce'] = get_token();
+$nonce = get_token();
 $_SERVER['PHP_SELF'] = htmlentities($_SERVER['PHP_SELF']);
 
 $pages = array('home', 'login', 'install', 'help', 'error');
@@ -28,7 +28,7 @@ $gm_date = gmdate('Y-m-d', $gm_timestamp);
 $gm_year = gmdate('Y', $gm_timestamp);
 $output = '';
 $notice = '';
-$GLOBALS['db_connect'] = false;
+$db_connect = false;
 $configuration_status = true;
 $config = array();
 $display_login = true;
@@ -365,7 +365,7 @@ if ($GLOBALS['db_connect'])
 					{
 						if ($key == 'submission_price') {$clean = preg_replace('/[^0-9.]/i', '', $clean);} else {$clean = preg_replace('/[^0-9]/i', '', $clean);}
 						if ($clean == '') {$clean = 0;}
-						if ($key == 'submission_price' && is_numeric($clean)) {$clean = number_format($clean, 2);}
+						if ($key == 'submission_price' && is_numeric($clean)) {$clean = number_format($clean, 2, '.', '');}
 					}
 
 					$post_config[$key] = $clean;
@@ -628,19 +628,22 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 				if (!$value['name'])
 				{
 					$form_check = false;
-					$notice = 'ERROR: You cannot use blank field names';
+					$errors[$key][] = 'name';
+					$notices[] = 'ERROR: Field Names cannot be blank';
 				}
 
 				if (!is_numeric($value['maxlength']) || $value['maxlength'] == 0)
 				{
 					$form_check = false;
-					$notice = 'ERROR: field Max Lengths must be numeric and greater than 0';
+					$errors[$key][] = 'maxlength';
+					$notices[] = 'ERROR: Field Max Lengths must be numeric and greater than 0';
 				}
 
-				if (strpos($key, 'password') !== false && $value['maxlength'] > 72)
+				if (strpos($key, 'password') !== false && ($value['maxlength'] < 8 || $value['maxlength'] > 72))
 				{
 					$form_check = false;
-					$notice = 'ERROR: Password Max Length is 72';
+					$errors[$key][] = 'maxlength';
+					$notices[] = 'ERROR: Password Max Length must be between 8 and 72';
 				}
 
 				$post_fields[$key] = $value;
@@ -661,6 +664,11 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 				}
 
 				$notice = 'Fields settings updated successfully';
+			}
+			else
+			{
+				$notices = array_unique($notices);
+				$notice = implode('<br>', $notices);
 			}
 		}
 
@@ -724,35 +732,40 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 				else
 				{
 					$form_check = false;
-					$notice = 'ERROR: You cannot use blank genre names';
+					$errors[$key][] = 'name';
+					$notices[] = 'ERROR: Genre Names cannot be blank';
 				}
 
 				if ($value['submission_limit'] && !is_numeric($value['submission_limit']))
 				{
 					$form_check = false;
-					$notice = 'ERROR: Submission Limits must be numeric';
+					$errors[$key][] = 'submission_limit';
+					$notices[] = 'ERROR: Submission Limits must be numeric';
 				}
 
 				if ($value['price'] && !is_numeric($value['price']))
 				{
 					$form_check = false;
-					$notice = 'ERROR: Prices must be numeric';
+					$errors[$key][] = 'price';
+					$notices[] = 'ERROR: Prices must be numeric';
 				}
 
 				if ($value['submission_limit'] && (int) $value['submission_limit'] > 255)
 				{
 					$form_check = false;
-					$notice = 'ERROR: Maximum submission limit is 255';
+					$errors[$key][] = 'submission_limit';
+					$notices[] = 'ERROR: Maximum submission limit is 255';
 				}
 
 				if ($value['price'] && (float) $value['price'] > 9999.99)
 				{
 					$form_check = false;
-					$notice = 'ERROR: Maximum price is $9999.99';
+					$errors[$key][] = 'price';
+					$notices[] = 'ERROR: Maximum price is $9999.99';
 				}
 
 				if ($value['submission_limit'] == '') {$value['submission_limit'] = '0';}
-				if ($value['price'] == '') {$value['price'] = '0.00';}
+				if ($value['price'] == '') {$value['price'] = '0.00';} else {$value['price'] = number_format($value['price'], 2, '.', '');}
 				if (!isset($value['active'])) {$value['active'] = '';}
 				if (!isset($value['blind'])) {$value['blind'] = '';}
 
@@ -765,7 +778,7 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 				if ($value > 1)
 				{
 					$form_check = false;
-					$notice = 'ERROR: All genre names must be unique';
+					$notices[] = 'ERROR: All genre names must be unique';
 					break;
 				}
 			}
@@ -795,6 +808,11 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 
 				$notice = 'Genre settings updated successfully';
 				unset($post_genres['new']);
+			}
+			else
+			{
+				$notices = array_unique($notices);
+				$notice = implode('<br>', $notices);
 			}
 		}
 
@@ -943,7 +961,7 @@ if (INSTALLED && $GLOBALS['db_connect'])
 	get_fields();
 	get_action_types();
 
-	$password_length_max = $fields['password']['maxlength'];
+	if (isset($fields['password']['maxlength'])) {$password_length_max = $fields['password']['maxlength'];} // needed to suppress errors before version 3.41 update
 
 	$timezone = $config['timezone'];
 	$timezone_safe = (float) $timezone;
@@ -1481,7 +1499,7 @@ function form_check()
 	'filesize_big' => array('status' => true, 'warning' => 'Uploaded file exceeds the maximum file size limit of ' . $max_file_size_formatted),
 	'filesize_small' => array('status' => true, 'warning' => 'Uploaded file is empty (0 bytes)'),
 	'file_ext' => array('status' => true, 'warning' => 'Invalid file extension. Allowed file extensions: ' . $file_types_list),
-	'cc_expired' => array('status' => true, 'warning' => 'The expiration date that you have entered indicates that your credit card has expired')
+	'cc_expired' => array('status' => true, 'warning' => 'Expiration Date entered indicates that your credit card has expired')
 	);
 
 	if ((isset($_SESSION['post']['genre_id']) && (float) $genres['all'][$_SESSION['post']['genre_id']]['price'] && $config['show_payment_fields']) || $form_type == 'pay_submission')

@@ -454,7 +454,7 @@ if ($continue)
 					document.getElementById("cc_exp_month").className = "error";
 					document.getElementById("label_cc_exp_year").className = "error";
 					document.getElementById("label_cc_exp_month").className = "error";
-					alert("ERROR: The expiration date that you have entered indicates that your credit card has expired.");
+					alert("ERROR: Expiration Date entered indicates that your credit card has expired.");
 					return false;
 				}
 			}
@@ -1295,7 +1295,7 @@ if ($continue)
 						if (document.getElementById(id).id.slice(-5) == "_name" && document.getElementById(id).value == "")
 						{
 							document.getElementById(id).className = "error";
-							error += "You cannot use blank field names";
+							error += "Field Names cannot be blank";
 							form_check = false;
 							break;
 						}
@@ -1308,10 +1308,10 @@ if ($continue)
 							break;
 						}
 
-						if ((document.getElementById(id).id == "password_maxlength" || document.getElementById(id).id == "password2_maxlength") && document.getElementById(id).value > 72)
+						if ((document.getElementById(id).id == "password_maxlength" || document.getElementById(id).id == "password2_maxlength") && (document.getElementById(id).value < 8 || document.getElementById(id).value > 72))
 						{
 							document.getElementById(id).className = "error";
-							error += "Password Max Length is 72";
+							error += "Password Max Length must be between 8 and 72";
 							form_check = false;
 							break;
 						}
@@ -1351,7 +1351,7 @@ if ($continue)
 						if (document.getElementById(id).name.indexOf("name") >= 0 && document.getElementById(id).name.indexOf("new") < 0 && document.getElementById(id).value == "")
 						{
 							document.getElementById(id).className = "error";
-							error += "You cannot use blank genre names";
+							error += "Genre Names cannot be blank";
 							form_check = false;
 							break;
 						}

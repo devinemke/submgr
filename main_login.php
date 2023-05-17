@@ -3620,7 +3620,7 @@ else // if staff login
 				<td style="padding-left: 20px;">
 				';
 
-					if (!isset($post_config)) {check_config($config);} // so error notice is displayed
+					// if (!isset($post_config)) {check_config($config);} // so error notice is displayed
 					if ($notice) {echo '<div class="notice">' . $notice . '</div><br>';}
 
 					if ($submodule == 'general')
@@ -3843,10 +3843,15 @@ else // if staff login
 									$disabled = '';
 									if (in_array($key, $fields_checkbox_disabled) && ($sub_key == 'enabled' || $sub_key == 'required')) {$disabled = ' disabled';}
 
+									$class = '';
+									if (isset($errors[$key]) && in_array($sub_key, $errors[$key])) {$class = 'error';}
+
+									if (isset($post_fields[$key][$sub_key])) {$sub_value = htmlspecialchars((string) $post_fields[$key][$sub_key]);}
+
 									$row .= '<input type="' . $fields_editable[$sub_key] . '" id="' . $key . '_' . $sub_key . '" name="fields[' . $key . '][' . $sub_key . ']" ';
 									if ($fields_editable[$sub_key] == 'text') {$row .= 'value="' . $sub_value . '" style="width: ' . $width . 'px;"';}
 									if ($fields_editable[$sub_key] == 'checkbox') {$row .= 'value="Y"' . $checked;}
-									$row .= $disabled . '>';
+									$row .= $disabled . ' class="' . $class . '">';
 								}
 								else
 								{
@@ -3923,6 +3928,21 @@ else // if staff login
 							exit_error();
 						}
 
+						function genre_class($genre_id)
+						{
+							global $errors;
+							$class = array();
+							$genre_fields = array('name', 'submission_limit', 'price');
+
+							foreach ($genre_fields as $value)
+							{
+								$class[$value] = '';
+								if (isset($errors[$genre_id]) && in_array($value, $errors[$genre_id])) {$class[$value] = 'error';}
+							}
+
+							return $class;
+						}
+
 						$colspan = 6;
 
 						echo '
@@ -3939,21 +3959,23 @@ else // if staff login
 						</tr>
 						';
 
-						foreach ($genres['all'] as $value)
+						foreach ($genres['all'] as $key => $value)
 						{
+							if (isset($post_genres[$key])) {$value = $post_genres[$key];}
 							$value = array_map('strval', $value);
 							$value = array_map('htmlspecialchars', $value);
 							extract($value);
+							$class = genre_class($key);
 
 							echo '
 							<tr style="text-align: center;">
-							<td style="text-align: right; white-space: nowrap;">' . $genre_id . ' <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&submodule=' . $submodule . '&genre_id=' . $genre_id . '&delete=1" id="genre_' . $genre_id . '" class="genre"><img src="button_delete.png" alt="delete" width="11" height="13"></a></td>
-							<td><input type="text" id="genres_' . $genre_id . '_name" name="genres[' . $genre_id . '][name]" value="' . $name . '" maxlength="50"></td>
-							<td><input type="text" id="genres_' . $genre_id . '_submission_limit" name="genres[' . $genre_id . '][submission_limit]" value="' . $submission_limit . '" maxlength="3" style="width: 50px;"></td>
-							<td><input type="text" id="genres_' . $genre_id . '_redirect_url" name="genres[' . $genre_id . '][redirect_url]" value="' . $redirect_url . '"></td>
-							<td><input type="text" id="genres_' . $genre_id . '_price" name="genres[' . $genre_id . '][price]" value="' . $price . '" maxlength="7" style="width: 50px;"></td>
-							<td><input type="checkbox" id="genres_' . $genre_id . '_active" name="genres[' . $genre_id . '][active]" value="Y"'; if ($active) {echo ' checked';} echo '></td>
-							<td><input type="checkbox" id="genres_' . $genre_id . '_blind" name="genres[' . $genre_id . '][blind]" value="Y"'; if ($blind) {echo ' checked';} echo '></td>
+							<td style="text-align: right; white-space: nowrap;">' . $key . ' <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&submodule=' . $submodule . '&genre_id=' . $key . '&delete=1" id="genre_' . $key . '" class="genre"><img src="button_delete.png" alt="delete" width="11" height="13"></a></td>
+							<td><input type="text" id="genres_' . $key . '_name" name="genres[' . $key . '][name]" value="' . $name . '" maxlength="50" class="' . $class['name'] . '"></td>
+							<td><input type="text" id="genres_' . $key . '_submission_limit" name="genres[' . $key . '][submission_limit]" value="' . $submission_limit . '" maxlength="3" style="width: 50px;" class="' . $class['submission_limit'] . '"></td>
+							<td><input type="text" id="genres_' . $key . '_redirect_url" name="genres[' . $key . '][redirect_url]" value="' . $redirect_url . '"></td>
+							<td><input type="text" id="genres_' . $key . '_price" name="genres[' . $key . '][price]" value="' . $price . '" maxlength="7" style="width: 50px;" class="' . $class['price'] . '"></td>
+							<td><input type="checkbox" id="genres_' . $key . '_active" name="genres[' . $key . '][active]" value="Y"'; if ($active) {echo ' checked';} echo '></td>
+							<td><input type="checkbox" id="genres_' . $key . '_blind" name="genres[' . $key . '][blind]" value="Y"'; if ($blind) {echo ' checked';} echo '></td>
 							</tr>
 							';
 						}
@@ -3968,13 +3990,15 @@ else // if staff login
 							foreach ($genre_fields as $value) {$post_genres['new'][$value] = '';}
 						}
 
+						$class = genre_class('new');
+
 						echo '
 						<tr style="text-align: center;">
 						<td style="text-align: right;">new</td>
-						<td><input type="text" id="genres_new_name" name="genres[new][name]" value="' . $post_genres['new']['name'] . '" maxlength="50"></td>
-						<td><input type="text" id="genres_new_submission_limit" name="genres[new][submission_limit]" value="' . $post_genres['new']['submission_limit'] . '" maxlength="3" style="width: 50px;"></td>
+						<td><input type="text" id="genres_new_name" name="genres[new][name]" value="' . $post_genres['new']['name'] . '" maxlength="50" class="' . $class['name'] . '"></td>
+						<td><input type="text" id="genres_new_submission_limit" name="genres[new][submission_limit]" value="' . $post_genres['new']['submission_limit'] . '" maxlength="3" style="width: 50px;" class="' . $class['submission_limit'] . '"></td>
 						<td><input type="text" id="genres_new_redirect_url" name="genres[new][redirect_url]" value="' . $post_genres['new']['redirect_url'] . '"></td>
-						<td><input type="text" id="genres_new_price" name="genres[new][price]" value="' . $post_genres['new']['price'] . '" maxlength="7" style="width: 50px;"></td>
+						<td><input type="text" id="genres_new_price" name="genres[new][price]" value="' . $post_genres['new']['price'] . '" maxlength="7" style="width: 50px;" class="' . $class['price'] . '"></td>
 						<td><input type="checkbox" id="genres_new_active" name="genres[new][active]" value="Y" checked></td>
 						<td><input type="checkbox" id="genres_new_blind" name="genres[new][blind]" value="Y"></td>
 						</tr>
