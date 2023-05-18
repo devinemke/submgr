@@ -535,7 +535,7 @@ if ($continue)
 				echo 'price = ' . $config['submission_price'] . ';' . "\n";
 			}
 
-			if ($config['use_genres'] && isset($genres['price']) && $genres['price'])
+			if ($fields['genre_id']['enabled'] && isset($genres['price']) && $genres['price'])
 			{
 				foreach ($genres['price'] as $value)
 				{
@@ -556,7 +556,7 @@ if ($continue)
 			}
 			else
 			{
-				if ($config['use_genres'] && isset($genres['price']) && $genres['price'])
+				if ($fields['genre_id']['enabled'] && isset($genres['price']) && $genres['price'])
 				{
 					echo '
 					if (document.getElementById("genre_id"))

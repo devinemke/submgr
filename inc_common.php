@@ -1203,7 +1203,7 @@ function form_main()
 			if (isset($_SESSION['file_upload']['filename'])) {$extra_after .= '<span class="small" style="margin-left: 5px;">file selected: <b>' . $_SESSION['file_upload']['filename'] . '</b></span>';}
 		}
 
-		if ($key == 'genre_id' && $config['use_genres'] && isset($genres['active']))
+		if ($key == 'genre_id' && isset($genres['active']))
 		{
 			if (isset($_GET['genre_id']) && $_GET['genre_id'] && isset($genres['all'][$_GET['genre_id']]) && !$submit) {$GLOBALS['genre_id'] = (int) $_GET['genre_id'];}
 			foreach ($genres['active'] as $sub_value) {$genres_form[$sub_value] = $genres['all'][$sub_value]['name'];}
@@ -1258,7 +1258,7 @@ function form_main()
 	}
 
 	if (isset($_SESSION['post']['password']) && $_SESSION['post']['password']) {$GLOBALS['password'] = $_SESSION['post']['password'];} else {$GLOBALS['password'] = '';}
-	if (!$config['use_genres'] || !isset($genres['active'])) {unset($fields['genre_id']);}
+	if (!isset($genres['active'])) {unset($fields['genre_id']);}
 
 	$GLOBALS['form_rows']['contact'] = '';
 	$GLOBALS['form_rows']['submission'] = '';

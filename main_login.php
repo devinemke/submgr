@@ -377,7 +377,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 			address_check();
 
 			// submission limit check
-			if (!$config['use_genres']) {$genre_limits = false;}
+			if (!$fields['genre_id']['enabled']) {$genre_limits = false;}
 			if (!$genre_limits && $config['submission_limit'] && $_SESSION['submissions_pending_count']['all'] >= $config['submission_limit']) {submission_limit_error('config');}
 
 			echo display('html') . '<p>To submit your work please fill out the form below and then hit <b>submit</b>.</p>';
@@ -394,7 +394,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 			$_SESSION['post_display'] = array_map('htmlspecialchars', $_SESSION['post']);
 
 			// submission limit check for this genre
-			if ($config['use_genres'] && $genre_limits && $genres['all'][$_SESSION['post']['genre_id']]['submission_limit'] && $_SESSION['submissions_pending_count'][$_SESSION['post']['genre_id']] >= $genres['all'][$_SESSION['post']['genre_id']]['submission_limit'])
+			if ($fields['genre_id']['enabled'] && $genre_limits && $genres['all'][$_SESSION['post']['genre_id']]['submission_limit'] && $_SESSION['submissions_pending_count'][$_SESSION['post']['genre_id']] >= $genres['all'][$_SESSION['post']['genre_id']]['submission_limit'])
 			{
 				submission_limit_error($_SESSION['post']['genre_id']);
 			}
@@ -2460,7 +2460,7 @@ else // if staff login
 						';
 
 						// changed so admins/editors can create submissions in inactive genres
-						if ($config['use_genres'] && isset($genres['all']) && $genres['all'])
+						if ($fields['genre_id']['enabled'] && isset($genres['all']) && $genres['all'])
 						{
 							echo '<tr><td class="row_left"><label for="genre_id" id="label_genre_id">genre:</label></td><td><select id="genre_id" name="genre_id">';
 							foreach ($genres['all'] as $key => $value)

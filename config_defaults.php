@@ -387,14 +387,6 @@ $defaults = array(
 			'required' => '',
 			'allowed' => ''
 		),
-		'use_genres' => array(
-			'name' => 'use_genres',
-			'value' => 'Y',
-			'description' => 'use genres',
-			'type' => 'checkbox',
-			'required' => '',
-			'allowed' => ''
-		),
 		'allow_withdraw' => array(
 			'name' => 'allow_withdraw',
 			'value' => '',
