@@ -1220,7 +1220,7 @@ else // if staff login
 								$display_array = array();
 
 								if (isset($readers['all'][$reader_id])) {$display_array = $readers['all'][$reader_id];}
-								if ($reader_id == $submitter_id) {$display_array = $submissions[$submission_id]['contact']; $display_array = array_map('htmlspecialchars', $display_array);}
+								if ($reader_id == $submitter_id) {$display_array = $submissions[$submission_id]['contact']; $display_array = array_map('strval', $display_array); $display_array = array_map('htmlspecialchars', $display_array);}
 
 								if ($display_array)
 								{

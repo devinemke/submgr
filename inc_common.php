@@ -1684,6 +1684,7 @@ function display($arg)
 	{
 		if ($value['section'] == 'contact' && $key != 'password2')
 		{
+			if ($key == 'email' && isset($display_source[$key]) && $display_source[$key]) {$brackets = array('[' => '&lsqb;', ']' => '&rsqb;'); $display_source[$key] = str_replace(array_keys($brackets), $brackets, $display_source[$key]);} // needed when email is run through mail_to()
 			if ($key == 'country' && isset($display_source[$key]) && $display_source[$key]) {$display_source[$key] = $countries[$country] . ' (' . $country . ')';}
 			if (isset($display_source[$key]) && $display_source[$key]) {$search_replace['[' . $key . ']'] = $display_source[$key];}
 		}
@@ -1691,6 +1692,7 @@ function display($arg)
 
 	$display = str_replace(array_keys($search_replace), $search_replace, $display_template);
 	$display = str_replace('[city],', '', $display);
+	$display = str_replace(', [state]', '', $display);
 	$display = preg_replace('~\[.*?\]~', '', $display);
 	$display = preg_replace("~[\n]{2,}~", "\n", $display);
 	$display = preg_replace("~[ ]{2,}~", ' ', $display);
