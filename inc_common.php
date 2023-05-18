@@ -478,19 +478,6 @@ if ($GLOBALS['db_connect'])
 
 $upload_path_year = $config['upload_path'] . $gm_year . '/';
 
-$max_file_size_formatted = '';
-if (isset($config['max_file_size']) && $config['max_file_size'])
-{
-	$size_array = array(1 => 'B', 1024 => 'KB', 1048576 => 'MB');
-	foreach ($size_array as $bytes => $abbr)
-	{
-		if ($config['max_file_size'] >= $bytes)
-		{
-			$max_file_size_formatted = number_format(round($config['max_file_size'] / $bytes, 2), 2) . ' ' . $abbr;
-		}
-	}
-}
-
 if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['contact']['access'] == 'admin')
 {
 	if ($module == 'configuration' && $submodule == 'action_types')
@@ -644,6 +631,13 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 					$form_check = false;
 					$errors[$key][] = 'maxlength';
 					$notices[] = 'ERROR: Password Max Length must be between 8 and 72';
+				}
+
+				if ($key == 'file' && $value['maxlength'] > 4294967295)
+				{
+					$form_check = false;
+					$errors[$key][] = 'maxlength';
+					$notices[] = 'ERROR: File maximum size is 4294967295 (4 GB)';
 				}
 
 				$post_fields[$key] = $value;
@@ -961,7 +955,9 @@ if (INSTALLED && $GLOBALS['db_connect'])
 	get_fields();
 	get_action_types();
 
-	if (isset($fields['password']['maxlength'])) {$password_length_max = $fields['password']['maxlength'];} // needed to suppress errors before version 3.41 update
+	// needed to suppress errors before version 3.41 update
+	if (isset($fields['password']['maxlength'])) {$password_length_max = $fields['password']['maxlength'];}
+	if (isset($fields['file']['maxlength'])) {$max_file_size_formatted = get_max_file_size_formatted();}
 
 	$timezone = $config['timezone'];
 	$timezone_safe = (float) $timezone;
@@ -1037,6 +1033,26 @@ function get_fields()
 			$_SESSION['fields'] = $GLOBALS['fields'];
 		}
 	}
+}
+
+function get_max_file_size_formatted()
+{
+	global $fields;
+	$max_file_size_formatted = '';
+
+	if (isset($fields['file']['maxlength']) && $fields['file']['maxlength'])
+	{
+		$size_array = array(1 => 'B', 1024 => 'KB', 1048576 => 'MB', 1073741824 => 'GB', 1099511627776 => 'TB');
+		foreach ($size_array as $bytes => $abbr)
+		{
+			if ($fields['file']['maxlength'] >= $bytes)
+			{
+				$max_file_size_formatted = number_format(round($fields['file']['maxlength'] / $bytes, 2), 2) . ' ' . $abbr;
+			}
+		}
+	}
+
+	return $max_file_size_formatted;
 }
 
 function get_groups()
@@ -1186,7 +1202,7 @@ function form_main()
 
 	function display_form_row($key, $value)
 	{
-		global $config, $genres, $submit, $form_type;
+		global $config, $fields, $genres, $submit, $form_type;
 		$output = '';
 		$extra_tr = '';
 		$extra_before = '';
@@ -1198,8 +1214,8 @@ function form_main()
 
 		if ($key == 'file')
 		{
-			$extra_before = '<input type="hidden" name="MAX_FILE_SIZE" value="' . $config['max_file_size'] . '">';
-			if ($config['max_file_size']) {$extra_after .= ' <span class="small">(' . $GLOBALS['max_file_size_formatted'] . ' max)</span>';}
+			$extra_before = '<input type="hidden" name="MAX_FILE_SIZE" value="' . $fields['file']['maxlength'] . '">';
+			if ($fields['file']['maxlength']) {$extra_after .= ' <span class="small">(' . $GLOBALS['max_file_size_formatted'] . ' max)</span>';}
 			if (isset($_SESSION['file_upload']['filename'])) {$extra_after .= '<span class="small" style="margin-left: 5px;">file selected: <b>' . $_SESSION['file_upload']['filename'] . '</b></span>';}
 		}
 
@@ -1551,7 +1567,7 @@ function form_check()
 
 		if ($_FILES['file']['error'] == 3 || $_FILES['file']['error'] == 4 || !$_SESSION['file_upload']['is_uploaded_file'] || !$_SESSION['file_upload']['move_uploaded_file']) {$checks['file']['status'] = false;}
 		if ($checks['file']['status'] && $_FILES['file']['size'] == 0) {$checks['filesize_small']['status'] = false;}
-		if ($_FILES['file']['error'] == 1 || $_FILES['file']['error'] == 2 || ($config['max_file_size'] && $_FILES['file']['size'] > $config['max_file_size'])) {$checks['filesize_big']['status'] = false;}
+		if ($_FILES['file']['error'] == 1 || $_FILES['file']['error'] == 2 || ($fields['file']['maxlength'] && $_FILES['file']['size'] > $fields['file']['maxlength'])) {$checks['filesize_big']['status'] = false;}
 
 		$pathinfo = pathinfo($_FILES['file']['name']);
 		if (!isset($pathinfo['extension']) || (isset($pathinfo['extension']) && $pathinfo['extension'] == '')) {$checks['file_ext']['status'] = false;}

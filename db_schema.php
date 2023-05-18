@@ -98,7 +98,7 @@ $schema = array(
 		'type' => array('type' => 'varchar(10)', 'extra' => 'DEFAULT NULL'),
 		'section' => array('type' => 'varchar(10)', 'extra' => 'DEFAULT NULL'),
 		'value' => array('type' => 'varchar(50)', 'extra' => 'DEFAULT NULL'),
-		'maxlength' => array('type' => 'smallint(5) unsigned', 'extra' => 'DEFAULT NULL'),
+		'maxlength' => array('type' => 'int(10) unsigned', 'extra' => 'DEFAULT NULL'),
 		'enabled' => array('type' => 'char(1)', 'extra' => 'DEFAULT NULL'),
 		'required' => array('type' => 'char(1)', 'extra' => 'DEFAULT NULL')
 	),

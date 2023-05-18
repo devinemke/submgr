@@ -1328,7 +1328,7 @@ else // if staff login
 
 							if ($_FILES['file']['error'] == 3 || !$_SESSION['file_upload']['is_uploaded_file'] || !$_SESSION['file_upload']['move_uploaded_file']) {$form_check = false; $error = 'file upload failed';}
 							if ($_FILES['file']['size'] == 0) {$form_check = false; $error = 'Uploaded file is empty (0 bytes)';}
-							if ($_FILES['file']['error'] == 1 || $_FILES['file']['error'] == 2 || ($config['max_file_size'] && $_FILES['file']['size'] > $config['max_file_size'])) {$form_check = false; $error = 'Uploaded file exceeds the maximum file size limit of ' . $max_file_size_formatted;}
+							if ($_FILES['file']['error'] == 1 || $_FILES['file']['error'] == 2 || ($fields['file']['maxlength'] && $_FILES['file']['size'] > $fields['file']['maxlength'])) {$form_check = false; $error = 'Uploaded file exceeds the maximum file size limit of ' . $max_file_size_formatted;}
 						}
 
 						if (!$form_check)
@@ -1508,7 +1508,7 @@ else // if staff login
 								<label for="message" id="label_message">message:</label> <span class="small">[ <i>sent to receiver (if enabled)</i> ]</span><br>
 								<textarea id="message" name="message" cols="30" rows="5">'; if (isset($message)) {echo htmlspecialchars($message);} echo '</textarea><br>
 								<label for="file" id="label_file">attach file:</label> <span class="small">[ <i>' . $max_file_size_formatted . ' max</i> ]</span><br>';
-								if ($config['max_file_size']) {echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $config['max_file_size'] . '">';}
+								if ($fields['file']['maxlength']) {echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $fields['file']['maxlength'] . '">';}
 								echo '<input type="file" id="file" name="file">';
 								if (isset($_SESSION['file_upload']['filename']) && $_SESSION['file_upload']['filename']) {echo '<br>file selected: <b>' . $_SESSION['file_upload']['filename'] . '</b> [<input type="submit" name="submit" value="remove" style="width: 50px; border: 0px; color: ' . $config['color_link'] . '; background-color: ' . $config['color_background'] . ';"> ]';}
 								echo '
@@ -2471,7 +2471,7 @@ else // if staff login
 						}
 
 						echo '
-						<tr><td class="row_left"><label for="file" id="label_file">file:</label></td><td>'; if ($config['max_file_size']) {echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $config['max_file_size'] . '">';} echo '<input type="file" id="file" name="file">'; if ($config['max_file_size']) {echo ' <span class="small">(' . $max_file_size_formatted . ' max)'; if (isset($_SESSION['file_upload']['filename'])) {echo '<span style="margin-left: 5px;">file selected:</span> <b>' . $_SESSION['file_upload']['filename'] . '</b>';} echo '</span>';} echo '</td></tr>
+						<tr><td class="row_left"><label for="file" id="label_file">file:</label></td><td>'; if ($fields['file']['maxlength']) {echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $fields['file']['maxlength'] . '">';} echo '<input type="file" id="file" name="file">'; if ($fields['file']['maxlength']) {echo ' <span class="small">(' . $max_file_size_formatted . ' max)'; if (isset($_SESSION['file_upload']['filename'])) {echo '<span style="margin-left: 5px;">file selected:</span> <b>' . $_SESSION['file_upload']['filename'] . '</b>';} echo '</span>';} echo '</td></tr>
 						<tr><td class="row_left"><label for="comments" id="label_comments">comments:</label></td><td><textarea id="comments" name="comments" cols="30" rows="4" maxlength="' . $fields['comments']['maxlength'] . '">'; if (isset($comments)) {echo $comments;} echo '</textarea>'; if ($fields['comments']['maxlength']) {echo ' <span class="small">(' . $fields['comments']['maxlength'] . ' characters max)</span>';} echo '</td></tr>
 						<tr>
 						<td>&nbsp;</td>
@@ -3834,8 +3834,7 @@ else // if staff login
 								if (isset($fields_editable[$sub_key]))
 								{
 									$width = 150;
-									if ($sub_key == 'value') {$width = 100;}
-									if ($sub_key == 'maxlength') {$width = 50;}
+									if ($sub_key == 'value' || $sub_key == 'maxlength') {$width = 100;}
 
 									$checked = '';
 									if ($sub_value) {$checked = ' checked';}

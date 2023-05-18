@@ -96,7 +96,7 @@ a:hover
 <div style="text-align: center;">
 <div style="font-size: 25pt; font-weight: bold;">Submission Manager</div>
 <div style="font-size: 15pt;">System Documentation</div>
-<div style="font-size: 10pt;">updated 2023-05-16<br>&copy;2023 Devin Emke</div>
+<div style="font-size: 10pt;">updated 2023-05-18<br>&copy;2023 Devin Emke</div>
 </div>
 
 <hr>
@@ -202,7 +202,7 @@ a:hover
 	<li>Create a directory on your server where Submission Manager will be stored: (for example: <b>https://www.example.com/submissions</b>).<br><b>Important:</b> This installation directory must be readable and writeable to the web server. Refer to your server&rsquo;s documentation for help with changing read/write permissions.</li>
 	<li>Create a mySQL database. Submission Manager does not create the mySQL database for you. Before you begin installation, you should create an empty named database (for example: <b>submgr</b>). If you have databases on the server for other uses, it is recommend that you create a separate database for Submission Manager.</li>
 	<li>Know your mySQL user information. You will need to know your mySQL host name, and know the username and password of a mySQL user who has full read and write privileges to your server.</li>
-	<li>Know the first name, last name, email address, and password of the first admin level contact you would like to create (the person who will do the initial configuration of the system). The password must be 8-20 characters and cannot contian spaces.</li>
+	<li>Know the first name, last name, email address, and password of the first admin level contact you would like to create (the person who will do the initial configuration of the system). The password must be 8-72 characters and cannot contian spaces.</li>
 	</ul>
 
 	<div class="header_clear" id="installation_3">Installing Submission Manager</div>
@@ -245,7 +245,6 @@ a:hover
 		<tr class="table"><td class="row_left"><b>color_link:</b></td><td>The color of text that is a link.</td></tr>
 		<tr class="table"><td class="row_left"><b>color_link_hover:</b></td><td>The color that link text will change to if a user hovers their mouse over that link text.</td></tr>
 		<tr class="table"><td class="row_left"><b>border_radius:</b></td><td>Rounding of borders (in pixels).</td></tr>
-		<tr class="table"><td class="row_left"><b>max_file_size:</b></td><td>Use this to set the maximum file size you will allow a submitter to upload. This should be entered in bytes; the default is 512000 (500 KB). A setting of 0 means no limit.</td></tr>
 		<tr class="table"><td class="row_left"><b>submission_limit:</b></td><td>This is the number of outstanding submissions you would like any individual contact to be able to have on the system at once. The default is 3. Setting this to 0 will allow an unlimited number of submissions. Submission limits can also set by genre in the <a href="#genre_configuration">genre configuration</a>.</td></tr>
 		<tr class="table"><td class="row_left"><b>pagination_limit:</b></td><td>This determines how many records per page are displayed when the staff is reviewing submission and contact records. A setting of 0 means no limit.</td></tr>
 		<tr class="table"><td class="row_left"><b>default_sort_order:</b></td><td>This determines default sorting of submissions. The default is date ascending.</td></tr>

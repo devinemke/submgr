@@ -506,7 +506,7 @@ if ($continue)
 
 	if ($page == 'home' || ($page == 'login' && $module == 'submit' || $module == 'pay_submission'))
 	{
-		if ($fields['comments']['maxlength'])
+		if (isset($fields['comments']['maxlength']) && $fields['comments']['maxlength'])
 		{
 			echo '
 			function comments_limit()
@@ -535,7 +535,7 @@ if ($continue)
 				echo 'price = ' . $config['submission_price'] . ';' . "\n";
 			}
 
-			if ($fields['genre_id']['enabled'] && isset($genres['price']) && $genres['price'])
+			if (isset($fields['genre_id']['enabled']) && $fields['genre_id']['enabled'] && isset($genres['price']) && $genres['price'])
 			{
 				foreach ($genres['price'] as $value)
 				{
@@ -556,7 +556,7 @@ if ($continue)
 			}
 			else
 			{
-				if ($fields['genre_id']['enabled'] && isset($genres['price']) && $genres['price'])
+				if (isset($fields['genre_id']['enabled']) && $fields['genre_id']['enabled'] && isset($genres['price']) && $genres['price'])
 				{
 					echo '
 					if (document.getElementById("genre_id"))
@@ -1312,6 +1312,14 @@ if ($continue)
 						{
 							document.getElementById(id).className = "error";
 							error += "Password Max Length must be between 8 and 72";
+							form_check = false;
+							break;
+						}
+
+						if (document.getElementById(id).id == "file_maxlength" && document.getElementById(id).value > 4294967295)
+						{
+							document.getElementById(id).className = "error";
+							error += "File maximum size is 4294967295 (4 GB)";
 							form_check = false;
 							break;
 						}

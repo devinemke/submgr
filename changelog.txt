@@ -1,6 +1,7 @@
-version 3.41 2023-05-16
+version 3.41 2023-05-18
 - added $password_length_min (8) + $password_length_max (72) global variables (will be derived from $fields)
-- removed $config['max_comments_size'] $config['default_country'] $config['default_mailing_list'] $config['use_genres'] (all now reside in $fields)
+- removed $config['max_file_size'] $config['max_comments_size'] $config['default_country'] $config['default_mailing_list'] $config['use_genres'] (all now reside in $fields)
+- added get_max_file_size_formatted() function
 - added get_groups() function
 - added get_fields() function
 - added "fields" table to store all form_main() properties

@@ -171,14 +171,6 @@ $defaults = array(
 			'required' => '',
 			'allowed' => 'zero'
 		),
-		'max_file_size' => array(
-			'name' => 'max_file_size',
-			'value' => 512000,
-			'description' => 'maximum size for file uploads (0 for no limit)',
-			'type' => 'text',
-			'required' => '',
-			'allowed' => 'zero'
-		),
 		'submission_limit' => array(
 			'name' => 'submission_limit',
 			'value' => 3,
@@ -719,7 +711,7 @@ $defaults = array(
 			'type' => 'file',
 			'section' => 'submission',
 			'value' => '',
-			'maxlength' => 50,
+			'maxlength' => 1048576,
 			'enabled' => 'Y',
 			'required' => 'Y'
 		),
