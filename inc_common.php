@@ -19,7 +19,7 @@ if (isset($_REQUEST['submodule'])) {$submodule = htmlentities($_REQUEST['submodu
 
 if (isset($_POST['submit'])) {$submit = htmlentities($_POST['submit']);} else {$submit = '';}
 if (isset($_POST['submit_hidden_nav'])) {$submit = htmlentities($_POST['submit_hidden_nav']);} // for "Go" nav
-if (isset($_POST['submit_hidden']) && $_POST['submit_hidden'] == 'continue') {$submit = 'continue';} // needed for captcha v3
+if (isset($_POST['submit_hidden']) && $_POST['submit_hidden'] == 'continue' && isset($_POST['g-recaptcha-response'])) {$submit = 'continue';} // needed for captcha_version 3
 $submit_js = $submit; // needed for javascript because this changes downstream
 
 $gm_timestamp = time();
