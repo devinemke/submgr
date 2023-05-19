@@ -52,7 +52,7 @@ function password_check(password)
 	var password_length_max = ' . $password_length_max . ';
 
 	if (password.value.length < password_length_min || password.value.length > password_length_max) {alert("ERROR: Passwords must be " + password_length_min + "-" + password_length_max + " characters"); return false;}
-	if (password.value.indexOf(" ") != -1) {alert("ERROR: Passwords cannot contain spaces"); return false;}
+	if (password.value.indexOf(" ") >= 0) {alert("ERROR: Passwords cannot contain spaces"); return false;}
 
 	return true;
 }
@@ -60,8 +60,16 @@ function password_check(password)
 function disable_submit(arg)
 {
 	// this must be triggered by "submit" (not "click") or else the form will not be submitted
+
+	form_name = document.getElementById(arg).form.name;
+	var input = document.createElement("input");
+	input.setAttribute("type", "hidden");
+	input.setAttribute("id", arg + "_hidden");
+	input.setAttribute("name", "submit");
+	input.setAttribute("value", submit_clicked);
+	document.getElementById(form_name).appendChild(input);
+
 	var button_value = "please wait...";
-	document.getElementById(arg + "_hidden").name = "submit"; // needed before submit button is disabled in IE <= 9
 	document.getElementById(arg).disabled = true;
 	document.getElementById(arg).value = button_value;
 	document.getElementById(arg).textContent = button_value;

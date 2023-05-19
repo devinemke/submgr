@@ -18,8 +18,7 @@ if (isset($_REQUEST['module'])) {$module = htmlentities($_REQUEST['module']);} e
 if (isset($_REQUEST['submodule'])) {$submodule = htmlentities($_REQUEST['submodule']);} else {$submodule = '';}
 
 if (isset($_POST['submit'])) {$submit = htmlentities($_POST['submit']);} else {$submit = '';}
-if (isset($_POST['submit_hidden_nav'])) {$submit = htmlentities($_POST['submit_hidden_nav']);} // for "Go" nav
-if (isset($_POST['submit_hidden']) && $_POST['submit_hidden'] == 'continue' && isset($_POST['g-recaptcha-response'])) {$submit = 'continue';} // needed for captcha_version 3
+if (isset($_POST['submit_hidden'])) {$submit = htmlentities($_POST['submit_hidden']);}
 $submit_js = $submit; // needed for javascript because this changes downstream
 
 $gm_timestamp = time();
@@ -1324,7 +1323,6 @@ function form_main()
 	</td>
 	</tr>
 	</table>
-	<input type="hidden" id="form_main_submit_hidden" name="submit_hidden" value="submit">
 	<input type="hidden" id="form_hash_main" name="form_hash" value="' . $_SESSION['csrf_token'] . '">
 	</form>
 	';
@@ -1364,6 +1362,7 @@ function form_confirmation()
 		}
 	}
 
+	// fixed submit_hidden needed here for captcha_version 3 which does not go through disable_submit()
 	echo '
 	<p>If the above information is correct, click ' . $button . '</p>
 	<p>If you wish to make changes, <a href="#" id="form_main_show"><b>click here</b></a>, update the form below, and hit <b>submit</b>.</p>

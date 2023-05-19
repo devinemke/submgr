@@ -1549,7 +1549,6 @@ else // if staff login
 									<td style="padding-top: 10px;">
 										<input type="checkbox" id="send_action_mail" name="send_action_mail" value="Y" checked><label for="send_action_mail" id="label_send_action_mail">send mail?</label>
 										<input type="submit" id="submit_send" name="submit" value="send" class="form_button" style="margin-left: 10px;">
-										<input type="hidden" id="submit_send_hidden" name="submit_hidden" value="send">
 										<input type="submit" name="submit" value="cancel" class="form_button">
 									</td>
 									</table>
@@ -1985,7 +1984,6 @@ else // if staff login
 								<br>
 								<input type="checkbox" id="send_action_mail" name="send_action_mail" value="Y" checked><label for="send_action_mail" id="label_send_action_mail">send mail?</label><br>
 								<input type="submit" id="submit_confirm" name="submit" value="confirm" class="form_button"> <input type="submit" name="submit" value="cancel" class="form_button">
-								<input type="hidden" id="submit_confirm_hidden" name="submit_hidden" value="confirm">
 								</div>
 								';
 							}
@@ -2478,7 +2476,6 @@ else // if staff login
 						<td><input type="submit" id="submit_insert_submission" name="submit" value="submit" class="form_button" style="margin-top: 10px;"> <input type="submit" name="submit" value="cancel" id="cancel" class="form_button" style="margin-top: 10px;"></td>
 						</tr>
 						</table>
-						<input type="hidden" id="submit_insert_submission_hidden" name="submit_hidden" value="submit">
 						';
 					}
 
@@ -2496,7 +2493,7 @@ else // if staff login
 						extract($_SESSION['post_display']);
 						$form_type = 'login_submit';
 						form_check();
-						echo '<p>You entered:</p>' . display('html') . '<br><br>If the above information is correct, click <input type="submit" id="submit_continue" name="submit" value="continue" class="form_button"><input type="hidden" id="submit_continue_hidden" name="submit_hidden" value="continue">';
+						echo '<p>You entered:</p>' . display('html') . '<br><br>If the above information is correct, click <input type="submit" id="submit_continue" name="submit" value="continue" class="form_button">';
 						if ($contact['email']) {echo '<input type="checkbox" id="send_action_mail" name="send_action_mail" value="Y" checked style="margin-left: 10px;"><label for="send_action_mail" id="label_send_action_mail">send mail?</label>';}
 						echo '<p>If you wish to make changes, please update the information below and hit the <b>submit</b> button.</p>';
 						form_insert_submission();
@@ -2687,7 +2684,6 @@ else // if staff login
 						<td>&nbsp;</td>
 						<td style="padding-top: 5px;">
 						<input type="submit" id="submit_contacts" name="submit" value="' . $submit1 . '" class="form_button"> <input type="submit" id="submit_contacts2" name="submit" value="' . $submit2 . '" class="form_button">
-						<input type="hidden" id="submit_contacts_hidden" name="submit_hidden" value="' . $submit1 . '">
 						</td>
 						</tr>
 						</table>
@@ -4139,7 +4135,6 @@ else // if staff login
 						</td>
 						</tr>
 						</table>
-						<input type="hidden" id="submit_update_hidden" name="submit_hidden" value="update">
 						<input type="hidden" id="submodule" name="submodule" value="' . $submodule . '">
 						';
 					}
@@ -4394,7 +4389,7 @@ else // if staff login
 						<td style="border: 0px;">&nbsp;</td>
 						<td style="border: 0px;">&nbsp;</td>
 						<td style="border: 0px;">&nbsp;</td>
-						<td style="border: 0px;"><input type="submit" id="submit_delete" name="submit" value="delete temp files" class="form_button" style="width: 150px;"><input type="hidden" id="submit_delete_hidden" name="submit_hidden" value="delete temp files"></td>
+						<td style="border: 0px;"><input type="submit" id="submit_delete" name="submit" value="delete temp files" class="form_button" style="width: 150px;"></td>
 						<td style="border: 0px;">&nbsp;</td>
 						</tr>
 						</table>
@@ -4477,7 +4472,7 @@ else // if staff login
 						echo '
 						<tr>
 						<td>&nbsp;</td>
-						<td colspan="2"><br><input type="submit" id="submit_test_mail" name="submit" value="test mail" class="form_button" style="width: 100px;"> <input type="hidden" id="submit_test_mail_hidden" name="submit_hidden" value="test mail"></td>
+						<td colspan="2"><br><input type="submit" id="submit_test_mail" name="submit" value="test mail" class="form_button" style="width: 100px;"></td>
 						</tr>
 						</table>
 						<br>
@@ -4530,7 +4525,6 @@ else // if staff login
 							<input type="checkbox" id="sync_last_actions" name="sync_last_actions" value="Y"' . $extra . '> <label for="sync_last_actions" id="label_sync_last_actions">sync last actions?</label><br>
 							<input type="checkbox" id="optimize_tables" name="optimize_tables" value="Y"> <label for="optimize_tables" id="label_optimize_tables">optimize tables?</label><br><br>
 							<input type="submit" id="submit_update_data_structure" name="submit" value="update data structure" class="form_button" style="width: 150px;">
-							<input type="hidden" id="submit_update_data_structure_hidden" name="submit_hidden" value="update data structure">
 							';
 						}
 

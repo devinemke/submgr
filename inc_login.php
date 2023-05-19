@@ -246,7 +246,6 @@ elseif (isset($_SESSION['contact_reset']))
 		<tr><td class="row_left"><label for="password2" id="label_password2">confirm password:</label></td><td><input type="password" id="password2" name="password2" value="" maxlength="' . $password_length_max . '"></td></tr>
 		<tr><td>&nbsp;</td><td><input type="submit" id="form_new_password_submit" name="submit" value="submit" class="form_button" style="margin-top: 10px;"></tr>
 		</table>
-		<input type="hidden" id="form_new_password_submit_hidden" name="submit_hidden" value="submit">
 		<input type="hidden" id="form_hash_new_password" name="form_hash" value="' . $_SESSION['csrf_token'] . '">
 		</form>
 		';
@@ -989,8 +988,6 @@ if ($_SESSION['contact']['access'])
 			$copy = '
 			<p>This function will insert or delete 100 sample contacts and subissions for testing purposes. Please note that all example contacts will have an email address with the domain <b>@example.com</b>.</p>
 			<input type="submit" id="submit_insert_sample_data" name="submit" value="insert sample data" class="form_button" style="width: 150px;"> <input type="submit" id="submit_delete_sample_data" name="submit" value="delete sample data" class="form_button" style="width: 150px;">
-			<input type="hidden" id="submit_insert_sample_data_hidden" name="submit_hidden" value="insert sample data">
-			<input type="hidden" id="submit_delete_sample_data_hidden" name="submit_hidden" value="delete sample data">
 			';
 
 			if ($submit) {form_hash('validate');}
@@ -1322,7 +1319,6 @@ if ($_SESSION['contact']['access'])
 			</table>
 			<br>
 			<input type="submit" id="submit_purge" name="submit" value="purge" class="form_button" style="width: 100px;">
-			<input type="hidden" id="submit_purge_hidden" name="submit_hidden" value="purge">
 			';
 
 			if ($submit == 'purge')

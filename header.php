@@ -110,7 +110,7 @@ echo '
 				echo '
 				</select>
 				<input type="submit" value="Go" class="form_button" style="width: 35px;">
-				<input type="hidden" name="submit_hidden_nav" value="Go">
+				<input type="hidden" name="submit_hidden" value="Go">
 				</form>
 				';
 			}

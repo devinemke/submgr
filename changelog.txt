@@ -1,5 +1,5 @@
-version 3.41 2023-05-18
-- fixed submit_hidden captcha_version 3 bug (affected form_insert_submission() "continue" logic)
+version 3.41 2023-05-19
+- refactoring of disable_submit() to dynamically create all submit_hidden form fields
 - added $password_length_min (8) + $password_length_max (72) global variables (will be derived from $fields)
 - removed $config['max_file_size'] $config['max_comments_size'] $config['default_country'] $config['default_mailing_list'] $config['use_genres'] (all now reside in $fields)
 - added get_max_file_size_formatted() function
