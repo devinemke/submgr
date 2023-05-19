@@ -64,6 +64,7 @@ function disable_submit(arg)
 	document.getElementById(arg + "_hidden").name = "submit"; // needed before submit button is disabled in IE <= 9
 	document.getElementById(arg).disabled = true;
 	document.getElementById(arg).value = button_value;
+	document.getElementById(arg).textContent = button_value;
 }
 
 function event_listener(eventName, onElement, event_object)
