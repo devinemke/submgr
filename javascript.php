@@ -467,9 +467,7 @@ if ($continue)
 					return false;
 				}
 			}
-			';
 
-			echo '
 			disable_submit("form_main_submit");
 			return true;
 		}
@@ -1116,14 +1114,15 @@ if ($continue)
 
 			function form_insert_submission_check()
 			{
+				var form_check = true;
 				var error = "ERROR: Required fields missing or incomplete:\n\n";
 
 				if (!document.getElementById("title").value)
 				{
 					document.getElementById("title").className = "error";
 					document.getElementById("label_title").className = "error";
-					alert(error + "title");
-					return false;
+					error += "title" + "\n";
+					form_check = false;
 				}
 				else
 				{
@@ -1140,8 +1139,8 @@ if ($continue)
 					{
 						document.getElementById("file").className = "error";
 						document.getElementById("label_file").className = "error";
-						alert(error + "file");
-						return false;
+						error += "file" + "\n";
+						form_check = false;
 					}
 					else
 					{
@@ -1152,6 +1151,12 @@ if ($continue)
 				}
 
 				echo '
+				if (!form_check)
+				{
+					alert(error);
+					return false;
+				}
+
 				disable_submit("submit_insert_submission");
 				return true;
 			}
@@ -1277,10 +1282,8 @@ if ($continue)
 						alert(error);
 						return false;
 					}
-					else
-					{
-						return true;
-					}
+
+					return true;
 				}
 
 				event_listener("click", "submit_update", function(event) { if (!form_action_types_check()) {event.preventDefault();} });
@@ -1339,10 +1342,8 @@ if ($continue)
 						alert(error);
 						return false;
 					}
-					else
-					{
-						return true;
-					}
+
+					return true;
 				}
 
 				event_listener("click", "submit_update", function(event) { if (!form_fields_check()) {event.preventDefault();} });
@@ -1419,10 +1420,8 @@ if ($continue)
 						alert(error);
 						return false;
 					}
-					else
-					{
-						return true;
-					}
+
+					return true;
 				}
 
 				event_listener("click", "submit_update", function(event) { if (!form_genres_check()) {event.preventDefault();} });
@@ -1511,7 +1510,13 @@ if ($continue)
 						form_check = false;
 					}
 
-					if (!form_check) {alert(error); return false;} else {return true;}
+					if (!form_check)
+					{
+						alert(error);
+						return false;
+					}
+
+					return true;
 				}
 
 				event_listener("click", "submit_update", function(event) { if (!form_payment_vars_check()) {event.preventDefault();} });

@@ -173,7 +173,7 @@ $defaults = array(
 		),
 		'submission_limit' => array(
 			'name' => 'submission_limit',
-			'value' => 3,
+			'value' => 0,
 			'description' => 'limit of simutaneous submissions (0 for no limit)',
 			'type' => 'text',
 			'required' => '',
@@ -293,7 +293,7 @@ $defaults = array(
 		),
 		'success_result_code' => array(
 			'name' => 'success_result_code',
-			'value' => '0',
+			'value' => 0,
 			'description' => 'successful payment result code',
 			'type' => 'text',
 			'required' => '',
@@ -317,7 +317,7 @@ $defaults = array(
 		),
 		'captcha_version' => array(
 			'name' => 'captcha_version',
-			'value' => '',
+			'value' => 2,
 			'description' => 'Google reCAPTCHA version',
 			'type' => 'select|2,3',
 			'required' => '',
@@ -771,7 +771,7 @@ $defaults = array(
 		1 => array(
 			'genre_id' => 1,
 			'name' => 'poetry',
-			'submission_limit' => '0',
+			'submission_limit' => 0,
 			'redirect_url' => '',
 			'price' => '0.00',
 			'active' => 'Y',
@@ -780,7 +780,7 @@ $defaults = array(
 		2 => array(
 			'genre_id' => 2,
 			'name' => 'fiction',
-			'submission_limit' => '0',
+			'submission_limit' => 0,
 			'redirect_url' => '',
 			'price' => '0.00',
 			'active' => 'Y',
@@ -789,7 +789,7 @@ $defaults = array(
 		3 => array(
 			'genre_id' => 3,
 			'name' => 'nonfiction',
-			'submission_limit' => '0',
+			'submission_limit' => 0,
 			'redirect_url' => '',
 			'price' => '0.00',
 			'active' => 'Y',
@@ -808,28 +808,28 @@ $defaults = array(
 			'allowed_forwards' => 'admin,editor,1,2,3,4,5',
 			'blind' => ''
 		),
-		'1' => array(
-			'name' => '1',
+		1 => array(
+			'name' => 1,
 			'allowed_forwards' => 'admin,editor,1,2,3,4,5',
 			'blind' => ''
 		),
-		'2' => array(
-			'name' => '2',
+		2 => array(
+			'name' => 2,
 			'allowed_forwards' => 'admin,editor,1,2,3,4,5',
 			'blind' => ''
 		),
-		'3' => array(
-			'name' => '3',
+		3 => array(
+			'name' => 3,
 			'allowed_forwards' => 'admin,editor,1,2,3,4,5',
 			'blind' => ''
 		),
-		'4' => array(
-			'name' => '4',
+		4 => array(
+			'name' => 4,
 			'allowed_forwards' => 'admin,editor,1,2,3,4,5',
 			'blind' => ''
 		),
-		'5' => array(
-			'name' => '5',
+		5 => array(
+			'name' => 5,
 			'allowed_forwards' => 'admin,editor,1,2,3,4,5',
 			'blind' => ''
 		)

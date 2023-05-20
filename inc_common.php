@@ -1223,8 +1223,7 @@ function form_main()
 
 		if ($key == 'file')
 		{
-			$extra_before = '<input type="hidden" name="MAX_FILE_SIZE" value="' . $fields['file']['maxlength'] . '">';
-			if ($fields['file']['maxlength']) {$extra_after .= ' <span class="small">(' . $GLOBALS['max_file_size_formatted'] . ' max)</span>';}
+			if ($fields['file']['maxlength']) {$extra_before = '<input type="hidden" name="MAX_FILE_SIZE" value="' . $fields['file']['maxlength'] . '">'; $extra_after .= ' <span class="small">(' . $GLOBALS['max_file_size_formatted'] . ' max)</span>';}
 			if (isset($_SESSION['file_upload']['filename'])) {$extra_after .= '<span class="small" style="margin-left: 5px;">file selected: <b>' . $_SESSION['file_upload']['filename'] . '</b></span>';}
 		}
 
@@ -1694,7 +1693,7 @@ function display($arg)
 		if ($value['section'] == 'contact' && $key != 'password2')
 		{
 			if ($key == 'email' && isset($display_source[$key]) && $display_source[$key]) {$brackets = array('[' => '&lsqb;', ']' => '&rsqb;'); $display_source[$key] = str_replace(array_keys($brackets), $brackets, $display_source[$key]);} // needed when email is run through mail_to()
-			if ($key == 'country' && isset($display_source[$key]) && $display_source[$key]) {$display_source[$key] = $countries[$country] . ' (' . $country . ')';}
+			if ($key == 'country' && isset($display_source[$key]) && $display_source[$key] && isset($countries[$display_source[$key]])) {$display_source[$key] = $countries[$display_source[$key]] . ' (' . $display_source[$key] . ')';}
 			if (isset($display_source[$key]) && $display_source[$key]) {$search_replace['[' . $key . ']'] = $display_source[$key];}
 		}
 	}
@@ -1703,8 +1702,8 @@ function display($arg)
 	$display = str_replace('[city],', '', $display);
 	$display = str_replace(', [state]', '', $display);
 	$display = preg_replace('~\[.*?\]~', '', $display);
+	$display = preg_replace("~[ ]{2,}~", '', $display);
 	$display = preg_replace("~[\n]{2,}~", "\n", $display);
-	$display = preg_replace("~[ ]{2,}~", ' ', $display);
 	$output .= trim($display);
 	if ($page == 'login' && $module == 'update' && $_SESSION['post']['password'] && password_wrapper('hash', $_SESSION['post']['password']) != $_SESSION['contact']['password']) {$output .= '<div class="notice"><i>* new password detected</i></div>';}
 
@@ -1713,7 +1712,7 @@ function display($arg)
 		if ($arg == 'text')
 		{
 			$output .= "\n";
-			if ($writer) {$output .= 'writer: ' . $writer . "\n";} else {$output .= 'writer: ' . $first_name . ' ' . $last_name . "\n";}
+			if (isset($writer) && $writer) {$output .= 'writer: ' . $writer . "\n";} else {$output .= 'writer: ' . $first_name . ' ' . $last_name . "\n";}
 			$output .= 'title(s): ' . $title;
 			if (isset($genre_id) && isset($genres['all'][$genre_id])) {$output .= "\n" . 'genre: ' . $genres['all'][$genre_id]['name'];}
 		}
@@ -1721,11 +1720,11 @@ function display($arg)
 		if ($arg == 'html')
 		{
 			$output .= '<hr><table style="border-collapse: collapse;">';
-			if ($writer) {$output .= '<tr><td class="row_left">writer:</td><td><b>' . $writer . '</b></td></tr>';}
+			if (isset($writer) && $writer) {$output .= '<tr><td class="row_left">writer:</td><td><b>' . $writer . '</b></td></tr>';}
 			if ($title) {$output .= '<tr><td class="row_left">title(s):</td><td><b>' . $title . '</b></td></tr>';}
 			if (isset($genre_id) && $genre_id && isset($genres['all'][$genre_id])) {$output .= '<tr><td class="row_left">genre:</td><td><b>' . $genres['all'][$genre_id]['name'] . '</b></td></tr>';}
 			if (isset($_SESSION['file_upload']['filename']) && $_SESSION['file_upload']['filename']) {$output .= '<tr><td class="row_left">file:</td><td><b>' . $_SESSION['file_upload']['filename'] . '</b></td></tr>';}
-			if ($comments) {$output .= '<tr><td class="row_left">comments:</td><td><b>' . $comments . '</b></td></tr>';}
+			if (isset($comments) && $comments) {$output .= '<tr><td class="row_left">comments:</td><td><b>' . $comments . '</b></td></tr>';}
 			$output .= '</table>';
 		}
 	}
@@ -1780,10 +1779,10 @@ function db_update()
 
 	if (in_array('insert submission', $args))
 	{
-		$pathinfo = pathinfo($_SESSION['file_upload']['filename_temp']);
-		if (isset($pathinfo['extension']) && $pathinfo['extension']) {$ext = strtolower($pathinfo['extension']);} else {$ext = 'rtf';}
+		if (isset($_SESSION['file_upload'])) {$pathinfo = pathinfo($_SESSION['file_upload']['filename_temp']);}
+		if (isset($pathinfo['extension']) && $pathinfo['extension']) {$ext = strtolower($pathinfo['extension']);} else {$ext = '';}
 
-		if ($writer)
+		if (isset($writer) && $writer)
 		{
 			// so unescaped name and writer are compared
 			if (isset($_SESSION['current_contact_array'])) {$name_array = $_SESSION['current_contact_array'];} // staff submission
@@ -1794,23 +1793,27 @@ function db_update()
 			$name_compare = strtolower($name_array['first_name']) . ' ' . strtolower($name_array['last_name']);
 			if ($writer_compare == $name_compare) {$writer = '';}
 		}
+		else
+		{
+			$writer = '';
+		}
 
-		$sql = "INSERT INTO submissions SET
-		date_time = '$gm_date_time',
-		submitter_id = $contact_id,
-		title = '$title',
-		ext = '$ext'";
-		if (isset($genre_id) && $genre_id && is_numeric($genre_id)) {$sql .= ", genre_id = $genre_id";}
+		$sql = "INSERT INTO submissions SET date_time = '$gm_date_time', submitter_id = $contact_id";
 		if ($writer) {$sql .= ", writer = '$writer'";}
-		if ($comments) {$sql .= ", comments = '$comments'";}
+		if (isset($title) && $title) {$sql .= ", title = '$title'";}
+		if (isset($genre_id) && $genre_id && is_numeric($genre_id)) {$sql .= ", genre_id = $genre_id";}
+		if ($ext) {$sql .= ", ext = '$ext'";}
+		if (isset($comments) && $comments) {$sql .= ", comments = '$comments'";}
 		@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT submission');
 		$submission_id = mysqli_insert_id($GLOBALS['db_connect']);
 		$GLOBALS['submission_id'] = $submission_id;
 
 		// when using sample data, target file may already exist causing rename() to fail
 		if (file_exists($upload_path_year . $submission_id . '.' . $ext)) {@unlink($upload_path_year . $submission_id . '.' . $ext) or exit_error('unlink existing file');}
-		@rename($upload_path_year . $_SESSION['file_upload']['filename_temp'], $upload_path_year . $submission_id . '.' . $ext) or exit_error('rename file');
+		if (isset($_SESSION['file_upload'])) {@rename($upload_path_year . $_SESSION['file_upload']['filename_temp'], $upload_path_year . $submission_id . '.' . $ext) or exit_error('rename file');}
 	}
+
+	unset($_SESSION['post_escaped']);
 }
 
 function make_email($name, $email)

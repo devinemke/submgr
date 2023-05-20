@@ -399,7 +399,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 				submission_limit_error($_SESSION['post']['genre_id']);
 			}
 
-			if ($_FILES['file']['name']) {upload();} // run upload() if first time submit or re-submit with new file
+			if (isset($_FILES['file']) && $_FILES['file']['name']) {upload();} // run upload() if first time submit or re-submit with new file
 			extract($_SESSION['post_display']);
 			form_check();
 			get_price();

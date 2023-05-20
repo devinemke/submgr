@@ -676,7 +676,7 @@ if ($_SESSION['contact']['access'])
 			if (isset($_SESSION['file_upload']) && $_SESSION['file_upload']['is_uploaded_file'])
 			{
 				$pathinfo = pathinfo($_SESSION['file_upload']['filename_temp']);
-				if (isset($pathinfo['extension']) && $pathinfo['extension']) {$ext = strtolower($pathinfo['extension']);} else {$ext = 'rtf';}
+				if (isset($pathinfo['extension']) && $pathinfo['extension']) {$ext = strtolower($pathinfo['extension']);} else {$ext = '';}
 				$_SESSION['insert_action']['ext'] = $ext;
 			}
 
