@@ -592,6 +592,8 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 
 		$fields_checkbox_disabled = array('email', 'password', 'password2', 'cc_number', 'cc_exp_month', 'cc_exp_year', 'cc_csc');
 
+		include_once('inc_lists.php');
+
 		if ($submit) {form_hash('validate');}
 
 		if ($submit == 'update')
@@ -604,6 +606,7 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 				if (isset($value['required'])) {$value['required'] = 'Y';} else {$value['required'] = '';}
 				if (!$value['enabled']) {$value['required'] = '';}
 				if ($defaults['fields'][$key]['type'] == 'checkbox' && $value['value']) {$value['value'] = 'Y';}
+				if ($key == 'country') {$value['value'] = preg_replace('/[^A-Z]/', '', $value['value']);}
 
 				if (in_array($key, $fields_checkbox_disabled))
 				{
@@ -623,6 +626,13 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 					$form_check = false;
 					$errors[$key][] = 'maxlength';
 					$notices[] = 'ERROR: Field Max Lengths must be numeric and greater than 0';
+				}
+
+				if ($key == 'country' && $value['value'] && !isset($lists['countries'][$value['value']]))
+				{
+					$form_check = false;
+					$errors[$key][] = 'value';
+					$notices[] = 'ERROR: Unrecognized country code';
 				}
 
 				if (strpos($key, 'password') !== false && ($value['maxlength'] < 8 || $value['maxlength'] > 72))
