@@ -1597,6 +1597,9 @@ if ($continue)
 	}
 }
 
+$custom = 'custom.js';
+if (@file_exists($custom)) {include($custom);}
+
 echo '
 </script>
 ';
