@@ -392,13 +392,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 		{
 			$_SESSION['post'] = cleanup($_POST, 'strip_tags', 'stripslashes');
 			$_SESSION['post_display'] = array_map('htmlspecialchars', $_SESSION['post']);
-
-			// submission limit check for this genre
-			if ($fields['genre_id']['enabled'] && $genre_limits && $genres['all'][$_SESSION['post']['genre_id']]['submission_limit'] && $_SESSION['submissions_pending_count'][$_SESSION['post']['genre_id']] >= $genres['all'][$_SESSION['post']['genre_id']]['submission_limit'])
-			{
-				submission_limit_error($_SESSION['post']['genre_id']);
-			}
-
+			if ($fields['genre_id']['enabled'] && $genre_limits && $genres['all'][$_SESSION['post']['genre_id']]['submission_limit'] && $_SESSION['submissions_pending_count'][$_SESSION['post']['genre_id']] >= $genres['all'][$_SESSION['post']['genre_id']]['submission_limit']) {submission_limit_error($_SESSION['post']['genre_id']);} // submission limit check for this genre
 			if (isset($_FILES['file']) && $_FILES['file']['name']) {upload();} // run upload() if first time submit or re-submit with new file
 			extract($_SESSION['post_display']);
 			form_check();
@@ -1302,10 +1296,7 @@ else // if staff login
 						$_SESSION['post'] = cleanup($_POST, 'strip_tags', 'stripslashes');
 						$_SESSION['post'] = str_replace("\r", '', $_SESSION['post']);
 						extract($_SESSION['post']);
-
-						// run upload() if first time submit or re-submit with new file
-						if ($_FILES['file']['name']) {upload();}
-
+						if ($_FILES['file']['name']) {upload();} // run upload() if first time submit or re-submit with new file
 						if (!in_array($new_action_type_id, $action_types['forwards'])) {$new_receiver_id = '';}
 
 						if (!$new_action_type_id)

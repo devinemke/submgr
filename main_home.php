@@ -26,8 +26,8 @@ if ($submit == 'submit')
 	if (!isset($_COOKIE['submgr_cookie_test'])) {$error_output = $no_cookies_text; exit_error();}
 	$_SESSION['post'] = cleanup($_POST, 'strip_tags', 'stripslashes');
 	$_SESSION['post_display'] = array_map('htmlspecialchars', $_SESSION['post']);
-	if (!isset($_SESSION['file_upload']['filename']) || $_FILES['file']['name']) {upload();} // run upload() if first time submit or re-submit with new file
-	extract($_SESSION['post_display']); // has to follow upload() which adds filename to $_SESSION['post_display']
+	if (isset($_FILES['file']) && $_FILES['file']['name']) {upload();} // run upload() if first time submit or re-submit with new file
+	extract($_SESSION['post_display']);
 	form_check();
 	get_price();
 	echo '<p>You entered:</p>' . display('html');

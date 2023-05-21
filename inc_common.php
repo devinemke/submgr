@@ -462,6 +462,8 @@ if ($GLOBALS['db_connect'])
 	$app_url_slash = $app_url;
 	if (substr((string) $app_url_slash, -1) != '/') {$app_url_slash .= '/';}
 
+	$upload_path_year = $config['upload_path'] . $gm_year . '/';
+
 	// required config settings must be set
 	if (!isset($post_config)) {$config = check_config($config);}
 
@@ -474,8 +476,6 @@ if ($GLOBALS['db_connect'])
 		header('Content-Security-Policy: ' . $csp);
 	}
 }
-
-$upload_path_year = $config['upload_path'] . $gm_year . '/';
 
 if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['contact']['access'] == 'admin')
 {
@@ -1255,7 +1255,7 @@ function form_main()
 	{
 		$extra_tr = '';
 		if ($section == 'payment') {$extra_tr = ' style="display: none;"';}
-		$output = '<tr' . $extra_tr . ' id="header_' . $section . '"><td>&nbsp;</td><td class="header" style="padding-top: 20px;">' . ucfirst($section) . ':</td></tr>' . $GLOBALS['form_rows'][$section];
+		$output = '<tr' . $extra_tr . ' id="header_' . $section . '"><td>&nbsp;</td><td class="header" style="padding-top: 20px;">' . ucfirst($section) . ':</td></tr>' . $GLOBALS['form_sections'][$section];
 		return $output;
 	}
 
@@ -1284,20 +1284,12 @@ function form_main()
 	if (isset($_SESSION['post']['password']) && $_SESSION['post']['password']) {$GLOBALS['password'] = $_SESSION['post']['password'];} else {$GLOBALS['password'] = '';}
 	if (!isset($genres['active'])) {unset($fields['genre_id']);}
 
-	$GLOBALS['form_rows']['contact'] = '';
-	$GLOBALS['form_rows']['submission'] = '';
-	$GLOBALS['form_rows']['payment'] = '';
-
-	foreach ($fields as $key => $value)
-	{
-		if ($value['section'] == 'contact') {$GLOBALS['form_rows']['contact'] .= display_form_row($key, $value);}
-		if ($value['section'] == 'submission') {$GLOBALS['form_rows']['submission'] .= display_form_row($key, $value);}
-		if ($value['section'] == 'payment') {$GLOBALS['form_rows']['payment'] .= display_form_row($key, $value);}
-	}
+	$GLOBALS['form_sections'] = array('contact' => '', 'submission' => '', 'payment' => '');
+	foreach ($fields as $key => $value) {$GLOBALS['form_sections'][$value['section']] .= display_form_row($key, $value);}
 
 	$action = $_SERVER['PHP_SELF'] . '?page=' . $page;
 	if ($page == 'login') {$action .= '&module=' . $module;}
-	if ($page == 'home' || ($page == 'login' && $module == 'submit')) {$enctype = ' enctype="multipart/form-data"';} else {$enctype = '';}
+	if ($form_type == 'submit' || $form_type == 'login_submit') {$enctype = ' enctype="multipart/form-data"';} else {$enctype = '';}
 
 	echo '
 	<form action="' . $action . '" method="post" name="form_main" id="form_main" autocomplete="off"' . $enctype . '>
