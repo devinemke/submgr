@@ -566,7 +566,6 @@ else // if staff login
 		return $output;
 	}
 
-	form_hash('session');
 	if ($action_types) {$_SESSION['action_types'] = $action_types;}
 	$_REQUEST = cleanup($_REQUEST, 'strip_tags', 'stripslashes');
 	if ($module == 'submissions' || $submodule == 'insert_submission') {$enctype = ' enctype="multipart/form-data"';} else {$enctype = '';}
@@ -4817,7 +4816,6 @@ else // if staff login
 	}
 
 	echo '
-	<input type="hidden" id="form_hash_login" name="form_hash" value="' . $_SESSION['csrf_token'] . '">
 	</form>
 	';
 }

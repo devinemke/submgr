@@ -235,7 +235,6 @@ elseif (isset($_SESSION['contact_reset']))
 	function form_new_password()
 	{
 		extract($GLOBALS);
-		form_hash('session');
 		$output = '';
 
 		$output .= '
@@ -246,7 +245,6 @@ elseif (isset($_SESSION['contact_reset']))
 		<tr><td class="row_left"><label for="password2" id="label_password2">confirm password:</label></td><td><input type="password" id="password2" name="password2" value="" maxlength="' . $password_length_max . '"></td></tr>
 		<tr><td>&nbsp;</td><td><input type="submit" id="form_new_password_submit" name="submit" value="submit" class="form_button" style="margin-top: 10px;"></tr>
 		</table>
-		<input type="hidden" id="form_hash_new_password" name="form_hash" value="' . $_SESSION['csrf_token'] . '">
 		</form>
 		';
 

@@ -4,7 +4,6 @@ if (count(get_included_files()) == 1) {header('location: http://' . $_SERVER['HT
 function form_reset()
 {
 	extract($GLOBALS);
-	form_hash('session');
 
 	if (!isset($reset_email)) {$reset_email = '';}
 	if (isset($_REQUEST['reset_email']) && $_REQUEST['reset_email']) {$reset_email = htmlspecialchars(trim($_REQUEST['reset_email']));}
@@ -21,7 +20,6 @@ function form_reset()
 	</td>
 	</tr>
 	</table>
-	<input type="hidden" id="form_hash_help" name="form_hash" value="' . $_SESSION['csrf_token'] . '">
 	</form>
 	';
 

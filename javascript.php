@@ -61,13 +61,21 @@ function disable_submit(arg)
 {
 	// this must be triggered by "submit" (not "click") or else the form will not be submitted
 
-	form_name = document.getElementById(arg).form.name;
-	var input = document.createElement("input");
-	input.setAttribute("type", "hidden");
-	input.setAttribute("id", arg + "_hidden");
-	input.setAttribute("name", "submit");
-	input.setAttribute("value", submit_clicked);
-	document.getElementById(form_name).appendChild(input);
+	var form_name = document.getElementById(arg).form.name;
+
+	var input_submit = document.createElement("input");
+	input_submit.setAttribute("type", "hidden");
+	input_submit.setAttribute("id", arg + "_hidden");
+	input_submit.setAttribute("name", "submit");
+	input_submit.setAttribute("value", submit_clicked);
+	document.getElementById(form_name).appendChild(input_submit);
+
+	var input_hash = document.createElement("input");
+	input_hash.setAttribute("type", "hidden");
+	input_hash.setAttribute("id", arg + "_hash");
+	input_hash.setAttribute("name", "form_hash");
+	input_hash.setAttribute("value", "' . $_SESSION['csrf_token'] . '");
+	document.getElementById(form_name).appendChild(input_hash);
 
 	var button_value = "please wait...";
 	document.getElementById(arg).disabled = true;
@@ -143,6 +151,7 @@ if ($display_login || $page == 'install')
 			return false;
 		}
 
+		disable_submit("form_login_submit");
 		return true;
 	}
 
@@ -200,6 +209,7 @@ if ($page == 'install')
 			}
 		}
 
+		disable_submit("form_install_submit");
 		return true;
 	}
 
@@ -638,6 +648,7 @@ if ($continue)
 			if (arg == "configuration")
 			{
 				if (submit_clicked == "update") {disable_submit("submit_update");}
+				if (submit_clicked == "reset defaults") {disable_submit("submit_reset_defaults");}
 			}
 
 			if (arg == "maintenance")

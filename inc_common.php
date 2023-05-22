@@ -6,6 +6,7 @@ if (!isset($_COOKIE['submgr_cookie_test'])) {setcookie('submgr_cookie_test', '1'
 session_name('submgr');
 $session_start = session_start();
 $nonce = get_token();
+form_hash('session'); // needed here so csrf_token exists in javascript
 $_SERVER['PHP_SELF'] = htmlentities($_SERVER['PHP_SELF']);
 
 $pages = array('home', 'login', 'install', 'help', 'error');
@@ -160,7 +161,7 @@ if (!extension_loaded('mysqli'))
 function db_connect($db_host, $db_username, $db_password, $db_name = '', $db_port = '')
 {
 	if (!$db_port) {$db_port = ini_get('mysqli.default_port');}
-	$db_connect = mysqli_connect($db_host, $db_username, $db_password, '', $db_port);
+	$db_connect = @mysqli_connect($db_host, $db_username, $db_password, '', $db_port);
 	if ($db_connect && $db_name) {$db_select = @mysqli_select_db($db_connect, $db_name);} else {$db_select = true;}
 	if ($db_connect && $db_select) {$GLOBALS['db_connect'] = $db_connect;} else {$GLOBALS['db_connect'] = false;}
 	if ($GLOBALS['db_connect'])
@@ -1142,7 +1143,7 @@ function kill_session($arg = '')
 	{
 		session_name('submgr');
 		session_start();
-		$_SESSION['csrf_token'] = $GLOBALS['nonce'];
+		form_hash('session');
 	}
 }
 
@@ -1207,7 +1208,6 @@ function form_main()
 	if (!ini_get('file_uploads')) {exit_error('Your web server is not configured to accept file uploads.');}
 	include_once('inc_lists.php');
 	extract($GLOBALS);
-	form_hash('session');
 
 	function display_form_row($key, $value)
 	{
@@ -1324,7 +1324,6 @@ function form_main()
 	</td>
 	</tr>
 	</table>
-	<input type="hidden" id="form_hash_main" name="form_hash" value="' . $_SESSION['csrf_token'] . '">
 	</form>
 	';
 }
@@ -1332,7 +1331,6 @@ function form_main()
 function form_confirmation()
 {
 	extract($GLOBALS);
-	form_hash('session');
 
 	$submit_value = 'continue';
 	if ($page == 'login' && $module == 'update') {$submit_value = 'save changes';}
@@ -1368,7 +1366,6 @@ function form_confirmation()
 	<p>If the above information is correct, click ' . $button . '</p>
 	<p>If you wish to make changes, <a href="#" id="form_main_show"><b>click here</b></a>, update the form below, and hit <b>submit</b>.</p>
 	<input type="hidden" id="form_confirmation_submit_hidden" name="submit_hidden" value="continue">
-	<input type="hidden" id="form_hash_confirmation" name="form_hash" value="' . $_SESSION['csrf_token'] . '">
 	</form>
 	';
 
@@ -1378,7 +1375,6 @@ function form_confirmation()
 function form_login()
 {
 	extract($GLOBALS);
-	form_hash('session');
 
 	if ($notice) {echo '<div class="notice">' . $notice . '</div>';}
 	if (!isset($email)) {$email = '';}
@@ -1393,7 +1389,7 @@ function form_login()
 	<label for="login_password" id="label_login_password">password:</label><br><input type="password" id="login_password" name="login_password" maxlength="' . $password_length_max . '" style="width: 180px;">
 	<br>
 	<div style="text-align: center;">
-	<input type="submit" name="submit" value="login" class="form_button" style="width: 50px; margin-top: 5px;">
+	<input type="submit" id="form_login_submit" name="submit" value="login" class="form_button" style="width: 50px; margin-top: 5px;">
 	';
 
 	if (isset($_SESSION['goto_config'])) {echo '<input type="hidden" name="goto_config" value="Y">';}
@@ -1406,7 +1402,6 @@ function form_login()
 	</td>
 	</tr>
 	</table>
-	<input type="hidden" id="form_hash_login" name="form_hash" value="' . $_SESSION['csrf_token'] . '">
 	</form>
 	';
 }

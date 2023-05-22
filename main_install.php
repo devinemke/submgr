@@ -17,7 +17,6 @@ function form_install($step)
 {
 	global $config_db, $admin, $password_length_min, $password_length_max;
 
-	form_hash('session');
 	$form_steps = range(1, 4);
 	if (in_array($step, $form_steps)) {echo '<form action="' . $_SERVER['PHP_SELF'] . '" method="post" name="form_install" id="form_install">';}
 
@@ -30,9 +29,8 @@ function form_install($step)
 		<tr><td class="row_left"><label for="config_db_username" id="label_config_db_username">username:</label></td><td><input type="text" id="config_db_username" name="config_db[username]" value="'; if (isset($config_db['username'])) {echo $config_db['username'];} echo '"></td></tr>
 		<tr><td class="row_left"><label for="config_db_password" id="label_config_db_password">password:</label></td><td><input type="password" id="config_db_password" name="config_db[password]" value="'; if (isset($config_db['password'])) {echo $config_db['password'];} echo '"></td></tr>
 		<tr><td class="row_left"><label for="config_db_port" id="label_config_db_port">port:</label></td><td><input type="text" id="config_db_port" name="config_db[port]" value="'; if (isset($config_db['port'])) {echo $config_db['port'];} echo '"> <span class="small">(leave blank for default)</span></td></tr>
-		<tr><td>&nbsp;</td><td><input type="submit" id="submit" name="submit" value="go to step 2" class="form_button"></td></tr>
+		<tr><td>&nbsp;</td><td><input type="submit" id="form_install_submit" name="submit" value="go to step 2" class="form_button"></td></tr>
 		</table>
-		<input type="hidden" id="step" name="step" value="2">
 		';
 	}
 
@@ -42,17 +40,15 @@ function form_install($step)
 		<p style="font-weight: bold;">mySQL database name:</p>
 		<table>
 		<tr><td class="row_left"><label for="config_db_name" id="label_config_db_name">database name:</label></td><td><input type="text" id="config_db_name" name="config_db[name]" value="'; if (isset($config_db['name'])) {echo $config_db['name'];} echo '"></td></tr>
-		<tr><td>&nbsp;</td><td><input type="submit" id="submit" name="submit" value="go to step 3" class="form_button"></td></tr>
+		<tr><td>&nbsp;</td><td><input type="submit" id="form_install_submit" name="submit" value="go to step 3" class="form_button"></td></tr>
 		</table>
-		<input type="hidden" id="step" name="step" value="3">
 		';
 	}
 
 	if ($step == 3)
 	{
 		echo '
-		<input type="submit" id="submit" name="submit" value="create tables" class="form_button">
-		<input type="hidden" id="step" name="step" value="4">
+		<input type="submit" id="form_install_submit" name="submit" value="create tables" class="form_button">
 		';
 	}
 
@@ -65,13 +61,13 @@ function form_install($step)
 		<tr><td class="row_left"><label for="admin_last_name" id="label_admin_last_name">last name:</label></td><td><input type="text" id="admin_last_name" name="admin[last_name]" value="'; if (isset($admin['last_name'])) {echo $admin['last_name'];} echo '"></td></tr>
 		<tr><td class="row_left"><label for="admin_email" id="label_admin_email">email:</label></td><td><input type="text" id="admin_email" name="admin[email]" value="'; if (isset($admin['email'])) {echo $admin['email'];} echo '"></td></tr>
 		<tr><td class="row_left"><label for="admin_password" id="label_admin_password">password:</label></td><td><input type="password" id="admin_password" name="admin[password]" value="'; if (isset($admin['password'])) {echo $admin['password'];} echo '" maxlength="' . $password_length_max . '"></td></tr>
-		<tr><td>&nbsp;</td><td><input type="submit" id="submit" name="submit" value="go to step 5" class="form_button"></td></tr>
+		<tr><td>&nbsp;</td><td><input type="submit" id="form_install_submit" name="submit" value="go to step 5" class="form_button"></td></tr>
 		</table>
-		<input type="hidden" id="step" name="step" value="5">
 		';
 	}
 
-	if (in_array($step, $form_steps)) {echo '<input type="hidden" id="form_hash_install" name="form_hash" value="' . $_SESSION['csrf_token'] . '"></form>';}
+	$step_plus = $step + 1;
+	if (in_array($step, $form_steps)) {echo '<input type="hidden" id="step" name="step" value="' . $step_plus . '"></form>';}
 
 	if ($step == 5)
 	{

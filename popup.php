@@ -79,7 +79,6 @@ if ($page == 'update')
 	if (isset($row['contact'])) {unset($row['contact']);}
 	if (isset($row['actions'])) {unset($row['actions']);}
 
-	form_hash('session');
 	$title = 'update : ' . $_SESSION['table'] . '.' . $_SESSION['id_name'] . ' #' . $_SESSION['id_value'];
 	$action = 'index.php?page=login&module=submissions&submission_id=' . $_SESSION['submission']['submission_id'];
 	$copy = '
@@ -195,7 +194,6 @@ if ($page == 'update')
 	</td>
 	</tr>
 	</table>
-	<input type="hidden" id="form_hash_popup" name="form_hash" value="' . $_SESSION['csrf_token'] . '">
 	</form>
 	';
 }
@@ -229,24 +227,48 @@ echo '
 <style>
 body {margin: 0px;}
 </style>
-
-<script nonce="' . $GLOBALS['nonce'] . '">
-
-function event_listener(eventName, onElement, event_object)
-{
-	document.addEventListener("DOMContentLoaded", function()
-	{
-		if (document.getElementById(onElement))
-		{
-			document.getElementById(onElement).addEventListener(eventName, event_object);
-		}
-	});
-}
 ';
 
 if ($page == 'update')
 {
 	echo '
+	<script nonce="' . $GLOBALS['nonce'] . '">
+
+	function event_listener(eventName, onElement, event_object)
+	{
+		document.addEventListener("DOMContentLoaded", function()
+		{
+			if (document.getElementById(onElement))
+			{
+				document.getElementById(onElement).addEventListener(eventName, event_object);
+			}
+		});
+	}
+
+	function disable_submit(arg)
+	{
+		var form_name = document.getElementById(arg).form.name;
+
+		var input_submit = document.createElement("input");
+		input_submit.setAttribute("type", "hidden");
+		input_submit.setAttribute("id", arg + "_hidden");
+		input_submit.setAttribute("name", "submit");
+		input_submit.setAttribute("value", "update");
+		document.getElementById(form_name).appendChild(input_submit);
+
+		var input_hash = document.createElement("input");
+		input_hash.setAttribute("type", "hidden");
+		input_hash.setAttribute("id", arg + "_hash");
+		input_hash.setAttribute("name", "form_hash");
+		input_hash.setAttribute("value", "' . $_SESSION['csrf_token'] . '");
+		document.getElementById(form_name).appendChild(input_hash);
+
+		var button_value = "please wait...";
+		document.getElementById(arg).disabled = true;
+		document.getElementById(arg).value = button_value;
+		document.getElementById(arg).textContent = button_value;
+	}
+
 	function nullify(element, type)
 	{
 		if (type == "text" || type == "textarea") {document.getElementById("row_" + element).value = "";}
@@ -328,11 +350,11 @@ if ($page == 'update')
 		}
 
 		echo '
-
+		disable_submit("submit_update");
 		return true;
 	}
 
-	event_listener("click", "submit_update", function(event) { if (!form_update_check()) {event.preventDefault();} });
+	event_listener("submit", "form_update", function(event) { if (!form_update_check()) {event.preventDefault();} });
 	event_listener("click", "submit_cancel", function(event) { window.parent.document.getElementById("lightbox_off").click(); });
 	';
 
@@ -356,11 +378,13 @@ if ($page == 'update')
 		event_listener("change", "row_action_type_id", function(event) { nullify_receiver(); });
 		';
 	}
+
+	echo '
+	</script>
+	';
 }
 
 echo '
-</script>
-
 </head>
 <body>
 ' . $copy . '
