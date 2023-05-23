@@ -160,9 +160,15 @@ if (!extension_loaded('mysqli'))
 
 function db_connect($db_host, $db_username, $db_password, $db_name = '', $db_port = '')
 {
+	$GLOBALS['mysqli_sql_exception'] = '';
 	if (!$db_port) {$db_port = ini_get('mysqli.default_port');}
-	$db_connect = @mysqli_connect($db_host, $db_username, $db_password, '', $db_port);
-	if ($db_connect && $db_name) {$db_select = @mysqli_select_db($db_connect, $db_name);} else {$db_select = true;}
+
+	try {$db_connect = @mysqli_connect($db_host, $db_username, $db_password, '', $db_port);}
+	catch (mysqli_sql_exception $exception) {$GLOBALS['mysqli_sql_exception'] = $exception->getMessage();}
+
+	try {if ($db_connect && $db_name) {$db_select = @mysqli_select_db($db_connect, $db_name);} else {$db_select = true;}}
+	catch (mysqli_sql_exception $exception) {$GLOBALS['mysqli_sql_exception'] = $exception->getMessage();}
+
 	if ($db_connect && $db_select) {$GLOBALS['db_connect'] = $db_connect;} else {$GLOBALS['db_connect'] = false;}
 	if ($GLOBALS['db_connect'])
 	{
@@ -213,7 +219,7 @@ if (INSTALLED)
 	if (!$GLOBALS['db_connect'])
 	{
 		$display_login = false;
-		exit_error('database unavailable');
+		exit_error('Database Connection: ' . $GLOBALS['mysqli_sql_exception']);
 	}
 }
 else

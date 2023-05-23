@@ -131,7 +131,7 @@ if ($step == 2)
 		else
 		{
 			$form_check = false;
-			$errors[] = 'Unable to connect to database.<br>Please check that your database connection data is correct.<br>If you continue to have problems, please contact your system administrator.';
+			$errors[] = 'Unable to connect to database.<br>Please check that your database connection data is correct.<br>If you continue to have problems, please contact your system administrator.<br><br>Database Connection: ' . $GLOBALS['mysqli_sql_exception'];
 		}
 	}
 
@@ -144,6 +144,7 @@ if ($step == 3)
 	$name = trim($name);
 	$name = strip_tags($name);
 	$name = stripslashes($name);
+	$config_db['name'] = $name;
 	$_SESSION['config_db']['name'] = $name;
 
 	if ($name == '')
@@ -170,7 +171,7 @@ if ($step == 3)
 		else
 		{
 			$form_check = false;
-			$errors[] = 'Unable to connect to specified database name.<br>Please check that your database name is correct.<br>If you continue to have problems, please contact your system administrator.';
+			$errors[] = 'Unable to connect to specified database name.<br>Please check that your database name is correct.<br>If you continue to have problems, please contact your system administrator.<br><br>Database Connection: ' . $GLOBALS['mysqli_sql_exception'];
 		}
 	}
 
