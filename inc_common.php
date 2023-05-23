@@ -1361,11 +1361,12 @@ function form_confirmation()
 		}
 	}
 
-	// fixed submit_hidden needed here for captcha_version 3 which does not go through disable_submit()
+	// fixed submit_hidden/form_hash needed here for captcha_version 3 which does not go through disable_submit()
 	echo '
 	<p>If the above information is correct, click ' . $button . '</p>
 	<p>If you wish to make changes, <a href="#" id="form_main_show"><b>click here</b></a>, update the form below, and hit <b>submit</b>.</p>
-	<input type="hidden" id="form_confirmation_submit_hidden" name="submit_hidden" value="continue">
+	<input type="hidden" id="form_confirmation_submit_hidden_fixed" name="submit_hidden" value="continue">
+	<input type="hidden" id="form_confirmation_hash_fixed" name="form_hash" value="' . $_SESSION['csrf_token'] . '">
 	</form>
 	';
 
@@ -1674,23 +1675,27 @@ function display($arg)
 	$display_source = $GLOBALS; // need to work with a copy
 	$output = '';
 	$display_template = '[first_name] [last_name]' . "\n" . '[email]' . "\n" . '[company]' . "\n" . '[address1]' . "\n" . '[address2]' . "\n" . '[city], [state] [zip]' . "\n" . '[country]' . "\n" . '[phone]';
+	$odd_boxes[1] = array('[city],', ', [state]'); // orphaned boxes with commas
+	$odd_boxes[2] = array('[at]' => '|at|', '[dot]' => '|dot|'); // needed when email is run through mail_to()
 
 	foreach ($fields as $key => $value)
 	{
 		if ($value['section'] == 'contact' && $key != 'password2')
 		{
-			if ($key == 'email' && isset($display_source[$key]) && $display_source[$key]) {$brackets = array('[' => '&lsqb;', ']' => '&rsqb;'); $display_source[$key] = str_replace(array_keys($brackets), $brackets, $display_source[$key]);} // needed when email is run through mail_to()
 			if ($key == 'country' && isset($display_source[$key]) && $display_source[$key] && isset($countries[$display_source[$key]])) {$display_source[$key] = $countries[$display_source[$key]] . ' (' . $display_source[$key] . ')';}
 			if (isset($display_source[$key]) && $display_source[$key]) {$search_replace['[' . $key . ']'] = $display_source[$key];}
 		}
+
+		if ($value['section'] == 'submission' || $value['section'] == 'payment') {$display_template_array[$value['section']][$key] = '[' . $key . ']';}
 	}
 
 	$display = str_replace(array_keys($search_replace), $search_replace, $display_template);
-	$display = str_replace('[city],', '', $display);
-	$display = str_replace(', [state]', '', $display);
+	$display = str_replace($odd_boxes[1], '', $display);
+	$display = str_replace(array_keys($odd_boxes[2]), $odd_boxes[2], $display);
 	$display = preg_replace('~\[.*?\]~', '', $display);
 	$display = preg_replace("~[ ]{2,}~", '', $display);
 	$display = preg_replace("~[\n]{2,}~", "\n", $display);
+	$display = str_replace($odd_boxes[2], array_keys($odd_boxes[2]), $display);
 	$output .= trim($display);
 	if ($page == 'login' && $module == 'update' && $_SESSION['post']['password'] && password_wrapper('hash', $_SESSION['post']['password']) != $_SESSION['contact']['password']) {$output .= '<div class="notice"><i>* new password detected</i></div>';}
 
@@ -1698,20 +1703,20 @@ function display($arg)
 	{
 		if ($arg == 'text')
 		{
-			$output .= "\n";
-			if (isset($writer) && $writer) {$output .= 'writer: ' . $writer . "\n";} else {$output .= 'writer: ' . $first_name . ' ' . $last_name . "\n";}
-			$output .= 'title(s): ' . $title;
-			if (isset($genre_id) && isset($genres['all'][$genre_id])) {$output .= "\n" . 'genre: ' . $genres['all'][$genre_id]['name'];}
+			$output .= "\n\n";
+			if (isset($writer) && $writer) {$output .= '[writer]: ' . $writer . "\n";} else {$output .= '[writer]: ' . $first_name . ' ' . $last_name . "\n";}
+			$output .= '[title]: ' . $title;
+			if (isset($genre_id) && isset($genres['all'][$genre_id])) {$output .= "\n" . '[genre_id]: ' . $genres['all'][$genre_id]['name'];}
 		}
 
 		if ($arg == 'html')
 		{
 			$output .= '<hr><table style="border-collapse: collapse;">';
-			if (isset($writer) && $writer) {$output .= '<tr><td class="row_left">writer:</td><td><b>' . $writer . '</b></td></tr>';}
-			if ($title) {$output .= '<tr><td class="row_left">title(s):</td><td><b>' . $title . '</b></td></tr>';}
-			if (isset($genre_id) && $genre_id && isset($genres['all'][$genre_id])) {$output .= '<tr><td class="row_left">genre:</td><td><b>' . $genres['all'][$genre_id]['name'] . '</b></td></tr>';}
-			if (isset($_SESSION['file_upload']['filename']) && $_SESSION['file_upload']['filename']) {$output .= '<tr><td class="row_left">file:</td><td><b>' . $_SESSION['file_upload']['filename'] . '</b></td></tr>';}
-			if (isset($comments) && $comments) {$output .= '<tr><td class="row_left">comments:</td><td><b>' . $comments . '</b></td></tr>';}
+			if (isset($writer) && $writer) {$output .= '<tr><td class="row_left">[writer]:</td><td><b>' . $writer . '</b></td></tr>';}
+			if ($title) {$output .= '<tr><td class="row_left">[title]:</td><td><b>' . $title . '</b></td></tr>';}
+			if (isset($genre_id) && $genre_id && isset($genres['all'][$genre_id])) {$output .= '<tr><td class="row_left">[genre_id]:</td><td><b>' . $genres['all'][$genre_id]['name'] . '</b></td></tr>';}
+			if (isset($_SESSION['file_upload']['filename']) && $_SESSION['file_upload']['filename']) {$output .= '<tr><td class="row_left">[file]:</td><td><b>' . $_SESSION['file_upload']['filename'] . '</b></td></tr>';}
+			if (isset($comments) && $comments) {$output .= '<tr><td class="row_left">[comments]:</td><td><b>' . $comments . '</b></td></tr>';}
 			$output .= '</table>';
 		}
 	}
@@ -1726,7 +1731,7 @@ function display($arg)
 			if ($config['cc_exp_date_format'] == 'MM-YYYY') {$cc_exp_date = $cc_exp_month . '-' . $cc_exp_year;}
 			if ($config['cc_exp_date_format'] == 'YYYYMM') {$cc_exp_date = $cc_exp_year . $cc_exp_month;}
 			if ($config['cc_exp_date_format'] == 'YYYY-MM') {$cc_exp_date = $cc_exp_year . '-' . $cc_exp_month;}
-			$output .= '<tr><td class="row_left">credit card number:</td><td><b>' . $cc_number_display . '</b></td></tr><tr><td class="row_left">expiration date:</td><td><b>' . $cc_exp_date . '</b></td></tr><tr><td class="row_left">card security code:</td><td><b>' . $cc_csc . '</b></td></tr>';
+			$output .= '<tr><td class="row_left">[cc_number]:</td><td><b>' . $cc_number_display . '</b></td></tr><tr><td class="row_left">expiration date:</td><td><b>' . $cc_exp_date . '</b></td></tr><tr><td class="row_left">[cc_csc]:</td><td><b>' . $cc_csc . '</b></td></tr>';
 		}
 		$output .= '</table>';
 	}
@@ -1734,6 +1739,11 @@ function display($arg)
 	if ($arg == 'html')
 	{
 		$output = '<div class="foreground" style="padding: 5px; display: inline-block;">' . nl2br($output) . '</div>';
+	}
+
+	foreach ($display_template_array as $value)
+	{
+		foreach ($value as $sub_key => $sub_value) {$output = str_replace($sub_value, $fields[$sub_key]['name'], $output);}
 	}
 
 	return $output;
