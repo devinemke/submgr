@@ -667,7 +667,7 @@ $defaults = array(
 		),
 		'mailing_list' => array(
 			'field' => 'mailing_list',
-			'name' => 'mailing list',
+			'name' => 'join our mailing list',
 			'type' => 'checkbox',
 			'section' => 'contact',
 			'value' => 'Y',

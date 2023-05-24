@@ -39,7 +39,6 @@ $password_length_min = 8; $password_length_max = 72; // needed here globally for
 $no_submissions_text = 'Submission Manager is currently in <b>&ldquo;no submissions&rdquo;</b> mode.<br>Submitters and staff may log into their accounts however no new submissions are being accepted at this time.';
 $admin_only_text = 'Submission Manager is currently in <b>admin only</b> mode.<br>Only the system administrators have access at this time.';
 $no_cookies_text = '<b>Submission Manager</b> requires that cookies be enabled in your web browser. Please enable cookies and try again. You may also need to empty your browser cache and restart your browser.';
-define('TEST_MAIL', false);
 
 if (!$session_start) {$display_login = false; exit_error('session_start failed');}
 if (file_exists('config_defaults.php')) {include('config_defaults.php'); $config = $config_defaults;} else {$display_login = false; exit_error('missing config_defaults.php');}
@@ -1363,7 +1362,7 @@ function form_confirmation()
 
 		if ($captcha_version == 3)
 		{
-			$button = '<button id="form_confirmation_submit" class="form_button g-recaptcha" data-sitekey="' . $config['captcha_site_key'] . '" data-callback="onSubmit" data-action="submit" style="margin: 5px 0px 0px 0px;">' . $submit_value . '</button>';
+			$button = '<button id="form_confirmation_submit" class="form_button g-recaptcha" data-sitekey="' . $config['captcha_site_key'] . '" data-callback="onSubmit" data-action="submit" style="margin: 10px 0px 0px 0px;">' . $submit_value . '</button>';
 		}
 	}
 
@@ -1681,8 +1680,8 @@ function display($arg)
 	$display_source = $GLOBALS; // need to work with a copy
 	$output = '';
 	$display_template = '[first_name] [last_name]' . "\n" . '[email]' . "\n" . '[company]' . "\n" . '[address1]' . "\n" . '[address2]' . "\n" . '[city], [state] [zip]' . "\n" . '[country]' . "\n" . '[phone]';
-	$odd_boxes[1] = array('[city],', ', [state]'); // orphaned boxes with commas
-	$odd_boxes[2] = array('[at]' => '|at|', '[dot]' => '|dot|'); // needed when email is run through mail_to()
+	$odd_boxes['comma'] = array('[city],', ', [state]'); // orphaned boxes with commas
+	$odd_boxes['email'] = array('[at]' => '|at|', '[dot]' => '|dot|'); // needed when email is run through mail_to()
 
 	foreach ($fields as $key => $value)
 	{
@@ -1696,12 +1695,12 @@ function display($arg)
 	}
 
 	$display = str_replace(array_keys($search_replace), $search_replace, $display_template);
-	$display = str_replace($odd_boxes[1], '', $display);
-	$display = str_replace(array_keys($odd_boxes[2]), $odd_boxes[2], $display);
+	$display = str_replace($odd_boxes['comma'], '', $display);
+	$display = str_replace(array_keys($odd_boxes['email']), $odd_boxes['email'], $display);
 	$display = preg_replace('~\[.*?\]~', '', $display);
 	$display = preg_replace("~[ ]{2,}~", '', $display);
 	$display = preg_replace("~[\n]{2,}~", "\n", $display);
-	$display = str_replace($odd_boxes[2], array_keys($odd_boxes[2]), $display);
+	$display = str_replace($odd_boxes['email'], array_keys($odd_boxes['email']), $display);
 	$output .= trim($display);
 	if ($page == 'login' && $module == 'update' && $_SESSION['post']['password'] && password_wrapper('hash', $_SESSION['post']['password']) != $_SESSION['contact']['password']) {$output .= '<div class="notice"><i>* new password detected</i></div>';}
 
@@ -2013,7 +2012,7 @@ function send_mail($arg1, $arg2)
 
 	if (isset($html_mail)) {$body = '<!DOCTYPE html><html lang="en"><head><title>' . htmlspecialchars($config['company_name']) . '</title><meta charset="UTF-8"></head><body>' . nl2br($body) . '</body></html>';}
 
-	if ($config['test_mode'] && $to && TEST_MAIL)
+	if ($config['test_mode'] && $to && defined('TEST_MAIL') && TEST_MAIL)
 	{
 		test_mail($arg1, $headers, $to, $subject, $body);
 	}

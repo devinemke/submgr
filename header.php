@@ -31,7 +31,7 @@ if ($page == 'login' && ($module == 'account' || $module == 'submissions' || $mo
 echo '
 <table style="border-collapse: collapse; width: 100%;">
 	<tr>
-		<td style="width: 200px;'; if (TEST_MAIL) {echo ' border: 2px solid red;';} echo '">
+		<td style="width: 200px;'; if (defined('TEST_MAIL') && TEST_MAIL) {echo ' border: 2px solid red;';} echo '">
 		';
 
 			if ($config)

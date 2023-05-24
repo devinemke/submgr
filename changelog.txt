@@ -1,4 +1,5 @@
-version 3.41 2023-05-23
+version 3.41 2023-05-24
+- moved TEST_MAIL constant from inc_common.php to config_db.php
 - improved error/exception handling in db_connect()
 - added check for custom.js
 - refactoring of disable_submit() to dynamically create all submit_hidden/form_hash form fields
