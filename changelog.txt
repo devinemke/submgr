@@ -1,4 +1,5 @@
 version 3.41 2023-05-24
+- added upload_max_filesize routine to /maintenance/fields/
 - moved TEST_MAIL constant from inc_common.php to config_db.php
 - improved error/exception handling in db_connect()
 - added check for custom.js

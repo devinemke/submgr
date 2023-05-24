@@ -1358,6 +1358,17 @@ if ($continue)
 				}
 
 				event_listener("click", "submit_update", function(event) { if (!form_fields_check()) {event.preventDefault();} });
+
+				function upload_max_filesize()
+				{
+					if (document.getElementById("upload_max_filesize"))
+					{
+						var upload_max_filesize = document.getElementById("upload_max_filesize").href.split("#").pop();
+						document.getElementById("file_maxlength").value = upload_max_filesize;
+					}
+				}
+
+				event_listener("click", "upload_max_filesize", function(event) { upload_max_filesize(); event.preventDefault(); });
 				';
 			}
 

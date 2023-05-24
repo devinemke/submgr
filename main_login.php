@@ -4122,6 +4122,17 @@ else // if staff login
 							<input type="submit" id="submit_update" name="submit" value="update" class="form_button">
 							<input type="reset" id="submit_reset" name="reset" value="reset" class="form_button">
 							<input type="submit" id="submit_reset_defaults" name="submit" value="reset defaults" class="form_button">
+							';
+
+							if ($submodule == 'fields')
+							{
+								$upload_max_filesize_bytes = 0;
+								$upload_max_filesize = ini_get('upload_max_filesize');
+								if (substr($upload_max_filesize, -1) == 'M') {$upload_max_filesize_bytes = substr($upload_max_filesize, 0, -1) * 1048576;} else {$upload_max_filesize_bytes = $upload_max_filesize;}
+								if ($upload_max_filesize_bytes) {echo '<span style="margin-left: 400px;">upload_max_filesize = <a href="#' . $upload_max_filesize_bytes . '" id="upload_max_filesize">' . $upload_max_filesize_bytes . '</a></span>';}
+							}
+
+							echo '
 						</td>
 						</tr>
 						</table>
