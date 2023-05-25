@@ -4128,8 +4128,8 @@ else // if staff login
 							{
 								$upload_max_filesize_bytes = 0;
 								$upload_max_filesize = ini_get('upload_max_filesize');
-								if (substr($upload_max_filesize, -1) == 'M') {$upload_max_filesize_bytes = substr($upload_max_filesize, 0, -1) * 1048576;} else {$upload_max_filesize_bytes = $upload_max_filesize;}
-								if ($upload_max_filesize_bytes) {echo '<span style="margin-left: 400px;">upload_max_filesize = <a href="#' . $upload_max_filesize_bytes . '" id="upload_max_filesize">' . $upload_max_filesize_bytes . '</a></span>';}
+								if (strtolower(substr($upload_max_filesize, -1)) == 'm') {$upload_max_filesize_bytes = substr($upload_max_filesize, 0, -1) * 1048576;} else {$upload_max_filesize_bytes = $upload_max_filesize;}
+								if ($upload_max_filesize_bytes) {echo '<span style="margin-left: 380px;">upload_max_filesize = <a href="#' . $upload_max_filesize_bytes . '" id="upload_max_filesize">' . $upload_max_filesize_bytes . '</a> (' . get_bytes_formatted($upload_max_filesize_bytes) . ')</span>';}
 							}
 
 							echo '

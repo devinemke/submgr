@@ -972,7 +972,7 @@ if (INSTALLED && $GLOBALS['db_connect'])
 
 	// needed to suppress errors before version 3.41 update
 	if (isset($fields['password']['maxlength'])) {$password_length_max = $fields['password']['maxlength'];}
-	if (isset($fields['file']['maxlength'])) {$max_file_size_formatted = get_max_file_size_formatted();}
+	if (isset($fields['file']['maxlength'])) {$max_file_size_formatted = get_bytes_formatted($fields['file']['maxlength']);}
 
 	$timezone = $config['timezone'];
 	$timezone_safe = (float) $timezone;
@@ -1050,24 +1050,17 @@ function get_fields()
 	}
 }
 
-function get_max_file_size_formatted()
+function get_bytes_formatted($bytes)
 {
-	global $fields;
-	$max_file_size_formatted = '';
+	$bytes_formatted = '';
 
-	if (isset($fields['file']['maxlength']) && $fields['file']['maxlength'])
+	$size_array = array(1 => 'B', 1024 => 'KB', 1048576 => 'MB', 1073741824 => 'GB', 1099511627776 => 'TB');
+	foreach ($size_array as $key => $value)
 	{
-		$size_array = array(1 => 'B', 1024 => 'KB', 1048576 => 'MB', 1073741824 => 'GB', 1099511627776 => 'TB');
-		foreach ($size_array as $bytes => $abbr)
-		{
-			if ($fields['file']['maxlength'] >= $bytes)
-			{
-				$max_file_size_formatted = number_format(round($fields['file']['maxlength'] / $bytes, 2), 2) . ' ' . $abbr;
-			}
-		}
+		if ($bytes >= $key) {$bytes_formatted = number_format(round($bytes / $key, 2), 2) . ' ' . $value;}
 	}
 
-	return $max_file_size_formatted;
+	return $bytes_formatted;
 }
 
 function get_groups()
