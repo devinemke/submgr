@@ -1050,19 +1050,6 @@ function get_fields()
 	}
 }
 
-function get_bytes_formatted($bytes)
-{
-	$bytes_formatted = '';
-
-	$size_array = array(1 => 'B', 1024 => 'KB', 1048576 => 'MB', 1073741824 => 'GB', 1099511627776 => 'TB');
-	foreach ($size_array as $key => $value)
-	{
-		if ($bytes >= $key) {$bytes_formatted = number_format(round($bytes / $key, 2), 2) . ' ' . $value;}
-	}
-
-	return $bytes_formatted;
-}
-
 function get_groups()
 {
 	global $show_tables;
@@ -1094,6 +1081,19 @@ function get_action_types()
 			if (strpos($row['name'], 'reject') !== false) {$GLOBALS['action_types']['rejects'][] = $row['action_type_id'];}
 		}
 	}
+}
+
+function get_bytes_formatted($bytes)
+{
+	$bytes_formatted = '';
+
+	$size_array = array(1 => 'B', 1024 => 'KB', 1048576 => 'MB', 1073741824 => 'GB', 1099511627776 => 'TB');
+	foreach ($size_array as $key => $value)
+	{
+		if ($bytes >= $key) {$bytes_formatted = number_format(round($bytes / $key, 2), 2) . ' ' . $value;}
+	}
+
+	return $bytes_formatted;
 }
 
 function timezone_adjust($date_time)

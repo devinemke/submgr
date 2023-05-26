@@ -528,11 +528,7 @@ if ($continue)
 			echo '
 			function comments_limit()
 			{
-				if (document.getElementById("comments").value.length >= ' . $fields['comments']['maxlength'] . ')
-				{
-					document.getElementById("comments").value = document.getElementById("comments").value.substring(0, ' . $fields['comments']['maxlength'] . ');
-					alert("Comments can only be ' . $fields['comments']['maxlength'] . ' characters long");
-				}
+				if (document.getElementById("comments").value.length >= ' . $fields['comments']['maxlength'] . ') {alert("' . $fields['comments']['name'] . ' can only be ' . $fields['comments']['maxlength'] . ' characters long");}
 			}
 
 			event_listener("input", "comments", function(event) { comments_limit(); });
@@ -1365,6 +1361,7 @@ if ($continue)
 					{
 						var upload_max_filesize = document.getElementById("upload_max_filesize").href.split("#").pop();
 						document.getElementById("file_maxlength").value = upload_max_filesize;
+						document.getElementById("file_maxlength").style.backgroundColor = "yellow";
 					}
 				}
 
