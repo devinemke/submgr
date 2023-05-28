@@ -2673,7 +2673,7 @@ else // if staff login
 						<tr>
 						<td>&nbsp;</td>
 						<td style="padding-top: 5px;">
-						<input type="submit" id="submit_contacts" name="submit" value="' . $submit1 . '" class="form_button"> <input type="submit" id="submit_contacts2" name="submit" value="' . $submit2 . '" class="form_button">
+						<input type="submit" id="submit_contacts1" name="submit" value="' . $submit1 . '" class="form_button"> <input type="submit" id="submit_contacts2" name="submit" value="' . $submit2 . '" class="form_button">
 						</td>
 						</tr>
 						</table>

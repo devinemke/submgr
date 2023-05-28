@@ -638,6 +638,7 @@ if ($continue)
 
 			if (arg == "contacts")
 			{
+				if (submit_clicked == "delete") {disable_submit("submit_contacts2");}
 				if (submit_clicked == "continue") {disable_submit("submit_continue");}
 			}
 
@@ -1081,7 +1082,7 @@ if ($continue)
 					return false;
 				}
 
-				disable_submit("submit_contacts");
+				disable_submit("submit_contacts1");
 				return true;
 			}
 
