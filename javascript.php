@@ -623,44 +623,6 @@ if ($continue)
 	if ($page == 'login')
 	{
 		echo '
-		event_listener("change", "module", function(event) { document.getElementById("form_nav").submit(); });
-
-		// this function is needed because these form buttons will otherwise never get disabled as there are no form check functions
-		function form_submit(arg)
-		{
-			if (typeof submit_clicked == "undefined" || submit_clicked == "cancel") {return true;}
-
-			if (arg == "submissions")
-			{
-				if (submit_clicked == "send") {disable_submit("submit_send");}
-				if (submit_clicked == "confirm") {disable_submit("submit_confirm");}
-			}
-
-			if (arg == "contacts")
-			{
-				if (submit_clicked == "delete") {disable_submit("submit_contacts2");}
-				if (submit_clicked == "continue") {disable_submit("submit_continue");}
-			}
-
-			if (arg == "configuration")
-			{
-				if (submit_clicked == "update") {disable_submit("submit_update");}
-				if (submit_clicked == "reset defaults") {disable_submit("submit_reset_defaults");}
-			}
-
-			if (arg == "maintenance")
-			{
-				if (submit_clicked == "delete temp files") {disable_submit("submit_delete");}
-				if (submit_clicked == "insert sample data") {disable_submit("submit_insert_sample_data");}
-				if (submit_clicked == "delete sample data") {disable_submit("submit_delete_sample_data");}
-				if (submit_clicked == "purge") {disable_submit("submit_purge");}
-				if (submit_clicked == "test mail") {disable_submit("submit_test_mail");}
-				if (submit_clicked == "update data structure") {disable_submit("submit_update_data_structure");}
-			}
-		}
-
-		event_listener("submit", "form_" + module, function(event) { form_submit(module); });
-
 		function confirm_prompt(action, name, value)
 		{
 			var confirm_display = "CONFIRM: Are you sure you wish to " + action;
@@ -678,6 +640,49 @@ if ($continue)
 			if (confirmed) {return true;} else {return false;}
 		}
 		';
+
+		if (in_array($module, $modules_admin))
+		{
+			echo '
+			event_listener("change", "module", function(event) { document.getElementById("form_nav").submit(); });
+
+			// this function is needed because these form buttons will otherwise never get disabled as there are no form check functions
+			function form_submit(arg)
+			{
+				if (typeof submit_clicked == "undefined" || submit_clicked == "cancel") {return true;}
+
+				if (arg == "submissions")
+				{
+					if (submit_clicked == "send") {disable_submit("submit_send");}
+					if (submit_clicked == "confirm") {disable_submit("submit_confirm");}
+				}
+
+				if (arg == "contacts")
+				{
+					if (submit_clicked == "delete") {disable_submit("submit_contacts2");}
+					if (submit_clicked == "continue") {disable_submit("submit_continue");}
+				}
+
+				if (arg == "configuration")
+				{
+					if (submit_clicked == "update") {disable_submit("submit_update");}
+					if (submit_clicked == "reset defaults") {disable_submit("submit_reset_defaults");}
+				}
+
+				if (arg == "maintenance")
+				{
+					if (submit_clicked == "delete temp files") {disable_submit("submit_delete");}
+					if (submit_clicked == "insert sample data") {disable_submit("submit_insert_sample_data");}
+					if (submit_clicked == "delete sample data") {disable_submit("submit_delete_sample_data");}
+					if (submit_clicked == "purge") {disable_submit("submit_purge");}
+					if (submit_clicked == "test mail") {disable_submit("submit_test_mail");}
+					if (submit_clicked == "update data structure") {disable_submit("submit_update_data_structure");}
+				}
+			}
+
+			event_listener("submit", "form_" + module, function(event) { form_submit(module); });
+			';
+		}
 
 		if ($module == 'account' || $module == 'submissions' || $module == 'maintenance')
 		{

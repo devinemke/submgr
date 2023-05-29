@@ -2,7 +2,7 @@
 if (count(get_included_files()) == 1) {header('location: http://' . $_SERVER['HTTP_HOST']); exit();}
 
 header('X-Frame-Options: SAMEORIGIN');
-if (!isset($_COOKIE['submgr_cookie_test'])) {setcookie('submgr_cookie_test', '1');}
+if (!isset($_COOKIE['submgr_cookie_test'])) {setcookie('submgr_cookie_test', 1);}
 session_name('submgr');
 $session_start = session_start();
 $nonce = get_token();
