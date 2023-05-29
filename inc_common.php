@@ -2076,13 +2076,8 @@ function get_price()
 
 function get_hash($submission_id)
 {
-	global $defaults, $config;
-
-	foreach ($defaults['config'] as $key => $value) {if ($value['required']) {$required[$key] = $config[$key];}}
-	$required = serialize($required);
-	$required = base64_encode($required);
-	$hash = sha1($required . $submission_id);
-
+	$sha1_file = sha1_file('config_db.php');
+	$hash = sha1($sha1_file . $submission_id);
 	return $hash;
 }
 
