@@ -3,7 +3,10 @@ if (count(get_included_files()) == 1) {header('location: http://' . $_SERVER['HT
 
 header('X-Frame-Options: SAMEORIGIN');
 if (!isset($_COOKIE['submgr_cookie_test'])) {setcookie('submgr_cookie_test', 1);}
-session_name('submgr');
+$session_name = 'submgr';
+$getcwd = getcwd();
+if ($getcwd) {$session_name .= '_' . sha1($getcwd);}
+session_name($session_name);
 $session_start = session_start();
 $nonce = get_token();
 form_hash('session'); // needed here so csrf_token exists in javascript
@@ -1127,6 +1130,8 @@ function exit_error($error = '')
 
 function kill_session($arg = '')
 {
+	global $session_name;
+
 	$_SESSION = array();
 
 	if (ini_get('session.use_cookies') && $arg != 'regenerate')
@@ -1139,7 +1144,7 @@ function kill_session($arg = '')
 
 	if ($arg == 'regenerate')
 	{
-		session_name('submgr');
+		session_name($session_name);
 		session_start();
 		form_hash('session');
 	}
