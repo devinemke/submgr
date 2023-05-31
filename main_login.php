@@ -578,11 +578,10 @@ else // if staff login
 		$submissions = array();
 		$single_display = false;
 
-		// conflict with contacts area
-		unset($_SESSION['sql']);
+		unset($_SESSION['sql']); // conflict with contacts area
 
 		// coming from reports
-		if (isset($_GET['from_reports']))
+		if (isset($_GET['from_reports']) && ($_GET['from_reports'] == 'monthly' || $_GET['from_reports'] == 'status' || $_GET['from_reports'] == 'forwards'))
 		{
 			if ($_REQUEST['search_genre_id'] == 'all') {$_REQUEST['search_genre_id'] = 'all submissions';}
 			if ($_REQUEST['search_genre_id'] == 'no_genre') {$_REQUEST['search_genre_id'] = 'all no genre';}
@@ -595,7 +594,6 @@ else // if staff login
 		'search_receiver_id',
 		'search_date_order',
 		'search_genre_id',
-		// 'search_paid_only',
 		'search_payment'
 		);
 		foreach ($search_fields as $value)
@@ -644,7 +642,6 @@ else // if staff login
 
 				if ($search_genre_id == 'all no genre') {$sql2 .= ' AND submissions.genre_id IS NULL';}
 				if (is_numeric($search_genre_id)) {$sql2 .= ' AND submissions.genre_id = ' . mysqli_real_escape_string($GLOBALS['db_connect'], $search_genre_id);}
-				// if ($search_paid_only) {$sql2 .= ' AND submissions.date_paid IS NOT NULL';}
 				if ($search_payment == 'paid') {$sql2 .= ' AND submissions.date_paid IS NOT NULL';}
 				if ($search_payment == 'unpaid') {$sql2 .= ' AND submissions.date_paid IS NULL';}
 
@@ -1858,18 +1855,43 @@ else // if staff login
 								<td>
 								';
 
-								// if ($config['show_date_paid']) {echo '<input type="checkbox" id="search_paid_only" name="search_paid_only" value="Y"'; if (isset($_SESSION['criteria']['search_paid_only']) && $_SESSION['criteria']['search_paid_only']) {echo ' checked';} echo '> <label for="search_paid_only" id="label_search_paid_only">paid only</label>';} else {echo '&nbsp;';}
-
 								// "search_genre_id" must be set in "criteria" so that "back to list" has a valid search query
-								$extra = '&nbsp;';
+								$extra = '';
 								$anchor = '';
 								if (isset($submission_id)) {$anchor = '#' . $submission_id;}
-								if ($single_display && isset($_SESSION['criteria']['search_genre_id'])) {$extra = ' <b>[ <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&backtolist=1' . $anchor . '">back to list</a> ]</b>';}
+								if ($single_display && isset($_SESSION['criteria']['search_genre_id'])) {$extra = '<b>[ <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&backtolist=1' . $anchor . '">back to list</a> ]</b>';}
+
+								if (isset($_GET['from_reports']))
+								{
+									$allowed_reports = array('daily', 'monthly', 'status', 'forwards');
+									if (!in_array($_GET['from_reports'], $allowed_reports)) {exit_error('unauthorized report');}
+
+									$extra = '<b>[ <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=reports&report=[url_rest]">back to reports</a> ]</b>';
+
+									if ($_GET['from_reports'] == 'daily' && $single_display)
+									{
+										if (isset($_GET['submission_id']) || isset($_GET['contact_id'])) {$row = 'submission_' . $_GET['submission_id'];}
+										if (isset($_GET['submission_id']) && isset($_GET['action_id'])) {$row = 'action_' . $_GET['action_id'];}
+										$url_rest = $_GET['from_reports'] . '&date_report=' . $_GET['date_report'] . '#row_' . $row;
+									}
+
+									if ($_GET['from_reports'] == 'monthly' || $_GET['from_reports'] == 'status' || $_GET['from_reports'] == 'forwards')
+									{
+										$anchor = '';
+										if ($_GET['from_reports'] == 'forwards' && isset($_GET['search_receiver_id'])) {$anchor = '#reader_' . $_GET['search_receiver_id'];}
+										$url_rest = $_GET['from_reports'] . $anchor;
+									}
+
+									$extra = str_replace('[url_rest]', $url_rest, $extra);
+									$_SESSION['from_reports_extra'] = $extra;
+								}
+
+								if (!$extra && isset($_SESSION['from_reports_extra'])) {$extra = $_SESSION['from_reports_extra'];}
 
 								echo '
 								</td>
 								<td><input type="submit" name="submit" value="search submissions" class="form_button" style="width: 150px; margin-top: 5px;"></td>
-								<td style="background-color: ' . $config['color_background'] . '; white-space: nowrap;">' . $extra . '</td>
+								<td style="background-color: ' . $config['color_background'] . '; white-space: nowrap; vertical-align: bottom; padding-bottom: 4px;">' . $extra . '&nbsp;</td>
 							</tr>
 						</table>
 
@@ -2049,7 +2071,7 @@ else // if staff login
 		$access_array = field2array('enum', $describe['contacts']['access']);
 
 		// coming from reports
-		if (isset($_GET['from_reports']))
+		if (isset($_GET['from_reports']) && $_GET['from_reports'] == 'contacts')
 		{
 			if ($_REQUEST['search_access'] == 'all') {$_REQUEST['search_access'] = 'any contact';}
 			if ($_REQUEST['search_access'] == 'non-staff') {$_REQUEST['search_access'] = 'any non-staff';}
@@ -2259,6 +2281,7 @@ else // if staff login
 									</optgroup>
 									</select>
 								</td>
+								<td style="background-color: ' . $config['color_background'] . ';">&nbsp;</td>
 							</tr>
 							<tr>
 								<td class="row_left"><label for="search_field" id="label_search_field">whose:</label></td>
@@ -2276,6 +2299,7 @@ else // if staff login
 									echo '
 									</select>
 								</td>
+								<td style="background-color: ' . $config['color_background'] . ';">&nbsp;</td>
 							</tr>
 							<tr>
 								<td>
@@ -2298,11 +2322,36 @@ else // if staff login
 									<input type="text" name="search_value" value="'; if (isset($search_value)) {echo $search_value;} echo '" style="width: 150px;"><br>
 									use % for wildcards (blank = %)
 								</td>
-
+								<td style="background-color: ' . $config['color_background'] . ';">&nbsp;</td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
 								<td><input type="submit" name="submit" value="search contacts" class="form_button" style="width: 150px; margin-top: 5px;"></td>
+								';
+
+								$extra = '';
+								if (isset($_GET['from_reports']))
+								{
+									$allowed_reports = array('daily', 'contacts');
+									if (!in_array($_GET['from_reports'], $allowed_reports)) {exit_error('unauthorized report');}
+
+									$extra = '<b>[ <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=reports&report=[url_rest]">back to reports</a> ]</b>';
+
+									if ($_GET['from_reports'] == 'daily')
+									{
+										$url_rest = $_GET['from_reports'] . '&date_report=' . $_GET['date_report'] . '#row_submission_' . $_GET['submission_id'];
+									}
+
+									if ($_GET['from_reports'] == 'contacts')
+									{
+										$url_rest = $_GET['from_reports'] . '#row_' . $_GET['search_access'];
+									}
+
+									$extra = str_replace('[url_rest]', $url_rest, $extra);
+								}
+
+								echo '
+								<td style="background-color: ' . $config['color_background'] . '; white-space: nowrap; vertical-align: bottom; padding-bottom: 4px;">' . $extra . '&nbsp;</td>
 							</tr>
 						</table>
 						';
@@ -2702,7 +2751,7 @@ else // if staff login
 		$reports = array(
 		'daily' => 'daily report',
 		'monthly' => 'monthly counts',
-		'sub_status' => 'submissions by status',
+		'status' => 'submissions by status',
 		'actions' => 'actions by staff',
 		'forwards' => 'forwards by staff',
 		'contacts' => 'contacts by access'
@@ -2710,6 +2759,9 @@ else // if staff login
 
 		$report = '';
 		if (isset($_REQUEST['report']) && isset($reports[$_REQUEST['report']])) {$report = $_REQUEST['report'];}
+
+		unset($_SESSION['sql']); // conflict with contacts report
+		unset($_SESSION['from_reports_extra']);
 
 		echo '
 		<table style="border-collapse: collapse; width: 100%;">
@@ -2896,15 +2948,15 @@ else // if staff login
 
 								extract($value);
 
-								$submission_id = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&submission_id=' . $submission_id . '">' . $submission_id . '</a>';
+								$submission_id = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&submission_id=' . $submission_id . '&from_reports=daily&date_report=' . $date_report . '">' . $submission_id . '</a>';
 								$date_time = timezone_adjust($date_time);
 								if ($writer) {$writer = '<span style="color: red;">' . $writer . '</span>';} else {$writer = $value['contact']['first_name'] . ' ' . $value['contact']['last_name'];}
-								$writer = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=contacts&contact_id=' . $submitter_id . '" id="writer_' . $value['submission_id'] . '">' . $submitter_id . ' - ' . $writer . '</a>';
+								$writer = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=contacts&contact_id=' . $submitter_id . '&submission_id=' . $value['submission_id'] . '&from_reports=daily&date_report=' . $date_report . '" id="writer_' . $value['submission_id'] . '">' . $submitter_id . ' - ' . $writer . '</a>';
 								if ($genre_id && isset($genres['all'][$genre_id])) {$genre = $genres['all'][$genre_id]['name'];} else {$genre = '&nbsp;';}
 								$status = calc_submission_status($key);
 
 								echo '
-								<tr>
+								<tr id="row_submission_' . $value['submission_id'] . '">
 								<td>' . $submission_id . '</td>
 								<td>' . $date_time . '</td>
 								<td style="text-align: left;">' . $writer . '</td>
@@ -2947,7 +2999,7 @@ else // if staff login
 								extract($value);
 
 								$date_time = timezone_adjust($date_time);
-								$submission_id = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&submission_id=' . $submission_id . '">' . $submission_id . '</a>';
+								$submission_id = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&submission_id=' . $submission_id . '&action_id=' . $action_id . '&from_reports=daily&date_report=' . $date_report . '">' . $submission_id . '</a>';
 								$reader_tooltip = '';
 								$receiver_tooltip = '';
 
@@ -2994,7 +3046,7 @@ else // if staff login
 								if ($action_types['all'][$action_type_id]['description']) {$action_type .= ' - ' . $action_types['all'][$action_type_id]['description'];}
 
 								echo '
-								<tr>
+								<tr id="row_action_' . $action_id . '">
 								<td>' . $action_id . '</td>
 								<td>' . $date_time . '</td>
 								<td>' . $submission_id . '</td>
@@ -3136,8 +3188,8 @@ else // if staff login
 							foreach ($counts['totals'][$table] as $key => $value)
 							{
 								if (strpos($key, ' ') !== false) {$key = str_replace(' ', '_', $key);}
-								if ($table == 'submissions') {$value_display = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&from_reports=1&search_genre_id=' . $key . '&search_action_type_id=all">' . $value . '</a>';}
-								if ($table == 'actions') {$value_display = $value_display = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&from_reports=1&search_genre_id=all&search_action_type_id=' . $key . '">' . $value . '</a>';}
+								if ($table == 'submissions') {$value_display = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&from_reports=monthly&search_genre_id=' . $key . '&search_action_type_id=all">' . $value . '</a>';}
+								if ($table == 'actions') {$value_display = $value_display = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&from_reports=monthly&search_genre_id=all&search_action_type_id=' . $key . '">' . $value . '</a>';}
 								echo '<th>' . $value_display . '</th>';
 							}
 
@@ -3201,7 +3253,7 @@ else // if staff login
 						';
 					}
 
-					if ($report == 'sub_status')
+					if ($report == 'status')
 					{
 						if (!$db_totals['submissions'])
 						{
@@ -3276,7 +3328,7 @@ else // if staff login
 							foreach ($value as $sub_key => $sub_value)
 							{
 								if (strpos($sub_key, ' ') !== false) {$sub_key = str_replace(' ', '_', $sub_key);}
-								echo '<td><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&from_reports=1&search_genre_id=' . $sub_key . '&search_action_type_id=' . $key . '">' . $sub_value . '</a></td>';
+								echo '<td><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&from_reports=status&search_genre_id=' . $sub_key . '&search_action_type_id=' . $key . '">' . $sub_value . '</a></td>';
 							}
 
 							echo '</tr>';
@@ -3417,7 +3469,7 @@ else // if staff login
 						foreach ($counts as $key => $value)
 						{
 							echo '
-							<tr><th><span class="header">' . $readers['all'][$key]['last_name'] . ', ' . $readers['all'][$key]['first_name'] . '</span> <span class="small">[' . $readers['all'][$key]['access'] . ']</span></th>' . $genre_headers . '</tr>
+							<tr id="reader_' . $key . '"><th><span class="header">' . $readers['all'][$key]['last_name'] . ', ' . $readers['all'][$key]['first_name'] . '</span> <span class="small">[' . $readers['all'][$key]['access'] . ']</span></th>' . $genre_headers . '</tr>
 							<tr>
 							<th>all forwards</th>
 							';
@@ -3425,7 +3477,7 @@ else // if staff login
 							foreach ($value['totals'] as $sub_key => $sub_value)
 							{
 								if (strpos($sub_key, ' ') !== false) {$sub_key = str_replace(' ', '_', $sub_key);}
-								echo '<th><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&from_reports=1&search_genre_id=' . $sub_key . '&search_action_type_id=all_forwards&search_receiver_id=' . $key . '">' . $sub_value . '</a></th>';
+								echo '<th><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&from_reports=forwards&search_genre_id=' . $sub_key . '&search_action_type_id=all_forwards&search_receiver_id=' . $key . '">' . $sub_value . '</a></th>';
 							}
 
 							echo '
@@ -3444,7 +3496,7 @@ else // if staff login
 									foreach ($sub_value as $sub_sub_key => $sub_sub_value)
 									{
 										if (strpos($sub_sub_key, ' ') !== false) {$sub_sub_key = str_replace(' ', '_', $sub_sub_key);}
-										echo '<td><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&from_reports=1&search_genre_id=' . $sub_sub_key . '&search_action_type_id=' . $sub_key . '&search_receiver_id=' . $key . '">' . $sub_sub_value . '</a></td>';
+										echo '<td><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&from_reports=forwards&search_genre_id=' . $sub_sub_key . '&search_action_type_id=' . $sub_key . '&search_receiver_id=' . $key . '">' . $sub_sub_value . '</a></td>';
 									}
 
 									echo '</tr>';
@@ -3509,9 +3561,9 @@ else // if staff login
 							$key_url = str_replace(' ', '_', $key);
 
 							echo '
-							<tr>
+							<tr id="row_' . $key_url . '">
 							<td style="color: ' . $color_text . ';">' . $key . '</td>
-							<td><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=contacts&from_reports=1&search_access=' . $key_url . '">' . $value . '</a></td>
+							<td><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=contacts&from_reports=contacts&search_access=' . $key_url . '">' . $value . '</a></td>
 							</tr>
 							';
 

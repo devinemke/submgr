@@ -1,4 +1,5 @@
-version 3.41 2023-05-29
+version 3.41 2023-06-01
+- added "back to reports" logic to link back to reports from submissions + contacts
 - simplified entropy of get_hash() by using sha1_file('config_db.php')
 - session_name() is now always unique per SM install using "submgr_" + sha1($getcwd)
 - added upload_max_filesize routine to /maintenance/fields/
