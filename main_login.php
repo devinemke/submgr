@@ -1057,6 +1057,7 @@ else // if staff login
 				// for js_object
 				$file_object = '';
 				$tag_object = '';
+				$action_count_object = '';
 
 				$value = cleanup($value, 'htmlspecialchars');
 
@@ -1125,7 +1126,16 @@ else // if staff login
 					$last_action = end($value['actions']);
 					$status = calc_submission_status($action_types['all'][$last_action['action_type_id']]['name']);
 				}
-				$action_count = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&submission_id=' . $submission_id . '">' . count($value['actions']) . '</a>';
+				$action_count = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&submission_id=' . $submission_id . '" id="action_count_' . $submission_id . '">' . count($value['actions']) . '</a>';
+
+				if (count($value['actions']))
+				{
+					$action_count_object = 'last action: ' . $action_types['all'][$value['last_action_type_id']]['name'];
+					if ($value['last_receiver_id'])
+					{
+						if (isset($readers['all'][$value['last_receiver_id']])) {$action_count_object .= ' to ' . $readers['all'][$value['last_receiver_id']]['first_name'] . ' ' . $readers['raw'][$value['last_receiver_id']]['last_name'];} else {$action_count_object .= ' to ???';}
+					}
+				}
 
 				echo '
 				<tr id="tr_' . $i . '" class="' . $class . '">
@@ -1152,7 +1162,7 @@ else // if staff login
 
 				$i++;
 
-				$GLOBALS['js_object'] .= 'submissions[' . $submission_id . '] = {writer: ' . make_tooltip($contact_tooltip) . ', file: ' . make_tooltip($file_object) . ', comments: ' . make_tooltip($value['comments']) . ', notes: ' . make_tooltip($value['notes']) . ', tag: ' . make_tooltip($tag_object) . '};' . "\n";
+				$GLOBALS['js_object'] .= 'submissions[' . $submission_id . '] = {writer: ' . make_tooltip($contact_tooltip) . ', file: ' . make_tooltip($file_object) . ', comments: ' . make_tooltip($value['comments']) . ', notes: ' . make_tooltip($value['notes']) . ', action_count: ' . make_tooltip($action_count_object) . ', tag: ' . make_tooltip($tag_object) . '};' . "\n";
 			}
 
 			echo '</table>';
@@ -4981,6 +4991,13 @@ if ($GLOBALS['js_object'])
 					notes.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["notes"], notes, event, 400); });
 					notes.addEventListener("mouseout", function(event) { tooltip_hide(); });
 					notes.addEventListener("click", function(event) { lightbox("on","popup.php?page=view&table=submissions&id_name=submission_id&id_value=" + submission_id + "&field=notes",500,400,400,100); event.preventDefault(); });
+				}
+
+				if (submissions[submission_id]["action_count"])
+				{
+					var action_count = document.getElementById("action_count_" + submission_id);
+					action_count.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["action_count"], action_count, event, ""); });
+					action_count.addEventListener("mouseout", function(event) { tooltip_hide(); });
 				}
 
 				if (submissions[submission_id]["tag"])
