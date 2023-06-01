@@ -9,4 +9,5 @@ $config_db = array(
 
 define('INSTALLED', false);
 define('TEST_MAIL', false);
+define('TIDY', true);
 ?>

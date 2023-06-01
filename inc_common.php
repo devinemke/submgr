@@ -2528,7 +2528,10 @@ function mail_to($arg)
 
 function output_tidy()
 {
-	if (extension_loaded('tidy'))
+	$output_tidy = true;
+	if (defined('TIDY') && !TIDY) {$output_tidy = false;}
+
+	if (extension_loaded('tidy') && $output_tidy)
 	{
 		$tidy_config = array('indent' => true, 'wrap' => 0);
 		$buffer = ob_get_clean();
