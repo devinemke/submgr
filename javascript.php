@@ -693,24 +693,23 @@ if ($continue)
 				{
 					document.getElementById("foreground_id").style.display = "block";
 					document.getElementById("background_id").style.display = "block";
-
 					document.getElementById("popframe").src = src;
-					document.getElementById("popframe").style.width = width + "px";
-					document.getElementById("popframe").style.height = height + "px";
+					if (left) {document.getElementById("foreground_id").style.left = left + "px";}
+					if (top) {document.getElementById("foreground_id").style.top = top + "px";}
 
-					// left and top are optional arguments
-					if (typeof left != "undefined") {document.getElementById("foreground_id").style.left = left + "px";}
-					if (typeof top != "undefined") {document.getElementById("foreground_id").style.top = top + "px";}
+					document.getElementById("popframe").addEventListener("load", function()
+					{
+						document.getElementById("popframe").style.width = "0px";
+						document.getElementById("popframe").style.height = "0px";
+						if (width) {document.getElementById("popframe").style.width = width + "px";} else {document.getElementById("popframe").style.width = (document.getElementById("popframe").contentWindow.document.body.scrollWidth + 80) + "px";}
+						if (height) {document.getElementById("popframe").style.height = height + "px";} else {document.getElementById("popframe").style.height = (document.getElementById("popframe").contentWindow.document.body.scrollHeight + 10) + "px";}
+					});
 				}
 
 				if (on_off == "off")
 				{
 					document.getElementById("foreground_id").style.display = "none";
 					document.getElementById("background_id").style.display = "none";
-
-					// to reset position back to default
-					document.getElementById("foreground_id").style.left = "300px";
-					document.getElementById("foreground_id").style.top = "5px";
 				}
 			}
 

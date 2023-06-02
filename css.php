@@ -230,8 +230,8 @@ if ($page == 'login' && ($module == 'account' || $module == 'submissions' || $mo
 	{
 		display: none;
 		position: fixed;
-		top: 5px;
-		left: 300px;
+		top: auto;
+		left: auto;
 		width: auto;
 		height: auto;
 		padding: 5px;

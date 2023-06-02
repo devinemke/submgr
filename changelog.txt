@@ -1,4 +1,5 @@
 version 3.41 2023-06-03
+- lightbox() iframes can now set width + height to fit contents by passing 0 as function arguments
 - added last_reader_id to submissions table
 - added "last action" tooltips on action counts on main submission list
 - added "back to reports" logic to link back from submissions + contacts
@@ -45,7 +46,7 @@ version 3.40 2023-05-13
 - fixed bug where goto_config was not set if login failed following install
 - changed config_db.php placeholder brackets from curly to square (to be consistent with other placeholders)
 - added $version_remote link to GitHub changelog.txt in /maintenance/versions/
-- enlarged various lightbox popups
+- enlarged various lightbox() popups
 - added email to outgoing header redirect from payment.php to pre-populate form_login()
 - fixed bug where $GLOBALS['form_hash'] was not set for $_GET['first_submission']
 - form_hash() now always sets $GLOBALS['form_hash'] = $_SESSION['csrf_token'] (for both "session" and "validate")

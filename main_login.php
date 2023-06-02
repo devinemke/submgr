@@ -5017,7 +5017,7 @@ if ($GLOBALS['js_object'])
 				if (in_array($_SESSION['contact']['access'], $access_grouping['admin_editor']) && $single_display)
 				{
 					echo '
-					document.getElementById("update_submission_" + submission_id).addEventListener("click", function(event) { lightbox("on","popup.php?page=update&submission_id=" + submission_id,600,500,300,100); event.preventDefault(); });
+					document.getElementById("update_submission_" + submission_id).addEventListener("click", function(event) { lightbox("on","popup.php?page=update&submission_id=" + submission_id,0,0,300,100); event.preventDefault(); });
 					document.getElementById("delete_submission_" + submission_id).addEventListener("click", function(event) { if (!confirm_prompt("delete", "submission", submission_id)) {event.preventDefault();} });
 					';
 				}
@@ -5057,7 +5057,7 @@ if ($GLOBALS['js_object'])
 				if (in_array($_SESSION['contact']['access'], $access_grouping['admin_editor']))
 				{
 					echo '
-					document.getElementById("update_action_" + action_id).addEventListener("click", function(event) { lightbox("on","popup.php?page=update&action_id=" + action_id,500,400,300,100); event.preventDefault(); });
+					document.getElementById("update_action_" + action_id).addEventListener("click", function(event) { lightbox("on","popup.php?page=update&action_id=" + action_id,0,0,300,100); event.preventDefault(); });
 					document.getElementById("delete_action_" + action_id).addEventListener("click", function(event) { if (!confirm_prompt("delete", "action", action_id)) {event.preventDefault();} });
 					';
 				}
