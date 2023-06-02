@@ -1131,9 +1131,14 @@ else // if staff login
 				if (count($value['actions']))
 				{
 					$action_count_object = 'last action: ' . $action_types['all'][$value['last_action_type_id']]['name'];
-					if ($value['last_receiver_id'])
+					if (isset($value['last_reader_id']) && $value['last_reader_id'])
 					{
-						if (isset($readers['all'][$value['last_receiver_id']])) {$action_count_object .= ' to ' . $readers['all'][$value['last_receiver_id']]['first_name'] . ' ' . $readers['raw'][$value['last_receiver_id']]['last_name'];} else {$action_count_object .= ' to ???';}
+						if (in_array($value['last_action_type_id'], $action_types['forwards'])) {$preposition = 'from';} else {$preposition = 'by';}
+						if (isset($readers['all'][$value['last_reader_id']])) {$action_count_object .= ' ' . $preposition . ' ' . $readers['all'][$value['last_reader_id']]['first_name'] . ' ' . $readers['all'][$value['last_reader_id']]['last_name'];} else {$action_count_object .= ' ' . $preposition . ' ???';}
+					}
+					if (isset($value['last_receiver_id']) && $value['last_receiver_id'])
+					{
+						if (isset($readers['all'][$value['last_receiver_id']])) {$action_count_object .= ' to ' . $readers['all'][$value['last_receiver_id']]['first_name'] . ' ' . $readers['all'][$value['last_receiver_id']]['last_name'];} else {$action_count_object .= ' to ???';}
 					}
 				}
 

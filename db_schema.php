@@ -175,6 +175,7 @@ $schema = array(
 		'comments' => array('type' => 'text', 'extra' => 'DEFAULT NULL'),
 		'notes' => array('type' => 'text', 'extra' => 'DEFAULT NULL'),
 		'last_action_id' => array('type' => 'mediumint(8) unsigned', 'extra' => 'DEFAULT NULL'),
+		'last_reader_id' => array('type' => 'mediumint(8) unsigned', 'extra' => 'DEFAULT NULL'),
 		'last_action_type_id' => array('type' => 'tinyint(3) unsigned', 'extra' => 'DEFAULT NULL'),
 		'last_receiver_id' => array('type' => 'mediumint(8) unsigned', 'extra' => 'DEFAULT NULL')
 	),

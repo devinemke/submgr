@@ -92,6 +92,7 @@ if ($page == 'update')
 	'date_time',
 	'timestamp',
 	'last_action_id',
+	'last_reader_id',
 	'last_action_type_id',
 	'last_receiver_id'
 	);

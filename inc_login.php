@@ -35,21 +35,23 @@ get_describe();
 function sync_last_action($submission_id)
 {
 	$last_action_id = 'NULL';
+	$last_reader_id = 'NULL';
 	$last_action_type_id = 'NULL';
 	$last_receiver_id = 'NULL';
 
 	// subquery
-	$sql = 'SELECT action_id, action_type_id, receiver_id FROM actions WHERE action_id = (SELECT MAX(action_id) FROM actions WHERE submission_id = ' . $submission_id . ')';
+	$sql = 'SELECT action_id, reader_id, action_type_id, receiver_id FROM actions WHERE action_id = (SELECT MAX(action_id) FROM actions WHERE submission_id = ' . $submission_id . ')';
 	$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: SELECT last action FOR sync_last_action');
 	if (mysqli_num_rows($result))
 	{
 		$row = mysqli_fetch_assoc($result);
 		if ($row['action_id']) {$last_action_id = $row['action_id'];}
+		if ($row['reader_id']) {$last_reader_id = $row['reader_id'];}
 		if ($row['action_type_id']) {$last_action_type_id = $row['action_type_id'];}
 		if ($row['receiver_id']) {$last_receiver_id = $row['receiver_id'];}
 	}
 
-	$sql = 'UPDATE submissions SET last_action_id = ' . $last_action_id . ', last_action_type_id = ' . $last_action_type_id . ', last_receiver_id = ' . $last_receiver_id . ' WHERE submission_id = ' . $submission_id;
+	$sql = 'UPDATE submissions SET last_action_id = ' . $last_action_id . ', last_reader_id = ' . $last_reader_id . ', last_action_type_id = ' . $last_action_type_id . ', last_receiver_id = ' . $last_receiver_id . ' WHERE submission_id = ' . $submission_id;
 	@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: UPDATE submissions FOR sync_last_action');
 
 	return true;

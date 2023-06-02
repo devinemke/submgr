@@ -1,4 +1,5 @@
-version 3.41 2023-06-01
+version 3.41 2023-06-03
+- added last_reader_id to submissions table
 - added "last action" tooltips on action counts on main submission list
 - added "back to reports" logic to link back from submissions + contacts
 - simplified entropy of get_hash() by using sha1_file('config_db.php')
