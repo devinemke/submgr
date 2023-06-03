@@ -154,12 +154,12 @@ if ($page == 'update')
 				$extra .= ' disabled';
 				$login_required_fields['submissions'][] = $key; // to prevent NULL link
 			}
-			$input = '<textarea id="row_' . $key . '" name="row[' . $key . ']" cols="30" rows="4"' . $extra . '>' . $value . '</textarea>';
+			$input = '<textarea id="row_' . $key . '" name="row[' . $key . ']"' . $extra . '>' . $value . '</textarea>';
 		}
 
 		if ($type == 'enum')
 		{
-			$input = '<select id="row_' . $key . '" name="row[' . $key . ']" ' . $extra . '><option value="">&nbsp;</option>';
+			$input = '<select id="row_' . $key . '" name="row[' . $key . ']"' . $extra . '><option value="">&nbsp;</option>';
 			foreach ($enum_array as $enum_key => $enum_value)
 			{
 				$input .= '<option value="' . $enum_key . '"';

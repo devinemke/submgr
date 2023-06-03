@@ -154,6 +154,7 @@ textarea
 	border: 1px solid ' . $config['color_text'] . ';
 	border-radius: ' . $config['border_radius'] . 'px;
 	width: 300px;
+	height: 100px;
 }
 
 .form_button

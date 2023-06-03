@@ -1248,7 +1248,7 @@ function form_main()
 		if ($value['type'] == 'text' || $value['type'] == 'password' || $value['type'] == 'file') {$output .= '<input type="' . $value['type'] . '" id="' . $key . '" name="' . $key . '"'; if ($value['type'] != 'file') {$output .= ' value="'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '" maxlength="' . $value['maxlength'] . '"';} $output .=' class="' . $class . '">';}
 		if ($value['type'] == 'select') {$output .= '<select id="' . $key . '" name="' . $key . '" class="' . $class . '">'; if ($key != 'genre_id') {$output .= '<option value="">&nbsp;</option>';} foreach ($GLOBALS[$value['list']] as $sub_key => $sub_value) {$output .= '<option value="' . $sub_key . '"'; if (isset($GLOBALS[$key]) && $GLOBALS[$key] == $sub_key) {$output .= ' selected';} $output .= '>' . $sub_value . '</option>' . "\n";} $output .= '</select>';}
 		if ($value['type'] == 'checkbox') {$output .= '<input type="' . $value['type'] . '" id="' . $key . '" name="' . $key . '" value="Y"'; if (isset($GLOBALS[$key]) && $GLOBALS[$key]) {$output .= ' checked';} $output .= '>';}
-		if ($value['type'] == 'textarea') {$output .= '<textarea id="' . $key . '" name="' . $key . '" cols="30" rows="4" maxlength="' . $value['maxlength'] . '">'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '</textarea>';}
+		if ($value['type'] == 'textarea') {$output .= '<textarea id="' . $key . '" name="' . $key . '" maxlength="' . $value['maxlength'] . '">'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '</textarea>';}
 		$output .= $extra_after . '</td></tr>' . "\n";
 
 		return $output;

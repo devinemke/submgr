@@ -1506,9 +1506,9 @@ else // if staff login
 							<td style="padding-right: 10px;">
 
 								<label for="notes" id="label_notes">notes:</label> <span class="small">[ <i>only for internal records</i> ]</span><br>
-								<textarea id="notes" name="notes" cols="30" rows="5">'; if (isset($notes)) {echo htmlspecialchars($notes);} echo '</textarea><br>
+								<textarea id="notes" name="notes">'; if (isset($notes)) {echo htmlspecialchars($notes);} echo '</textarea><br>
 								<label for="message" id="label_message">message:</label> <span class="small">[ <i>sent to receiver (if enabled)</i> ]</span><br>
-								<textarea id="message" name="message" cols="30" rows="5">'; if (isset($message)) {echo htmlspecialchars($message);} echo '</textarea><br>
+								<textarea id="message" name="message">'; if (isset($message)) {echo htmlspecialchars($message);} echo '</textarea><br>
 								<label for="file" id="label_file">attach file:</label> <span class="small">[ <i>' . $max_file_size_formatted . ' max</i> ]</span><br>';
 								if ($fields['file']['maxlength']) {echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $fields['file']['maxlength'] . '">';}
 								echo '<input type="file" id="file" name="file">';
@@ -2524,7 +2524,7 @@ else // if staff login
 
 						echo '
 						<tr><td class="row_left"><label for="file" id="label_file">file:</label></td><td>'; if ($fields['file']['maxlength']) {echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $fields['file']['maxlength'] . '">';} echo '<input type="file" id="file" name="file">'; if ($fields['file']['maxlength']) {echo ' <span class="small">(' . $max_file_size_formatted . ' max)'; if (isset($_SESSION['file_upload']['filename'])) {echo '<span style="margin-left: 5px;">file selected:</span> <b>' . $_SESSION['file_upload']['filename'] . '</b>';} echo '</span>';} echo '</td></tr>
-						<tr><td class="row_left"><label for="comments" id="label_comments">comments:</label></td><td><textarea id="comments" name="comments" cols="30" rows="4" maxlength="' . $fields['comments']['maxlength'] . '">'; if (isset($comments)) {echo $comments;} echo '</textarea>'; if ($fields['comments']['maxlength']) {echo ' <span class="small">(' . $fields['comments']['maxlength'] . ' characters max)</span>';} echo '</td></tr>
+						<tr><td class="row_left"><label for="comments" id="label_comments">comments:</label></td><td><textarea id="comments" name="comments" maxlength="' . $fields['comments']['maxlength'] . '">'; if (isset($comments)) {echo $comments;} echo '</textarea>'; if ($fields['comments']['maxlength']) {echo ' <span class="small">(' . $fields['comments']['maxlength'] . ' characters max)</span>';} echo '</td></tr>
 						<tr>
 						<td>&nbsp;</td>
 						<td><input type="submit" id="submit_insert_submission" name="submit" value="submit" class="form_button" style="margin-top: 10px;"> <input type="submit" name="submit" value="cancel" id="cancel" class="form_button" style="margin-top: 10px;"></td>
@@ -2634,7 +2634,7 @@ else // if staff login
 
 						if ($type == 'textarea')
 						{
-							$input = '<textarea id="' . $key . '" name="' . $key . '" cols="30" rows="4"' . $extra . '>' . $value . '</textarea>';
+							$input = '<textarea id="' . $key . '" name="' . $key . '"' . $extra . '>' . $value . '</textarea>';
 						}
 
 						if ($type == 'enum')
@@ -3727,7 +3727,7 @@ else // if staff login
 								$input .= '</select>';
 							}
 							if ($defaults['config'][$key]['type'] == 'checkbox') {$input = '<input type="checkbox" id="config_' . $key . '" name="config[' . $key . ']" value="Y"'; if ($value) {$input .= ' checked';} $input .= ' >';}
-							if ($defaults['config'][$key]['type'] == 'textarea') {$input = '<textarea id="config_' . $key . '" name="config[' . $key . ']" cols="30" rows="4" class="' . $class . '">' . $value . '</textarea>';}
+							if ($defaults['config'][$key]['type'] == 'textarea') {$input = '<textarea id="config_' . $key . '" name="config[' . $key . ']" class="' . $class . '">' . $value . '</textarea>';}
 							if ($key == 'upload_path' && isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'])
 							{
 								$suggested_path = dirname($_SERVER['DOCUMENT_ROOT']);
@@ -3775,7 +3775,7 @@ else // if staff login
 									if ($field_name == 'subject') {$max_length = 255; $width = 600;}
 									$field_value = '<input type="text" id="action_types_' . $key . '_' . $field_name . '" name="action_types[' . $key . '][' . $field_name . ']" value="' . $field_value . '" maxlength="' . $max_length . '" style="width:' . $width . 'px;">';
 								}
-								if ($field_name == 'body') {$field_value = '<textarea id="action_types_' . $key . '_' . $field_name . '" name="action_types[' . $key . '][' . $field_name . ']" cols="50" rows="10" style="width: 600px;">' . $field_value . '</textarea>';}
+								if ($field_name == 'body') {$field_value = '<textarea id="action_types_' . $key . '_' . $field_name . '" name="action_types[' . $key . '][' . $field_name . ']" style="width: 600px; height: 200px;">' . $field_value . '</textarea>';}
 								if ($field_name == 'active' || $field_name == 'from_reader') {$field_value = '<input type="checkbox" id="action_types_' . $key . '_' . $field_name . '" name="action_types[' . $key . '][' . $field_name . ']" value="Y"'; if ($value[$field_name]) {$field_value .= ' checked';} $field_value .= ' >';}
 								if ($field_name == 'access_groups')
 								{
