@@ -134,8 +134,8 @@ if ($page == 'update')
 
 		if ($type == 'text')
 		{
-			if ($key == 'writer') {$extra .= ' maxlength="50"';}
-			if ($key == 'title') {$extra .= ' maxlength="255"';}
+			if ($key == 'writer') {$extra .= ' maxlength="' . $fields['writer']['maxlength'] . '"';}
+			if ($key == 'title') {$extra .= ' maxlength="' . $fields['title']['maxlength'] . '"';}
 			if ($key == 'ext') {$extra .= ' maxlength="10"';}
 			if ($_SESSION['table'] == 'submissions' && $key == 'writer' && ($_SESSION['groups'][$_SESSION['contact_access']]['blind'] || (isset($_SESSION['genres']['all'][$row['genre_id']]) && $_SESSION['genres']['all'][$row['genre_id']]['blind'])))
 			{

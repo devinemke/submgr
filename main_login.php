@@ -2507,8 +2507,8 @@ else // if staff login
 
 						echo '
 						<table class="padding_lr_5">
-						<tr><td class="row_left"><label for="writer" id="label_writer">writer name:</label></td><td><input type="text" id="writer" name="writer" value="'; if (isset($writer)) {echo $writer;} echo '" maxlength="50"> <span class="small">(if different from above)</span></td></tr>
-						<tr><td class="row_left"><label for="title" id="label_title">submission title:</label></td><td><input type="text" id="title" name="title" value="'; if (isset($title)) {echo $title;} echo '" maxlength="100"></td></tr>
+						<tr><td class="row_left"><label for="writer" id="label_writer">writer name:</label></td><td><input type="text" id="writer" name="writer" value="'; if (isset($writer)) {echo $writer;} echo '" maxlength="' . $fields['writer']['maxlength'] . '"> <span class="small">(if different from above)</span></td></tr>
+						<tr><td class="row_left"><label for="title" id="label_title">submission title:</label></td><td><input type="text" id="title" name="title" value="'; if (isset($title)) {echo $title;} echo '" maxlength="' . $fields['title']['maxlength'] . '"></td></tr>
 						';
 
 						// changed so admins/editors can create submissions in inactive genres
@@ -2591,7 +2591,7 @@ else // if staff login
 						$value = htmlspecialchars((string) $value);
 
 						$type = 'text';
-						$maxlength = 50;
+						if (isset($fields[$key]['maxlength'])) {$maxlength = $fields[$key]['maxlength'];} else {$maxlength = 50;}
 						$input = '';
 						$extra = '';
 						if ($submodule != 'insert' && $_SESSION['contact']['access'] != 'admin' && $_SESSION['current_contact_array']['access'] == 'admin') {$extra = ' disabled';}
@@ -2599,7 +2599,7 @@ else // if staff login
 						// set field types
 						if ($key == 'state') {$type = 'enum'; $enum_array = $states;}
 						if ($key == 'country') {$type = 'enum'; $enum_array = $countries;}
-						if (strpos($key, 'password') !== false) {$type = 'password'; $maxlength = 20;}
+						if (strpos($key, 'password') !== false) {$type = 'password';}
 						if ($key == 'mailing_list') {$type = 'boolean';}
 						if ($key == 'access')
 						{
@@ -2619,7 +2619,7 @@ else // if staff login
 							$check_array = field2array('set', $describe['contacts']['email_notification']);
 							if ($value) {$value_array = explode(',', $value);} else {$value_array = array();}
 						}
-						if ($key == 'notes') {$type = 'textarea';}
+						if ($key == 'notes') {$type = 'textarea'; $maxlength = $fields['comments']['maxlength'];}
 
 						// type -> field
 						if ($type == 'text')
@@ -2634,7 +2634,7 @@ else // if staff login
 
 						if ($type == 'textarea')
 						{
-							$input = '<textarea id="' . $key . '" name="' . $key . '"' . $extra . '>' . $value . '</textarea>';
+							$input = '<textarea id="' . $key . '" name="' . $key . '" maxlength="' . $maxlength . '"' . $extra . '>' . $value . '</textarea>';
 						}
 
 						if ($type == 'enum')
