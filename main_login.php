@@ -4822,6 +4822,11 @@ else // if staff login
 							// sync_last_actions
 							if (isset($_POST['sync_last_actions']))
 							{
+								ini_set('max_execution_time', '9999');
+								ini_set('max_input_time', '-1');
+								ini_set('memory_limit', '-1');
+								ini_set('default_socket_timeout', '-1');
+
 								$sql = 'SELECT submission_id FROM submissions';
 								$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: SELECT submissions FOR sync last actions');
 								if (mysqli_num_rows($result))

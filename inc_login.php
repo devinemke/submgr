@@ -1277,9 +1277,8 @@ if ($_SESSION['contact']['access'])
 			{
 				ini_set('max_execution_time', '9999');
 				ini_set('max_input_time', '-1');
-				ini_set('memory_limit', '256M');
-				ini_set('default_socket_timeout', '9999');
-				ini_set('mysql.connect_timeout', '-1');
+				ini_set('memory_limit', '-1');
+				ini_set('default_socket_timeout', '-1');
 
 				if (isset($config['mysqldump_path']) && $config['mysqldump_path']) {$mysqldump_path = trim($config['mysqldump_path']);} else {$mysqldump_path = 'mysqldump';}
 				if (strpos($mysqldump_path, ' ') !== false && substr($mysqldump_path, 0, 1) != '"' && substr($mysqldump_path, -1) != '"') {$mysqldump_path = '"' . $mysqldump_path . '"';}
