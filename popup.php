@@ -69,6 +69,7 @@ if ($page == 'update')
 		{
 			$readers['all'][$row['reader_id']]['first_name'] = $_SESSION['submission']['contact']['first_name'] . ' (submitter)';
 			$readers['all'][$row['reader_id']]['last_name'] = $_SESSION['submission']['contact']['last_name'];
+			if (($_SESSION['submission']['genre_id'] && isset($_SESSION['genres']['all'][$_SESSION['submission']['genre_id']]) && $_SESSION['genres']['all'][$_SESSION['submission']['genre_id']]['blind']) || $_SESSION['groups'][$_SESSION['contact_access']]['blind']) {$readers['all'][$row['reader_id']]['first_name'] = '[blind]'; $readers['all'][$row['reader_id']]['last_name'] = '[blind]';}
 		}
 		else
 		{

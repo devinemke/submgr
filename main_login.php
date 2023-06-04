@@ -1125,22 +1125,22 @@ else // if staff login
 				{
 					$last_action = end($value['actions']);
 					$status = calc_submission_status($action_types['all'][$last_action['action_type_id']]['name']);
-				}
-				$action_count = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&submission_id=' . $submission_id . '" id="action_count_' . $submission_id . '">' . count($value['actions']) . '</a>';
-
-				if (count($value['actions']))
-				{
 					$action_count_object = 'last action: ' . $action_types['all'][$value['last_action_type_id']]['name'];
 					if (isset($value['last_reader_id']) && $value['last_reader_id'])
 					{
 						if (in_array($value['last_action_type_id'], $action_types['forwards'])) {$preposition = 'from';} else {$preposition = 'by';}
 						if (isset($readers['all'][$value['last_reader_id']])) {$action_count_object .= ' ' . $preposition . ' ' . $readers['all'][$value['last_reader_id']]['first_name'] . ' ' . $readers['all'][$value['last_reader_id']]['last_name'];} else {$action_count_object .= ' ' . $preposition . ' ???';}
+						if ($value['last_action_type_id'] == 2 && $value['last_reader_id'] == $value['contact']['contact_id'])
+						{
+							if (($genre_id && isset($genres['all'][$genre_id]) && $genres['all'][$genre_id]['blind']) || $groups[$contact_access]['blind']) {$action_count_object = 'last action: ' . $action_types['all'][$value['last_action_type_id']]['name'] . ' by [blind]';} else {$action_count_object = 'last action: ' . $action_types['all'][$value['last_action_type_id']]['name'] . ' by ' . $value['contact']['first_name'] . ' ' . $value['contact']['last_name'];}
+						}
 					}
 					if (isset($value['last_receiver_id']) && $value['last_receiver_id'])
 					{
 						if (isset($readers['all'][$value['last_receiver_id']])) {$action_count_object .= ' to ' . $readers['all'][$value['last_receiver_id']]['first_name'] . ' ' . $readers['all'][$value['last_receiver_id']]['last_name'];} else {$action_count_object .= ' to ???';}
 					}
 				}
+				$action_count = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&submission_id=' . $submission_id . '" id="action_count_' . $submission_id . '">' . count($value['actions']) . '</a>';
 
 				echo '
 				<tr id="tr_' . $i . '" class="' . $class . '">
@@ -1223,14 +1223,18 @@ else // if staff login
 							if (isset($reader_id) && $reader_id)
 							{
 								$display_array = array();
-
 								if (isset($readers['all'][$reader_id])) {$display_array = $readers['all'][$reader_id];}
 								if ($reader_id == $submitter_id) {$display_array = $submissions[$submission_id]['contact']; $display_array = array_map('strval', $display_array); $display_array = array_map('htmlspecialchars', $display_array);}
-
 								if ($display_array)
 								{
-									$reader_tooltip = $display_array['first_name'] . ' ' . $display_array['last_name'] . '<br>' . $display_array['email'] . '<br>' . $display_array['access'];
-									$reader_display = '<span id="reader_' . $action_id . '">' . $display_array['first_name'] . ' ' . $display_array['last_name'] . '</span>';
+									$reader_tooltip = $display_array['first_name'] . ' ' . $display_array['last_name'] . '<br>' . $display_array['email'];
+									if ($display_array['access']) {$reader_tooltip .= '<br>' . $display_array['access'];}
+									$display_name = $display_array['first_name'] . ' ' . $display_array['last_name'];
+									if ($reader_id == $submitter_id)
+									{
+										if (($genre_id && isset($genres['all'][$genre_id]) && $genres['all'][$genre_id]['blind']) || $groups[$contact_access]['blind']) {$display_name = '[blind]'; $reader_tooltip = '';}
+									}
+									$reader_display = '<span id="reader_' . $action_id . '">' . $display_name . '</span>';
 								}
 								else
 								{
@@ -1749,7 +1753,7 @@ else // if staff login
 									{
 										echo '<option value="' . $value . '"';
 										if (isset($_SESSION['criteria']['search_genre_id']) && $_SESSION['criteria']['search_genre_id'] == $value) {echo ' selected';}
-										if (is_numeric($value)) {echo ' style="color:#800000;">' . $genres['all'][$value]['name'];} else {echo '>' . $value;}
+										if (is_numeric($value)) {echo ' style="color: #800000;">' . $genres['all'][$value]['name'];} else {echo '>' . $value;}
 										echo '</option>' . "\n";
 										if ($value == 'all no genre') {echo '<optgroup label="genres">';}
 									}
@@ -1772,7 +1776,7 @@ else // if staff login
 									{
 										echo '<option value="' . $key . '"';
 										if (isset($_SESSION['criteria']['search_action_type_id']) && $_SESSION['criteria']['search_action_type_id'] == $key) {echo ' selected';}
-										if (is_numeric($key)) {echo ' style="color:#800000;"';}
+										if (is_numeric($key)) {echo ' style="color: #800000;"';}
 										echo '>' . $value;
 										if (isset($action_types['all'][$key]) && $action_types['all'][$key]['description']) {echo ' - ' . $action_types['all'][$key]['description'];}
 										echo '</option>' . "\n";
@@ -2287,7 +2291,7 @@ else // if staff login
 									{
 										echo '<option value="' . $value . '"';
 										if (isset($search_access) && $search_access == $value) {echo ' selected';}
-										if (in_array($value, $access_array)) {echo ' style="color:#800000;"';}
+										if (in_array($value, $access_array)) {echo ' style="color: #800000;"';}
 										echo '>' . $value . '</option>' . "\n";
 										if ($value == 'any staff') {echo '<optgroup label="staff">';}
 									}
