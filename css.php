@@ -214,7 +214,18 @@ label.error
 if ($page == 'login' && ($module == 'account' || $module == 'submissions' || $module == 'maintenance'))
 {
 	echo '
-	.background_class
+	iframe
+	{
+		border: none;
+	}
+
+	#popframe
+	{
+		flex: 1 1 auto;
+		overflow: auto;
+	}
+
+	#background
 	{
 		display: none;
 		position: fixed;
@@ -227,7 +238,7 @@ if ($page == 'login' && ($module == 'account' || $module == 'submissions' || $mo
 		z-index: 1001;
 	}
 
-	.foreground_class
+	#foreground
 	{
 		display: none;
 		position: fixed;
@@ -241,11 +252,7 @@ if ($page == 'login' && ($module == 'account' || $module == 'submissions' || $mo
 		background-color: ' . $config['color_background'] . ';
 		z-index: 1002;
 		overflow: auto;
-	}
-
-	iframe
-	{
-		border: none;
+		resize: both;
 	}
 	';
 }

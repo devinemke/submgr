@@ -691,30 +691,32 @@ if ($continue)
 			{
 				if (on_off == "on")
 				{
-					document.getElementById("foreground_id").style.display = "block";
-					document.getElementById("background_id").style.display = "block";
+					document.getElementById("background").style.display = "block";
+					document.getElementById("foreground").style.display = "flex";
 					document.getElementById("popframe").src = src;
-					if (left) {document.getElementById("foreground_id").style.left = left + "px";}
-					if (top) {document.getElementById("foreground_id").style.top = top + "px";}
+					if (left) {document.getElementById("foreground").style.left = left + "px";}
+					if (top) {document.getElementById("foreground").style.top = top + "px";}
 
 					document.getElementById("popframe").addEventListener("load", function()
 					{
-						document.getElementById("popframe").style.width = "0px";
-						document.getElementById("popframe").style.height = "0px";
-						if (width) {document.getElementById("popframe").style.width = width + "px";} else {document.getElementById("popframe").style.width = (document.getElementById("popframe").contentWindow.document.body.scrollWidth + 80) + "px";}
-						if (height) {document.getElementById("popframe").style.height = height + "px";} else {document.getElementById("popframe").style.height = (document.getElementById("popframe").contentWindow.document.body.scrollHeight + 10) + "px";}
+						document.getElementById("popframe").style.minWidth = "auto";
+						document.getElementById("popframe").style.minHeight = "auto";
+						if (width) {document.getElementById("popframe").style.minWidth = width + "px";} else {document.getElementById("popframe").style.minWidth = (document.getElementById("popframe").contentWindow.document.body.scrollWidth + 80) + "px";}
+						if (height) {document.getElementById("popframe").style.minHeight = height + "px";} else {document.getElementById("popframe").style.minHeight = (document.getElementById("popframe").contentWindow.document.body.scrollHeight + 10) + "px";}
 					});
 				}
 
 				if (on_off == "off")
 				{
-					document.getElementById("foreground_id").style.display = "none";
-					document.getElementById("background_id").style.display = "none";
+					document.getElementById("background").style.display = "none";
+					document.getElementById("foreground").style.display = "none";
+					document.getElementById("foreground").style.width = "auto";
+					document.getElementById("foreground").style.height = "auto";
 				}
 			}
 
 			event_listener("click", "lightbox_off", function(event) { lightbox("off"); event.preventDefault(); });
-			event_listener("click", "background_id", function(event) { lightbox("off"); });
+			event_listener("click", "background", function(event) { lightbox("off"); });
 			';
 		}
 

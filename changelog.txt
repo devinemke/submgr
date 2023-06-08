@@ -1,6 +1,7 @@
-version 3.41 2023-06-03
-- lightbox() iframes can now set width + height to fit contents by passing 0 as function arguments
-- added last_reader_id to submissions table
+version 3.41 2023-06-08
+- lightbox() now resizable
+- lightbox() can now set width + height to fit contents by passing 0 as function arguments
+- added last_reader_id to submissions table (requires sync_last_action() for last action tooltips)
 - added "last action" tooltips on action counts on main submission list
 - added "back to reports" logic to link back from submissions + contacts
 - simplified entropy of get_hash() by using sha1_file('config_db.php')
