@@ -4913,9 +4913,8 @@ if ($module == 'account' || $module == 'submissions' || $module == 'maintenance'
 	if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'mobile') !== false) {$extra = ' style="position: absolute; top: 5%; left: 5%;"';}
 	$lightbox = '
 	<div id="foreground"' . $extra . '>
-	<a href="#" id="lightbox_off" style="float: left; margin: 0px 10px 0px 0px; font-weight: bold;">close</a>
-	<iframe id="popframe" style="float: left;"></iframe>
-	<div style="clear: both;"></div>
+	<a href="#" id="lightbox_off" style="font-weight: bold; margin-right: 10px;">close</a>
+	<iframe id="popframe"></iframe>
 	</div>
 	<div id="background"></div>
 	';
