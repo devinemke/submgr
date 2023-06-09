@@ -223,6 +223,7 @@ if ($page == 'login' && ($module == 'account' || $module == 'submissions' || $mo
 	{
 		flex: 1 1 auto;
 		overflow: auto;
+		padding: 2px;
 	}
 
 	#background
@@ -266,7 +267,7 @@ if ($page == 'login' && ($module == 'account' || $module == 'submissions' || $mo
 		color: ' . $config['color_text'] . ';
 		background-color: ' . $config['color_foreground'] . ';
 		font-family: ' . $config['fonts'] . ';
-		padding: 2px;
+		padding: 3px;
 		border: 2px solid ' . $config['color_text'] . ';
 		border-radius: ' . $config['border_radius'] . 'px;
 		line-height: 18px;

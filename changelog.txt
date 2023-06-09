@@ -1,4 +1,5 @@
-version 3.41 2023-06-08
+version 3.41 2023-06-09
+- tooltips now use maxWidth rather than width
 - lightbox() now resizable
 - lightbox() can now set width + height to fit contents by passing 0 as function arguments
 - added last_reader_id to submissions table (requires sync_last_action() for last action tooltips)

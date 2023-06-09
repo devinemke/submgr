@@ -11,11 +11,11 @@
 ***********************************************/
 
 // DE: set defaults
-var tipwidth = "200px"; //default tooltip width
-var tipbgcolor = "white"; //tooltip bgcolor
-var disappeardelay = 0; //tooltip disappear speed onMouseout (in miliseconds)
-var vertical_offset = "0px"; //horizontal offset of tooltip from anchor link
-var horizontal_offset = "0px"; //horizontal offset of tooltip from anchor link
+var tipwidth = "200px"; // default tooltip width
+var tipbgcolor = "white"; // tooltip bgcolor
+var disappeardelay = 0; // tooltip disappear speed onMouseout (in miliseconds)
+var vertical_offset = "0px"; // horizontal offset of tooltip from anchor link
+var horizontal_offset = "0px"; // horizontal offset of tooltip from anchor link
 
 // No further editting needed
 
@@ -42,7 +42,9 @@ dropmenuobj.style.left=dropmenuobj.style.top=-500
 if (tipwidth != "")
 {
 	dropmenuobj.widthobj = dropmenuobj.style;
-	dropmenuobj.widthobj.width = tipwidth + "px";
+	// DE: use maxWidth rather than width
+	// dropmenuobj.widthobj.width = tipwidth + "px";
+	dropmenuobj.widthobj.maxWidth = tipwidth + "px";
 }
 else
 {
