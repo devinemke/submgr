@@ -106,10 +106,12 @@ if (isset($_SESSION['login']) && $_SESSION['login'] && $module == 'update' && $s
 	$notice = 'Your information has been successfully updated.';
 	extract($_SESSION['post']);
 	if ($config['send_mail_staff']) {send_mail('staff', 'updates');}
-	$login_email = $email; $login_password = $password; // for login routine below
+	$login_email = $email; // for login routine below
+	if ($password) {$login_password = $password;} else {$login_password = $_SESSION['contact']['password'];} // for login routine below
 	unset($title); // to hide the last submission from display()
 	$submit = 'login';
 	$module = 'account';
+	$_SESSION['module'] = 'update2account';
 }
 
 if (isset($_GET['first_submission']) && isset($_SESSION['post']['email']) && isset($_SESSION['post']['password']))
@@ -124,7 +126,7 @@ if ($submit == 'login')
 {
 	form_hash('validate');
 	if (isset($_SESSION['goto_config'])) {$goto_config = 'Y';} // for install
-	$keep = array('csrf_token', 'goto_config');
+	$keep = array('csrf_token', 'goto_config', 'module');
 	flush_session($keep);
 	$_SESSION['login'] = false;
 
@@ -146,20 +148,17 @@ if ($submit == 'login')
 		}
 	}
 
-	if (isset($_SESSION['post']))
+	if (!$login_password)
 	{
-		if (!$login_password)
+		$form_check = false;
+		$errors[] = 'missing password';
+	}
+	else
+	{
+		if (!password_check($login_password))
 		{
 			$form_check = false;
-			$errors[] = 'missing password';
-		}
-		else
-		{
-			if (!password_check($login_password))
-			{
-				$form_check = false;
-				$errors[] = 'passwords must be ' . $password_length_min . '-' . $password_length_max . ' characters (no spaces)';
-			}
+			$errors[] = 'passwords must be ' . $password_length_min . '-' . $password_length_max . ' characters (no spaces)';
 		}
 	}
 
@@ -183,19 +182,19 @@ if ($submit == 'login')
 	{
 		$_SESSION['contact'] = mysqli_fetch_assoc($result);
 
-		if ($login_password != '') {$password_compare = $login_password;} else {$password_compare = $_SESSION['contact']['password'];}
-		if (!password_wrapper('verify', $password_compare, $_SESSION['contact']['password']))
+		if (!password_wrapper('verify', $login_password, $_SESSION['contact']['password']))
 		{
 			$error_output = $error_output_generic;
 			exit_error();
 		}
 
 		$_SESSION['login'] = true;
+		unset($_SESSION['module']);
 
 		// contacts.password must be VARCHAR(255) for password_needs_rehash to work
 		if (isset($GLOBALS['password_needs_rehash']) && $describe['contacts']['password'] == 'varchar(255)')
 		{
-			$hash = password_wrapper('hash', $password_compare);
+			$hash = password_wrapper('hash', $login_password);
 			$sql = "UPDATE contacts SET password = '$hash' WHERE contact_id = " . mysqli_real_escape_string($GLOBALS['db_connect'], $_SESSION['contact']['contact_id']);
 			@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('UPDATE contact password');
 			$_SESSION['contact']['password'] = $hash; // so new password hash is used

@@ -2496,7 +2496,7 @@ function password_wrapper($function, $password, $hash = '')
 
 	if ($function == 'verify')
 	{
-		if ($password == $hash)
+		if ($password == $hash && isset($_SESSION['module']) && $_SESSION['module'] == 'update2account')
 		{
 			$output = true;
 		}
