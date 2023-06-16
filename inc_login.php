@@ -225,7 +225,7 @@ if (isset($_SESSION['login']) && $_SESSION['login'])
 	$access_grouping = array(
 	'admin_editor' => array('admin', 'editor'),
 	'active' => array('active 1', 'active 2', 'active 3', 'active 4', 'active 5'),
-	'no access' => array('', 'inactive', 'blocked'),
+	'no_access' => array('', 'inactive', 'blocked'),
 	);
 	$access_grouping['staff'] = array_merge($access_grouping['admin_editor'], $access_grouping['active']);
 

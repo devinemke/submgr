@@ -2076,7 +2076,7 @@ else // if staff login
 
 	if ($module == 'contacts')
 	{
-		if ((in_array($_SESSION['contact']['access'], $access_grouping['no access'])) || (in_array($_SESSION['contact']['access'], $access_grouping['active']) && isset($_REQUEST['contact_id']) && $_REQUEST['contact_id'] != $_SESSION['contact']['contact_id']) || (in_array($_SESSION['contact']['access'], $access_grouping['active']) && $submodule == 'insert'))
+		if ((in_array($_SESSION['contact']['access'], $access_grouping['no_access'])) || (in_array($_SESSION['contact']['access'], $access_grouping['active']) && isset($_REQUEST['contact_id']) && $_REQUEST['contact_id'] != $_SESSION['contact']['contact_id']) || (in_array($_SESSION['contact']['access'], $access_grouping['active']) && $submodule == 'insert'))
 		{
 			echo '<p>You are not authorized to access this area.</p>';
 			exit_error();

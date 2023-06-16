@@ -345,6 +345,7 @@ if ($GLOBALS['db_connect'])
 		}
 		else
 		{
+			$GLOBALS['notice'] = '';
 			$GLOBALS['configuration_status'] = true;
 		}
 
