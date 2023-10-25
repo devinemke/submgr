@@ -1,4 +1,5 @@
-version 3.41 2023-08-30
+version 3.41 2023-10-25
+- removed underlined links
 - upgraded to PHPMailer 6.8.1 (2023-08-29)
 - fixed bug where password_wrapper() would validate hashes as passwords
 - tooltips now use maxWidth rather than width

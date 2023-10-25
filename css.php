@@ -30,6 +30,7 @@ body
 a
 {
 	color: ' . $config['color_link'] . ';
+	text-decoration: none;
 }
 
 a:hover
