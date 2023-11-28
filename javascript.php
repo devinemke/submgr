@@ -1608,6 +1608,7 @@ if ($continue)
 			event_listener("click", "submit_purge", function(event) { if (!confirm_prompt("purge", "submissions")) {event.preventDefault();} });
 			event_listener("click", "popup_version_sm", function(event) { lightbox("on","popup.php?page=changelog",1200,700,100,10); event.preventDefault(); });
 			event_listener("click", "popup_version_php", function(event) { lightbox("on","popup.php?page=phpinfo",1200,700,100,10); event.preventDefault(); });
+			event_listener("click", "popup_version_mysql", function(event) { lightbox("on","popup.php?page=mysqlinfo",1200,700,100,10); event.preventDefault(); });
 			';
 		}
 	}

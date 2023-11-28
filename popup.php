@@ -207,6 +207,24 @@ if ($page == 'phpinfo')
 	exit();
 }
 
+if ($page == 'mysqlinfo')
+{
+	if ($_SESSION['contact']['access'] != 'admin') {exit('unauthorized access');}
+	$title = 'mysqlinfo';
+	$copy = '<table class="table_list">';
+	$result = @mysqli_query($GLOBALS['db_connect'], 'SHOW VARIABLES');
+	while ($row = mysqli_fetch_assoc($result))
+	{
+		$copy .= '
+		<tr style="text-align: left;">
+		<td>' . $row['Variable_name'] . '</td>
+		<td>' . $row['Value'] . '</td>
+		</tr>
+		';
+	}
+	$copy .= '</table>';
+}
+
 if ($page == 'changelog')
 {
 	if ($_SESSION['contact']['access'] != 'admin') {exit('unauthorized access');}

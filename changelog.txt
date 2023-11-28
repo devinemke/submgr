@@ -1,4 +1,5 @@
-version 3.41 2023-11-27
+version 3.41 2023-11-28
+- added mysqlinfo to /maintenance/versions/
 - upgraded to PHPMailer 6.9.1 (2023-11-25)
 - removed underlined links
 - fixed bug where password_wrapper() would validate hashes as passwords

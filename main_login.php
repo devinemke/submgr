@@ -4884,7 +4884,7 @@ else // if staff login
 						<tr class="foreground"><td>Submission Manager (installed)</td><td><a href="#" id="popup_version_sm"><b>' . $version_local . '</b></a></td></tr>
 						<tr class="foreground"><td>Submission Manager (latest)</td><td><b>' . $version_remote_display . '</b></td></tr>
 						<tr class="foreground"><td>PHP</td><td><a href="#" id="popup_version_php"><b>' . PHP_VERSION . '</b></a></td></tr>
-						<tr class="foreground"><td>mySQL</td><td><b>' . $version_mysql . '</b></td></tr>
+						<tr class="foreground"><td>mySQL</td><td><a href="#" id="popup_version_mysql"><b>' . $version_mysql . '</b></a></td></tr>
 						</table>
 						';
 
