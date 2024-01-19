@@ -568,7 +568,7 @@ else // if staff login
 
 	if ($action_types) {$_SESSION['action_types'] = $action_types;}
 	$_REQUEST = cleanup($_REQUEST, 'strip_tags', 'stripslashes');
-	if ($module == 'submissions' || $submodule == 'insert_submission') {$enctype = ' enctype="multipart/form-data"';} else {$enctype = '';}
+	if ($module == 'submissions' || $submodule == 'insert_submission' || $submodule == 'test_upload') {$enctype = ' enctype="multipart/form-data"';} else {$enctype = '';}
 	echo '<form action="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '" method="post" name="form_' . $module . '" id="form_' . $module . '" autocomplete="off"' . $enctype . '>';
 
 	if ($module == 'submissions')
@@ -4251,6 +4251,7 @@ else // if staff login
 		'backup' => 'backup data',
 		'purge' => 'purge data',
 		'test_mail' => 'test mail',
+		'test_upload' => 'test upload',
 		'update_structure' => 'update data structure',
 		'versions' => 'versions'
 		);
@@ -4565,6 +4566,58 @@ else // if staff login
 							$mail->Body = $test_from;
 							if ($mail->Send()) {echo '<div class="notice">Message Sent</div>';} else {echo '<div class="notice">Mailer Error</div>' . $mail->ErrorInfo;}
 							echo '</div>';
+						}
+					}
+
+					if ($submodule == 'test_upload')
+					{
+						echo '
+						<p>This function will help diagnose file upload problems.</p>
+						<label for="file" id="label_file" class="">file:</label> <input type="file" id="file" name="file" style="margin-right: 10px;"> upload_path: <b>' . $upload_path_year . '</b><br>
+						<input type="submit" id="submit_test_upload" name="submit" value="test upload" class="form_button" style="width: 100px; margin: 10px 0px 0px 25px;">
+						';
+
+						if ($submit == 'test upload')
+						{
+							echo '<pre style="font-weight: bold;">';
+
+							print_r($_FILES);
+
+							$is_uploaded_file = is_uploaded_file($_FILES['file']['tmp_name']);
+							echo "\n" . 'is_uploaded_file: '; var_dump($is_uploaded_file);
+
+							$test_upload_file_path = $upload_path_year . $_FILES['file']['name'];
+
+							$file_exists = false;
+							if ($_FILES['file']['name'] && file_exists($test_upload_file_path)) {$file_exists = true;}
+
+							$extension = true;
+							if ($_FILES['file']['name'])
+							{
+								$pathinfo = pathinfo($_FILES['file']['name']);
+								if (!isset($pathinfo['extension']) || (isset($pathinfo['extension']) && $pathinfo['extension'] == '')) {$extension = false;}
+								if (isset($pathinfo['extension']) && !in_array(strtolower($pathinfo['extension']), $file_types)) {$extension = false;}
+							}
+
+							if ($file_exists || !$extension)
+							{
+								if ($file_exists) {echo "\n" . 'test file already exists: ' . $test_upload_file_path;}
+								if (!$extension) {echo "\n" . 'test file invalid extension: ' . $test_upload_file_path;}
+							}
+							else
+							{
+								$move_uploaded_file = move_uploaded_file($_FILES['file']['tmp_name'], $test_upload_file_path);
+								echo 'move_uploaded_file: '; var_dump($move_uploaded_file);
+								if ($_FILES['file']['name'] && file_exists($test_upload_file_path))
+								{
+									echo "\n" . 'test file: ' . $test_upload_file_path . ' | ' . filesize($test_upload_file_path) . ' bytes | ' . gmdate('Y-m-d H:i:s', filemtime($test_upload_file_path));
+									$unlink = unlink($test_upload_file_path);
+									if ($unlink) {echo ' | deleted';}
+								}
+
+							}
+
+							echo '</pre>';
 						}
 					}
 
