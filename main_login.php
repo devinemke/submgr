@@ -4437,7 +4437,7 @@ else // if staff login
 											$file = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=submissions&submission_id=' . $submission_id . '">' . $file . '</a>';
 										}
 
-										$extra .= $file . ' <span class="small" style="font-weight: bold;">[' . gmdate('Y-m-d h:i:s', $filemtime) . ']</span><br>';
+										$extra .= $file . ' <span class="small" style="font-weight: bold;">[' . timezone_adjust(gmdate('Y-m-d H:i:s', $filemtime)) . ']</span><br>';
 									}
 								}
 
@@ -4610,7 +4610,7 @@ else // if staff login
 								echo 'move_uploaded_file: '; var_dump($move_uploaded_file);
 								if ($_FILES['file']['name'] && file_exists($test_upload_file_path))
 								{
-									echo "\n" . 'test file: ' . $test_upload_file_path . ' | ' . filesize($test_upload_file_path) . ' bytes | ' . gmdate('Y-m-d H:i:s', filemtime($test_upload_file_path));
+									echo "\n" . 'test file: ' . $test_upload_file_path . ' | ' . filesize($test_upload_file_path) . ' bytes | ' . timezone_adjust(gmdate('Y-m-d H:i:s', filemtime($test_upload_file_path)));
 									$unlink = unlink($test_upload_file_path);
 									if ($unlink) {echo ' | deleted';}
 								}
