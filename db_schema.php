@@ -95,8 +95,8 @@ $schema = array(
 	'fields' => array(
 		'field' => array('type' => 'varchar(20)', 'extra' => 'NOT NULL DEFAULT \'\''),
 		'name' => array('type' => 'varchar(50)', 'extra' => 'DEFAULT NULL'),
-		'type' => array('type' => 'varchar(10)', 'extra' => 'DEFAULT NULL'),
-		'section' => array('type' => 'varchar(10)', 'extra' => 'DEFAULT NULL'),
+		'type' => array('type' => 'enum(\'text\',\'select\',\'password\',\'checkbox\',\'file\',\'textarea\')', 'extra' => 'DEFAULT NULL'),
+		'section' => array('type' => 'enum(\'contact\',\'submission\',\'payment\')', 'extra' => 'DEFAULT NULL'),
 		'value' => array('type' => 'varchar(50)', 'extra' => 'DEFAULT NULL'),
 		'maxlength' => array('type' => 'int(10) unsigned', 'extra' => 'DEFAULT NULL'),
 		'enabled' => array('type' => 'char(1)', 'extra' => 'DEFAULT NULL'),
