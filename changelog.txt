@@ -1,4 +1,5 @@
-version 3.41 2024-02-05
+version 3.41 2024-03-20
+- added conditional logic for $config['logo_path']
 - changed fields.type + fields.section from VARCHAR(10) to ENUM
 - added "test upload" submodule to maintenance
 - added mysqlinfo to /maintenance/versions/

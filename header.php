@@ -37,7 +37,19 @@ echo '
 			if ($config)
 			{
 				if ($config['test_mode']) {echo '<div class="small notice">[ TEST MODE ]</div>';}
-				if ($config['logo_path']) {$image_size = getimagesize($config['logo_path']); echo '<a href="' . $_SERVER['PHP_SELF'] . '?kill_session=1"><img src="' . $config['logo_path'] . '" alt="' . htmlspecialchars($config['company_name']) . ' logo" ' . $image_size[3] . '></a><br>';}
+				if ($config['logo_path'])
+				{
+					$logo = '';
+					if (filter_var($config['logo_path'], FILTER_VALIDATE_URL)) {$get_headers = @get_headers($config['logo_path']);}
+					if (isset($get_headers) && $get_headers && is_array($get_headers) && strpos($get_headers[0], '200') !== false) {$logo = 'url';}
+					if ($logo != 'url' && file_exists($config['logo_path'])) {$logo = 'local';}
+					if ($logo)
+					{
+						$image_size = @getimagesize($config['logo_path']);
+						if ($image_size && is_array($image_size)) {$image_size = $image_size[3];} else {$image_size = '';}
+						echo '<a href="' . $_SERVER['PHP_SELF'] . '?kill_session=1"><img src="' . $config['logo_path'] . '" alt="' . htmlspecialchars($config['company_name']) . ' logo" ' . $image_size . '></a><br>';
+					}
+				}
 				if ($config['company_name'] && $config['show_company_name']) {echo '<div style="font-size: ' . $font_size_plus10 . 'pt; font-weight: bold;"><a href="' . $_SERVER['PHP_SELF'] . '?kill_session=1">' . htmlspecialchars($config['company_name']) . '</a></div>';}
 			}
 
