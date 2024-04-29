@@ -1,4 +1,5 @@
 version 3.41 2024-04-29
+- fixed mysqldump bug: mySQL credentials can now include special characters
 - fixed installer bug: mySQL credentials can now include quotes
 - added conditional logic for $config['logo_path']
 - changed fields.type + fields.section from VARCHAR(10) to ENUM
