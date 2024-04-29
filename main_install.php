@@ -118,14 +118,12 @@ if ($step == 2)
 
 	if (!$errors)
 	{
-		$config_db_addslashes = array_map('addslashes', $config_db);
-		@db_connect($config_db_addslashes['host'], $config_db_addslashes['username'], $config_db_addslashes['password'], '', $config_db_addslashes['port']);
+		@db_connect($config_db['host'], $config_db['username'], $config_db['password'], '', $config_db['port']);
 
 		if ($GLOBALS['db_connect'])
 		{
 			check_version('mySQL');
 			$_SESSION['config_db'] = $config_db;
-			$_SESSION['config_db_addslashes'] = $config_db_addslashes;
 			$step = 2;
 		}
 		else
@@ -145,7 +143,6 @@ if ($step == 3)
 	$name = strip_tags($name);
 	$name = stripslashes($name);
 	$config_db['name'] = $name;
-	$_SESSION['config_db']['name'] = $name;
 
 	if ($name == '')
 	{
@@ -156,14 +153,12 @@ if ($step == 3)
 	if (!$errors)
 	{
 		$_SESSION['config_db']['name'] = $name;
-		$_SESSION['config_db_addslashes']['name'] = addslashes($name);
-
-		@db_connect($_SESSION['config_db_addslashes']['host'], $_SESSION['config_db_addslashes']['username'], $_SESSION['config_db_addslashes']['password'], $_SESSION['config_db_addslashes']['name'], $_SESSION['config_db_addslashes']['port']);
+		@db_connect($_SESSION['config_db']['host'], $_SESSION['config_db']['username'], $_SESSION['config_db']['password'], $_SESSION['config_db']['name'], $_SESSION['config_db']['port']);
 
 		if ($GLOBALS['db_connect'])
 		{
-			foreach ($_SESSION['config_db'] as $key => $value) {$config_db_keys[] = '[' . $key . ']';}
-			$config_db_string = str_replace($config_db_keys, $_SESSION['config_db_addslashes'], $config_db_string);
+			foreach ($_SESSION['config_db'] as $key => $value) {$config_db_keys[] = '[' . $key . ']'; $config_db_escaped[$key] = addcslashes($value, "'");}
+			$config_db_string = str_replace($config_db_keys, $config_db_escaped, $config_db_string);
 			$_SESSION['config_db_string'] = $config_db_string;
 			@file_put_contents('config_db.php', $config_db_string) or exit_error('cannot open config_db.php');
 			$step = 3;
@@ -180,10 +175,10 @@ if ($step == 3)
 
 if ($step == 4)
 {
-	@db_connect($_SESSION['config_db_addslashes']['host'], $_SESSION['config_db_addslashes']['username'], $_SESSION['config_db_addslashes']['password'], $_SESSION['config_db_addslashes']['name'], $_SESSION['config_db_addslashes']['port']) or exit_error('unable to connect to database');
+	@db_connect($_SESSION['config_db']['host'], $_SESSION['config_db']['username'], $_SESSION['config_db']['password'], $_SESSION['config_db']['name'], $_SESSION['config_db']['port']) or exit_error('unable to connect to database');
 	check_version('SubMgr');
 
-	$sql = 'ALTER DATABASE `' . $_SESSION['config_db_addslashes']['name'] . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
+	$sql = 'ALTER DATABASE `' . $_SESSION['config_db']['name'] . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
 	@mysqli_query($GLOBALS['db_connect'], $sql);
 
 	$sql = '';
@@ -242,7 +237,7 @@ if ($step == 4)
 
 if ($step == 5)
 {
-	@db_connect($_SESSION['config_db_addslashes']['host'], $_SESSION['config_db_addslashes']['username'], $_SESSION['config_db_addslashes']['password'], $_SESSION['config_db_addslashes']['name'], $_SESSION['config_db_addslashes']['port']) or exit_error('unable to connect to database');
+	@db_connect($_SESSION['config_db']['host'], $_SESSION['config_db']['username'], $_SESSION['config_db']['password'], $_SESSION['config_db']['name'], $_SESSION['config_db']['port']) or exit_error('unable to connect to database');
 
 	$admin = array();
 	foreach ($_POST['admin'] as $key => $value)
