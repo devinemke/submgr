@@ -4573,7 +4573,7 @@ else // if staff login
 					{
 						echo '
 						<p>This function will help diagnose file upload problems.</p>
-						<label for="file" id="label_file" class="">file:</label> <input type="file" id="file" name="file" style="margin-right: 10px;"> upload_path: <b>' . $upload_path_year . '</b><br>
+						<label for="file" id="label_file" class="">file:</label> <input type="file" id="file" name="file" style="margin-right: 10px;"> upload_path: <b>' . $config['upload_path'] . '</b><br>
 						<input type="submit" id="submit_test_upload" name="submit" value="test upload" class="form_button" style="width: 100px; margin: 10px 0px 0px 25px;">
 						';
 
@@ -4586,7 +4586,7 @@ else // if staff login
 							$is_uploaded_file = is_uploaded_file($_FILES['file']['tmp_name']);
 							echo "\n" . 'is_uploaded_file: '; var_dump($is_uploaded_file);
 
-							$test_upload_file_path = $upload_path_year . $_FILES['file']['name'];
+							$test_upload_file_path = $config['upload_path'] . $_FILES['file']['name'];
 
 							$file_exists = false;
 							if ($_FILES['file']['name'] && file_exists($test_upload_file_path)) {$file_exists = true;}
