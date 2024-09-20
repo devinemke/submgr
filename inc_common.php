@@ -2501,14 +2501,14 @@ function password_wrapper($function, $password, $hash = '')
 		{
 			$output = true;
 		}
-		elseif (strlen($hash) == 40)
+		elseif (strlen((string) $hash) == 40)
 		{
 			if ($hash == sha1($password)) {$output = true;} else {$output = false;}
 			if ($output) {$GLOBALS['password_needs_rehash'] = true;}
 		}
 		else
 		{
-			$output = password_verify($password, $hash);
+			$output = password_verify($password, (string) $hash);
 			if ($output && password_needs_rehash($hash, PASSWORD_DEFAULT)) {$GLOBALS['password_needs_rehash'] = true;}
 		}
 	}

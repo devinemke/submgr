@@ -675,6 +675,7 @@ if ($continue)
 					if (submit_clicked == "insert sample data") {disable_submit("submit_insert_sample_data");}
 					if (submit_clicked == "delete sample data") {disable_submit("submit_delete_sample_data");}
 					if (submit_clicked == "purge") {disable_submit("submit_purge");}
+					if (submit_clicked == "purge hashes") {disable_submit("submit_purge_hashes");}
 					if (submit_clicked == "test mail") {disable_submit("submit_test_mail");}
 					if (submit_clicked == "test upload") {disable_submit("submit_test_upload");}
 					if (submit_clicked == "update data structure") {disable_submit("submit_update_data_structure");}
@@ -1607,6 +1608,7 @@ if ($continue)
 			echo '
 			event_listener("click", "submit_delete_sample_data", function(event) { if (!confirm_prompt("delete", "sample data")) {event.preventDefault();} });
 			event_listener("click", "submit_purge", function(event) { if (!confirm_prompt("purge", "submissions")) {event.preventDefault();} });
+			event_listener("click", "submit_purge_hashes", function(event) { if (!confirm_prompt("purge", "password hashes")) {event.preventDefault();} });
 			event_listener("click", "popup_version_sm", function(event) { lightbox("on","popup.php?page=changelog",1200,700,100,10); event.preventDefault(); });
 			event_listener("click", "popup_version_php", function(event) { lightbox("on","popup.php?page=phpinfo",1200,700,100,10); event.preventDefault(); });
 			event_listener("click", "popup_version_mysql", function(event) { lightbox("on","popup.php?page=mysqlinfo",1200,700,100,10); event.preventDefault(); });

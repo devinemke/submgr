@@ -4473,6 +4473,26 @@ else // if staff login
 						if ($deletes['truncate_resets']) {echo '<div class="notice" style="font-style: italic;">TRUNCATE resets</div>';}
 					}
 
+					if ($submodule == 'purge')
+					{
+						echo'
+						<p style="margin-top: 40px;">
+						This function will purge legacy password hashes.<br>
+						Submission Manager < version 3.33 (running on PHP < version 5.5) stored passwords using the legacy SHA1 hashing algorithm.<br>
+						This function will purge all SHA1 password hashes and force those users to reset their passwords.
+						</p>
+						<p class="notice"><i>WARNING:</i> This will permanently delete data from your database! Please backup and archive your database before proceeding.</p>
+						<input type="submit" id="submit_purge_hashes" name="submit" value="purge hashes" class="form_button" style="width: 100px;">
+						';
+
+						if ($submit == 'purge hashes')
+						{
+							$sql = 'UPDATE contacts SET password = NULL WHERE password IS NOT NULL AND CHAR_LENGTH(password) <= 40';
+							$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: PURGE password hash');
+							echo '<p class="notice">Legacy password hashes purged: ' . mysqli_affected_rows($GLOBALS['db_connect']) . '</p>';
+						}
+					}
+
 					if ($submodule == 'test_mail')
 					{
 						echo '
@@ -4848,14 +4868,14 @@ else // if staff login
 								// @mysqli_query($GLOBALS['db_connect'], 'UPDATE contacts SET password = SHA1(password) WHERE password IS NOT NULL AND CHAR_LENGTH(password) = 6') or exit_error('query failure: UPDATE password hash');
 								// $updates[] = 'passwords hashed';
 
-								$sql = 'SELECT contact_id, password FROM contacts WHERE password IS NOT NULL AND CHAR_LENGTH(password) <= 6';
+								$sql = 'SELECT contact_id, password FROM contacts WHERE password IS NOT NULL AND CHAR_LENGTH(password) < 40';
 								$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: SELECT password hash');
 								if (mysqli_num_rows($result))
 								{
 									while ($row = mysqli_fetch_assoc($result))
 									{
 										$password = password_wrapper('hash', $row['password']);
-										$sql = "UPDATE contacts SET password = '$password' WHERE contact_id = " . $row['contact_id'];
+										$sql = "UPDATE contacts SET password = '$password' WHERE contact_id = " . mysqli_real_escape_string($GLOBALS['db_connect'], $row['contact_id']);
 										@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: UPDATE password hash');
 									}
 
