@@ -1,5 +1,5 @@
-version 3.41 2024-09-07
-- changed $upload_path_year to $config['upload_path'] in /maintenance/test upload/
+version 3.41 2024-09-20
+- changed hash_passwords routine in /maintenance/update data structure/ to use password_wrapper() rather than SHA1
 - fixed mysqldump bug: mySQL credentials can now include special characters
 - fixed installer bug: mySQL credentials can now include quotes
 - added conditional logic for $config['logo_path']

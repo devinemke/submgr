@@ -4845,8 +4845,22 @@ else // if staff login
 							// hash passwords
 							if ($hash_passwords)
 							{
-								@mysqli_query($GLOBALS['db_connect'], 'UPDATE contacts SET password = SHA1(password) WHERE password IS NOT NULL AND CHAR_LENGTH(password) = 6') or exit_error('query failure: UPDATE password hash');
-								$updates[] = 'passwords hashed';
+								// @mysqli_query($GLOBALS['db_connect'], 'UPDATE contacts SET password = SHA1(password) WHERE password IS NOT NULL AND CHAR_LENGTH(password) = 6') or exit_error('query failure: UPDATE password hash');
+								// $updates[] = 'passwords hashed';
+
+								$sql = 'SELECT contact_id, password FROM contacts WHERE password IS NOT NULL AND CHAR_LENGTH(password) <= 6';
+								$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: SELECT password hash');
+								if (mysqli_num_rows($result))
+								{
+									while ($row = mysqli_fetch_assoc($result))
+									{
+										$password = password_wrapper('hash', $row['password']);
+										$sql = "UPDATE contacts SET password = '$password' WHERE contact_id = " . $row['contact_id'];
+										@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: UPDATE password hash');
+									}
+
+									$updates[] = 'passwords hashed';
+								}
 							}
 
 							// add/delete config rows
