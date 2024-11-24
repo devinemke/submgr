@@ -1,5 +1,5 @@
-version 3.41 2024-10-09
-- upgraded to PHPMailer 6.9.2 (2024-10-09)
+version 3.41 2024-11-24
+- upgraded to PHPMailer 6.9.3 (2024-11-22)
 - added "purge legacy password hashes" to /maintenance/purge/
 - changed hash_passwords routine in /maintenance/update data structure/ to use password_wrapper() rather than SHA1
 - fixed mysqldump bug: mySQL credentials can now include special characters
