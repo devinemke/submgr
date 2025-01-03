@@ -1,6 +1,6 @@
 <?php
 if (count(get_included_files()) == 1) {header('location: http://' . $_SERVER['HTTP_HOST']); exit();}
-if (INSTALLED) {exit('app already installed');}
+if (INSTALLED) {exit_error('app already installed');}
 if (isset($_POST['step'])) {$step = $_POST['step'];} else {$step = 1;}
 
 $copy = array(

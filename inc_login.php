@@ -77,7 +77,8 @@ if (isset($_GET['token']) && $_GET['token'])
 		else
 		{
 			$result_contact = @mysqli_query($GLOBALS['db_connect'], "SELECT * FROM contacts WHERE contact_id = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $row['contact_id']) . "'") or exit_error('query failure: SELECT FROM contacts');
-			$_SESSION['contact_reset'] = mysqli_fetch_assoc($result_contact);
+			$contact_reset = mysqli_fetch_assoc($result_contact);
+			if ($config['system_online'] == 'admin only' && $contact_reset['access'] != 'admin') {unset($contact_reset);} else {$_SESSION['contact_reset'] = $contact_reset;}
 			$_SESSION['reset'] = $row;
 		}
 	}
@@ -1391,7 +1392,7 @@ if (isset($_SESSION['contact']))
 {
 	if ($config['system_online'] == 'admin only' && $_SESSION['contact']['access'] != 'admin')
 	{
-		$_SESSION = array();
+		$module = 'logout';
 	}
 	else
 	{
@@ -1411,11 +1412,11 @@ $display_login = false;
 
 if ($module == 'logout')
 {
+	if ($config['system_online'] == 'admin only' && $_SESSION['contact']['access'] != 'admin') {$output = '';} else {$output = '<p class="header">You have successfully logged out. Thank you for using the ' . htmlspecialchars((string) $config['company_name']) . ' Submission Manager.</p>';}
 	foreach ($_SESSION['contact'] as $key => $value) {unset($$key);} // so forms are blank
 	if (isset($_SESSION['contact_display']['email'])) {$_REQUEST['email'] = $_SESSION['contact_display']['email'];} // to pre-populate form_login() but not form_main()
 	kill_session('regenerate'); // session needed for form_hash()
 	$page = 'home';
 	$display_login = true;
-	$output = '<p class="header">You have successfully logged out. Thank you for using the ' . htmlspecialchars((string) $config['company_name']) . ' Submission Manager.</p>';
 }
 ?>

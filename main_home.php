@@ -2,10 +2,13 @@
 if (count(get_included_files()) == 1) {header('location: http://' . $_SERVER['HTTP_HOST']); exit();}
 $form_type = 'submit';
 
-if ($config['system_online'] == 'no submissions')
+if ($config['system_online'] == 'no submissions' || $config['system_online'] == 'admin only')
 {
 	if ($config['offline_text']) {echo '<p>' . replace_placeholders($config['offline_text']) . '</p>';}
-	echo '<div class="small" style="display: inline-block; padding: 10px; background-color: ' . $config['color_foreground'] . ';">' . $no_submissions_text . '</div>';
+	$system_online = str_replace(' ', '_', $config['system_online']);
+	$offline_text = $system_online . '_text';
+	$offline_text = $$offline_text;
+	echo '<div class="small" style="display: inline-block; padding: 10px; background-color: ' . $config['color_foreground'] . ';">' . $offline_text . '</div>';
 	exit_error();
 }
 

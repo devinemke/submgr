@@ -18,20 +18,6 @@ if (INSTALLED)
 		echo $copy . '<br>';
 	}
 
-	if ($config['system_online'] == 'admin only')
-	{
-		if (isset($_SESSION['contact']['access']) && $_SESSION['contact']['access'] == 'admin')
-		{
-			echo '';
-		}
-		else
-		{
-			if ($config['offline_text']) {echo '<p>' . replace_placeholders($config['offline_text']) . '</p>';}
-			echo '<div class="small" style="display: inline-block; padding: 10px; background-color: ' . $config['color_foreground'] . ';">' . $admin_only_text . '</div>';
-			exit_error();
-		}
-	}
-
 	if (isset($_GET['result_code']))
 	{
 		echo '<div class="header">';

@@ -54,7 +54,7 @@ if ($submit == 'reset password')
 	{
 		$notice_generic = 'Password reset link will be sent to <b>' . htmlspecialchars($reset_email) . '</b> if it exists.<br>The message containing your password reset link will come from <b>' . htmlspecialchars($config['general_dnr_email']) . '</b>.<br>Please make sure to check your bulk mail folders in case this message is marked as spam.';
 
-		$result = @mysqli_query($GLOBALS['db_connect'], "SELECT contact_id, first_name, last_name, email FROM contacts WHERE email = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $reset_email) . "'") or exit_error('query failure: SELECT FROM contacts');
+		$result = @mysqli_query($GLOBALS['db_connect'], "SELECT contact_id, first_name, last_name, email, access FROM contacts WHERE email = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $reset_email) . "'") or exit_error('query failure: SELECT FROM contacts');
 		if (!mysqli_num_rows($result))
 		{
 			$notice = $notice_generic;
@@ -79,18 +79,25 @@ if ($submit == 'reset password')
 			}
 			else
 			{
-				$token = $GLOBALS['nonce'];
-				send_mail('contact', 'reset');
+				if ($config['system_online'] == 'admin only' && $row['access'] != 'admin')
+				{
+					unset($row);
+				}
+				else
+				{
+					$token = $GLOBALS['nonce'];
+					send_mail('contact', 'reset');
 
-				$sql_array = array(
-				'date_time' => $gm_date_time,
-				'contact_id' => $row['contact_id'],
-				'token' => $token
-				);
+					$sql_array = array(
+					'date_time' => $gm_date_time,
+					'contact_id' => $row['contact_id'],
+					'token' => $token
+					);
 
-				foreach ($sql_array as $key => $value) {$sql_array[$key] = "$key = '$value'";}
-				$sql = 'INSERT INTO resets SET ' . implode(',', $sql_array);
-				@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('INSERT reset');
+					foreach ($sql_array as $key => $value) {$sql_array[$key] = "$key = '$value'";}
+					$sql = 'INSERT INTO resets SET ' . implode(',', $sql_array);
+					@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('INSERT reset');
+				}
 
 				$notice = $notice_generic;
 			}
