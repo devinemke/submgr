@@ -360,7 +360,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 		if ($config['system_online'] == 'no submissions')
 		{
 			if ($config['offline_text']) {echo '<p>' . replace_placeholders($config['offline_text']) . '</p>';}
-			echo '<div class="small" style="padding: 10px; width: 400px; background-color: ' . $config['color_foreground'] . ';">' . $no_submissions_text . '</div>' . $back_to_account;
+			echo '<div class="small" style="padding: 10px; width: 400px; background-color: ' . $config['color_foreground'] . ';">' . $no_text['no_submissions'] . '</div>' . $back_to_account;
 			exit_error();
 		}
 

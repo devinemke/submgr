@@ -39,14 +39,17 @@ $continue = true;
 $form_check = true;
 $errors = array();
 $password_length_min = 8; $password_length_max = 72; // needed here globally for install, will be overwritten by $fields
-$no_submissions_text = 'Submission Manager is currently in <b>&ldquo;no submissions&rdquo;</b> mode.<br>Submitters and staff may log into their accounts however no new submissions are being accepted at this time.';
-$admin_only_text = 'Submission Manager is currently in <b>admin only</b> mode.<br>Only the system administrators have access at this time.';
-$no_cookies_text = '<b>Submission Manager</b> requires that cookies be enabled in your web browser. Please enable cookies and try again. You may also need to empty your browser cache and restart your browser.';
 
 if (!$session_start) {$display_login = false; exit_error('session_start failed');}
 if (file_exists('config_defaults.php')) {include('config_defaults.php'); $config = $config_defaults;} else {$display_login = false; exit_error('missing config_defaults.php');}
 if (file_exists('config_db.php')) {include('config_db.php');} elseif (file_exists('config_db_default.php')) {include('config_db_default.php');} else {$display_login = false; exit_error('missing config_db.php');}
 if (file_exists('db_schema.php')) {include('db_schema.php');} else {$display_login = false; exit_error('missing db_schema.php');}
+
+$no_text = array(
+'no_submissions' => 'Submission Manager is currently in <b>&ldquo;no submissions&rdquo;</b> mode.<br>Submitters and staff may log into their accounts however no new submissions are being accepted at this time.',
+'admin_only' => 'Submission Manager is currently in <b>admin only</b> mode.<br>Only the system administrators have access at this time.',
+'no_cookies' => '<b>Submission Manager</b> requires that cookies be enabled in your web browser. Please enable cookies and try again.<br>You may also need to empty your browser cache and restart your browser.'
+);
 
 $modules = array(
 'account' => 'account summary',

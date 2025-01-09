@@ -6,9 +6,7 @@ if ($config['system_online'] == 'no submissions' || $config['system_online'] == 
 {
 	if ($config['offline_text']) {echo '<p>' . replace_placeholders($config['offline_text']) . '</p>';}
 	$system_online = str_replace(' ', '_', $config['system_online']);
-	$offline_text = $system_online . '_text';
-	$offline_text = $$offline_text;
-	echo '<div class="small" style="display: inline-block; padding: 10px; background-color: ' . $config['color_foreground'] . ';">' . $offline_text . '</div>';
+	echo '<div class="small" style="display: inline-block; padding: 10px; background-color: ' . $config['color_foreground'] . ';">' . $no_text[$system_online] . '</div>';
 	exit_error();
 }
 
@@ -26,7 +24,7 @@ else
 
 if ($submit == 'submit')
 {
-	if (!isset($_COOKIE['submgr_cookie_test'])) {$error_output = $no_cookies_text; exit_error();}
+	if (!isset($_COOKIE['submgr_cookie_test'])) {$error_output = $no_text['no_cookies']; exit_error();}
 	$_SESSION['post'] = cleanup($_POST, 'strip_tags', 'stripslashes');
 	$_SESSION['post_display'] = array_map('htmlspecialchars', $_SESSION['post']);
 	if (isset($_FILES['file']) && $_FILES['file']['name']) {upload();} // run upload() if first time submit or re-submit with new file

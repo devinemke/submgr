@@ -3,7 +3,7 @@ if (count(get_included_files()) == 1) {header('location: http://' . $_SERVER['HT
 
 if (!isset($_COOKIE['submgr_cookie_test']) && !isset($_GET['token']))
 {
-	$error_output = $no_cookies_text;
+	$error_output = $no_text['no_cookies'];
 	exit_error();
 }
 
@@ -60,7 +60,6 @@ function sync_last_action($submission_id)
 if (isset($_GET['token']) && $_GET['token'])
 {
 	$token = trim($_GET['token']);
-
 	if (strlen($token) != 40 || !ctype_alnum($token)) {kill_session('regenerate'); exit_error('invalid reset token');} // session needed for form_hash()
 
 	$sql = "SELECT * FROM resets WHERE token = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $token) . "' ORDER BY date_time DESC LIMIT 1";
@@ -78,8 +77,7 @@ if (isset($_GET['token']) && $_GET['token'])
 		{
 			$result_contact = @mysqli_query($GLOBALS['db_connect'], "SELECT * FROM contacts WHERE contact_id = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $row['contact_id']) . "'") or exit_error('query failure: SELECT FROM contacts');
 			$contact_reset = mysqli_fetch_assoc($result_contact);
-			if ($config['system_online'] == 'admin only' && $contact_reset['access'] != 'admin') {unset($contact_reset);} else {$_SESSION['contact_reset'] = $contact_reset;}
-			$_SESSION['reset'] = $row;
+			if ($config['system_online'] == 'admin only' && $contact_reset['access'] != 'admin') {unset($contact_reset);} else {$_SESSION['contact_reset'] = $contact_reset; $_SESSION['reset'] = $row;}
 		}
 	}
 	else
