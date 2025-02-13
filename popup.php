@@ -53,7 +53,7 @@ if ($page == 'update')
 		$_SESSION['id_name'] = 'submission_id';
 		$_SESSION['id_value'] = $submission_id;
 		$row = $_SESSION['submission'];
-		if (!$config['show_date_paid']) {unset($row['date_paid']);}
+		if ($config['show_date_paid']) {$row['date_paid'] = (string) $row['date_paid'];} else {unset($row['date_paid']);} // string casting needed for isset() to work on NULLs
 	}
 
 	if (isset($action_id))
@@ -138,6 +138,7 @@ if ($page == 'update')
 			if ($key == 'writer') {$extra .= ' maxlength="' . $fields['writer']['maxlength'] . '"';}
 			if ($key == 'title') {$extra .= ' maxlength="' . $fields['title']['maxlength'] . '"';}
 			if ($key == 'ext') {$extra .= ' maxlength="10"';}
+			if ($key == 'date_paid') {$extra .= ' readonly';}
 			if ($_SESSION['table'] == 'submissions' && $key == 'writer' && ($_SESSION['groups'][$_SESSION['contact_access']]['blind'] || (isset($_SESSION['genres']['all'][$row['genre_id']]) && $_SESSION['genres']['all'][$row['genre_id']]['blind'])))
 			{
 				$value = 'blind groups/genres cannot see/edit writer';
@@ -180,7 +181,7 @@ if ($page == 'update')
 		if (!in_array($key, $fixed_fields) && !in_array($key, $login_required_fields[$_SESSION['table']]))
 		{
 			$copy .= ' <span class="small" style="font-weight: bold; vertical-align: top;"><a href="#" id="nullify_' . $key . '" class="nullify">NULL</a>';
-			if ($key == 'date_paid') {$copy .= ' | <a href="#" id="date_paid">today</a>';}
+			if ($key == 'date_paid') {$copy .= ' | <a href="#" id="date_paid_today">today</a>';}
 			$copy .= '</span>';
 		}
 		$copy .= '</td></tr>';
@@ -308,6 +309,17 @@ if ($page == 'update')
 				document.getElementById("nullify_" + key).addEventListener("click", function(event) { nullify(key, type); event.preventDefault(); });
 			})();
 		}
+		';
+
+		if (isset($row['date_paid']))
+		{
+			echo '
+			const picker_date_paid = new Litepicker({element: document.getElementById("row_date_paid")});
+			document.getElementById("date_paid_today").addEventListener("click", function() { picker_date_paid.setDate(new Date()); });
+			';
+		}
+
+		echo '
 	});
 
 	function form_update_check()
@@ -378,14 +390,6 @@ if ($page == 'update')
 	event_listener("click", "submit_cancel", function(event) { window.parent.document.getElementById("lightbox_off").click(); });
 	';
 
-	if (isset($submission_id))
-	{
-		echo '
-		function today() {document.getElementById("row_date_paid").value = "' . $local_date . '";}
-		event_listener("click", "date_paid", function(event) { today(); event.preventDefault(); });
-		';
-	}
-
 	if (isset($action_id))
 	{
 		echo '
@@ -402,6 +406,11 @@ if ($page == 'update')
 	echo '
 	</script>
 	';
+
+	if (isset($row['date_paid']))
+	{
+		echo '<script src="litepicker.js"></script>';
+	}
 }
 
 echo '
