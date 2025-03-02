@@ -300,14 +300,11 @@ if ($page == 'update')
 	document.addEventListener("DOMContentLoaded", function()
 	{
 		var nullifies = document.getElementsByClassName("nullify");
-		for (i = 0; i < nullifies.length; i++)
+		for (let i = 0; i < nullifies.length; i++)
 		{
-			(function()
-			{
-				var key = nullifies[i].id.replace("nullify_","");
-				var type = document.getElementById("row_" + key).type;
-				document.getElementById("nullify_" + key).addEventListener("click", function(event) { nullify(key, type); event.preventDefault(); });
-			})();
+			let key = nullifies[i].id.replace("nullify_","");
+			let type = document.getElementById("row_" + key).type;
+			document.getElementById("nullify_" + key).addEventListener("click", function(event) { nullify(key, type); event.preventDefault(); });
 		}
 		';
 

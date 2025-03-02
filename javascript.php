@@ -24,13 +24,10 @@ document.addEventListener("DOMContentLoaded", function()
 	}
 
 	var form_buttons = document.getElementsByClassName("form_button");
-	for (i = 0; i < form_buttons.length; i++)
+	for (let i = 0; i < form_buttons.length; i++)
 	{
-		(function()
-		{
-			var button_value = form_buttons[i].value;
-			form_buttons[i].addEventListener("click", function(event) { submit_clicked = button_value; });
-		})();
+		let button_value = form_buttons[i].value;
+		form_buttons[i].addEventListener("click", function(event) { submit_clicked = button_value; });
 	}
 });
 
@@ -805,13 +802,10 @@ if ($continue)
 			document.addEventListener("DOMContentLoaded", function()
 			{
 				var tag_alls = document.getElementsByClassName("tag_all");
-				for (i = 0; i < tag_alls.length; i++)
+				for (let i = 0; i < tag_alls.length; i++)
 				{
-					(function()
-					{
-						var action = tag_alls[i].href.split("#").pop();
-						tag_alls[i].addEventListener("click", function(event) { tag_all(action); event.preventDefault(); });
-					})();
+					let action = tag_alls[i].href.split("#").pop();
+					tag_alls[i].addEventListener("click", function(event) { tag_all(action); event.preventDefault(); });
 				}
 
 				if (tag_alls.length)
@@ -1562,42 +1556,30 @@ if ($continue)
 			document.addEventListener("DOMContentLoaded", function()
 			{
 				var file_types = document.getElementsByClassName("file_type");
-				for (i = 0; i < file_types.length; i++)
+				for (let i = 0; i < file_types.length; i++)
 				{
-					(function()
-					{
-						var ext = file_types[i].id.split("_").pop();
-						file_types[i].addEventListener("click", function(event) { if (!confirm_prompt("delete", "file type", ext)) {event.preventDefault();} });
-					})();
+					let ext = file_types[i].id.split("_").pop();
+					file_types[i].addEventListener("click", function(event) { if (!confirm_prompt("delete", "file type", ext)) {event.preventDefault();} });
 				}
 
 				var genres = document.getElementsByClassName("genre");
-				for (i = 0; i < genres.length; i++)
+				for (let i = 0; i < genres.length; i++)
 				{
-					(function()
-					{
-						var genre_id = genres[i].id.split("_").pop();
-						genres[i].addEventListener("click", function(event) { if (!confirm_prompt("delete", "genre", genre_id)) {event.preventDefault();} });
-					})();
+					let genre_id = genres[i].id.split("_").pop();
+					genres[i].addEventListener("click", function(event) { if (!confirm_prompt("delete", "genre", genre_id)) {event.preventDefault();} });
 				}
 
 				var payment_vars = document.getElementsByClassName("payment_var");
-				for (i = 0; i < payment_vars.length; i++)
+				for (let i = 0; i < payment_vars.length; i++)
 				{
-					(function()
-					{
-						var payment_var_id = payment_vars[i].id.split("_").pop();
-						payment_vars[i].addEventListener("click", function(event) { if (!confirm_prompt("delete", "payment variable", payment_var_id)) {event.preventDefault();} });
-					})();
+					let payment_var_id = payment_vars[i].id.split("_").pop();
+					payment_vars[i].addEventListener("click", function(event) { if (!confirm_prompt("delete", "payment variable", payment_var_id)) {event.preventDefault();} });
 				}
 
 				var payment_vars_presets = document.getElementsByClassName("payment_vars_preset");
-				for (i = 0; i < payment_vars_presets.length; i++)
+				for (let i = 0; i < payment_vars_presets.length; i++)
 				{
-					(function()
-					{
-						payment_vars_presets[i].addEventListener("click", function(event) { if (!confirm_prompt("overwrite", "payment variable presets")) {event.preventDefault();} });
-					})();
+					payment_vars_presets[i].addEventListener("click", function(event) { if (!confirm_prompt("overwrite", "payment variable presets")) {event.preventDefault();} });
 				}
 			});
 			';

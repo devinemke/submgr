@@ -5017,39 +5017,36 @@ if ($GLOBALS['js_object'])
 		echo '
 		for (var key in submissions)
 		{
-			(function()
+			let submission_id = key;
+
+			if (submissions[submission_id]["file"])
 			{
-				var submission_id = key;
+				let file = document.getElementById("file_" + submission_id);
+				file.addEventListener("mouseover", function(event) { tooltip_show("file missing!", file, event, ""); });
+				file.addEventListener("mouseout", function(event) { tooltip_hide(); });
+			}
 
-				if (submissions[submission_id]["file"])
-				{
-					var file = document.getElementById("file_" + submission_id);
-					file.addEventListener("mouseover", function(event) { tooltip_show("file missing!", file, event, ""); });
-					file.addEventListener("mouseout", function(event) { tooltip_hide(); });
-				}
+			if (submissions[submission_id]["comments"])
+			{
+				let comments = document.getElementById("comments_" + submission_id);
+				comments.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["comments"], comments, event, 400); });
+				comments.addEventListener("mouseout", function(event) { tooltip_hide(); });
+				comments.addEventListener("click", function(event) { lightbox("on","popup.php?page=view&field=comments_submitter&submission_id=" + submission_id,500,400,400,100); event.preventDefault(); });
+			}
 
-				if (submissions[submission_id]["comments"])
-				{
-					var comments = document.getElementById("comments_" + submission_id);
-					comments.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["comments"], comments, event, 400); });
-					comments.addEventListener("mouseout", function(event) { tooltip_hide(); });
-					comments.addEventListener("click", function(event) { lightbox("on","popup.php?page=view&field=comments_submitter&submission_id=" + submission_id,500,400,400,100); event.preventDefault(); });
-				}
+			if (submissions[submission_id]["last_action_message"])
+			{
+				let last_action_message = document.getElementById("last_action_message_" + submission_id);
+				last_action_message.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["last_action_message"], last_action_message, event, 400); });
+				last_action_message.addEventListener("mouseout", function(event) { tooltip_hide(); });
+				last_action_message.addEventListener("click", function(event) { lightbox("on","popup.php?page=view&field=comments_staff&submission_id=" + submission_id,500,400,400,100); event.preventDefault(); });
+			}
 
-				if (submissions[submission_id]["last_action_message"])
-				{
-					var last_action_message = document.getElementById("last_action_message_" + submission_id);
-					last_action_message.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["last_action_message"], last_action_message, event, 400); });
-					last_action_message.addEventListener("mouseout", function(event) { tooltip_hide(); });
-					last_action_message.addEventListener("click", function(event) { lightbox("on","popup.php?page=view&field=comments_staff&submission_id=" + submission_id,500,400,400,100); event.preventDefault(); });
-				}
-
-				if (submissions[submission_id]["withdraw"])
-				{
-					var withdraw = document.getElementById("withdraw_" + submission_id);
-					withdraw.addEventListener("click", function(event) { if (!confirm_prompt("withdraw", "submission", submission_id)) {event.preventDefault();} });
-				}
-			})();
+			if (submissions[submission_id]["withdraw"])
+			{
+				let withdraw = document.getElementById("withdraw_" + submission_id);
+				withdraw.addEventListener("click", function(event) { if (!confirm_prompt("withdraw", "submission", submission_id)) {event.preventDefault();} });
+			}
 		}
 		';
 	}
@@ -5059,106 +5056,100 @@ if ($GLOBALS['js_object'])
 		echo '
 		for (var key in submissions)
 		{
-			(function()
+			let submission_id = key;
+
+			if (submissions[submission_id]["writer"])
 			{
-				var submission_id = key;
+				let writer = document.getElementById("writer_" + submission_id);
+				writer.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["writer"], writer, event, ""); });
+				writer.addEventListener("mouseout", function(event) { tooltip_hide(); });
+			}
 
-				if (submissions[submission_id]["writer"])
-				{
-					var writer = document.getElementById("writer_" + submission_id);
-					writer.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["writer"], writer, event, ""); });
-					writer.addEventListener("mouseout", function(event) { tooltip_hide(); });
-				}
+			if (submissions[submission_id]["file"])
+			{
+				let file = document.getElementById("file_" + submission_id);
+				file.addEventListener("mouseover", function(event) { tooltip_show("file missing!", file, event, ""); });
+				file.addEventListener("mouseout", function(event) { tooltip_hide(); });
+			}
 
-				if (submissions[submission_id]["file"])
-				{
-					var file = document.getElementById("file_" + submission_id);
-					file.addEventListener("mouseover", function(event) { tooltip_show("file missing!", file, event, ""); });
-					file.addEventListener("mouseout", function(event) { tooltip_hide(); });
-				}
+			if (submissions[submission_id]["comments"])
+			{
+				let comments = document.getElementById("comments_" + submission_id);
+				comments.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["comments"], comments, event, 400); });
+				comments.addEventListener("mouseout", function(event) { tooltip_hide(); });
+				comments.addEventListener("click", function(event) { lightbox("on","popup.php?page=view&table=submissions&id_name=submission_id&id_value=" + submission_id + "&field=comments",500,400,400,100); event.preventDefault(); });
+			}
 
-				if (submissions[submission_id]["comments"])
-				{
-					var comments = document.getElementById("comments_" + submission_id);
-					comments.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["comments"], comments, event, 400); });
-					comments.addEventListener("mouseout", function(event) { tooltip_hide(); });
-					comments.addEventListener("click", function(event) { lightbox("on","popup.php?page=view&table=submissions&id_name=submission_id&id_value=" + submission_id + "&field=comments",500,400,400,100); event.preventDefault(); });
-				}
+			if (submissions[submission_id]["notes"])
+			{
+				let notes = document.getElementById("notes_" + submission_id);
+				notes.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["notes"], notes, event, 400); });
+				notes.addEventListener("mouseout", function(event) { tooltip_hide(); });
+				notes.addEventListener("click", function(event) { lightbox("on","popup.php?page=view&table=submissions&id_name=submission_id&id_value=" + submission_id + "&field=notes",500,400,400,100); event.preventDefault(); });
+			}
 
-				if (submissions[submission_id]["notes"])
-				{
-					var notes = document.getElementById("notes_" + submission_id);
-					notes.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["notes"], notes, event, 400); });
-					notes.addEventListener("mouseout", function(event) { tooltip_hide(); });
-					notes.addEventListener("click", function(event) { lightbox("on","popup.php?page=view&table=submissions&id_name=submission_id&id_value=" + submission_id + "&field=notes",500,400,400,100); event.preventDefault(); });
-				}
+			if (submissions[submission_id]["action_count"])
+			{
+				let action_count = document.getElementById("action_count_" + submission_id);
+				action_count.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["action_count"], action_count, event, ""); });
+				action_count.addEventListener("mouseout", function(event) { tooltip_hide(); });
+			}
 
-				if (submissions[submission_id]["action_count"])
-				{
-					var action_count = document.getElementById("action_count_" + submission_id);
-					action_count.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["action_count"], action_count, event, ""); });
-					action_count.addEventListener("mouseout", function(event) { tooltip_hide(); });
-				}
+			if (submissions[submission_id]["tag"])
+			{
+				let check = document.getElementById("check_" + submissions[submission_id]["tag"]);
+				check.addEventListener("click", function(event) { clickage(event); });
+				check.addEventListener("click", function(event) { change_row_color(submissions[submission_id]["tag"]); });
+				check.addEventListener("click", function(event) { tag_checked_count(); });
+			}
+			';
 
-				if (submissions[submission_id]["tag"])
-				{
-					var check = document.getElementById("check_" + submissions[submission_id]["tag"]);
-					check.addEventListener("click", function(event) { clickage(event); });
-					check.addEventListener("click", function(event) { change_row_color(submissions[submission_id]["tag"]); });
-					check.addEventListener("click", function(event) { tag_checked_count(); });
-				}
-				';
-
-				if (in_array($_SESSION['contact']['access'], $access_grouping['admin_editor']) && $single_display)
-				{
-					echo '
-					document.getElementById("update_submission_" + submission_id).addEventListener("click", function(event) { lightbox("on","popup.php?page=update&submission_id=" + submission_id,0,0,300,100); event.preventDefault(); });
-					document.getElementById("delete_submission_" + submission_id).addEventListener("click", function(event) { if (!confirm_prompt("delete", "submission", submission_id)) {event.preventDefault();} });
-					';
-				}
-
+			if (in_array($_SESSION['contact']['access'], $access_grouping['admin_editor']) && $single_display)
+			{
 				echo '
-			})();
+				document.getElementById("update_submission_" + submission_id).addEventListener("click", function(event) { lightbox("on","popup.php?page=update&submission_id=" + submission_id,0,0,300,100); event.preventDefault(); });
+				document.getElementById("delete_submission_" + submission_id).addEventListener("click", function(event) { if (!confirm_prompt("delete", "submission", submission_id)) {event.preventDefault();} });
+				';
+			}
+
+			echo '
 		}
 
 		for (var key in actions)
 		{
-			(function()
+			let action_id = key;
+
+			if (actions[action_id]["reader"])
 			{
-				var action_id = key;
+				let reader = document.getElementById("reader_" + action_id);
+				reader.addEventListener("mouseover", function(event) { tooltip_show(actions[action_id]["reader"], reader, event, ""); });
+				reader.addEventListener("mouseout", function(event) { tooltip_hide(); });
+			}
 
-				if (actions[action_id]["reader"])
-				{
-					var reader = document.getElementById("reader_" + action_id);
-					reader.addEventListener("mouseover", function(event) { tooltip_show(actions[action_id]["reader"], reader, event, ""); });
-					reader.addEventListener("mouseout", function(event) { tooltip_hide(); });
-				}
+			if (actions[action_id]["receiver"])
+			{
+				let receiver = document.getElementById("receiver_" + action_id);
+				receiver.addEventListener("mouseover", function(event) { tooltip_show(actions[action_id]["receiver"], receiver, event, ""); });
+				receiver.addEventListener("mouseout", function(event) { tooltip_hide(); });
+			}
 
-				if (actions[action_id]["receiver"])
-				{
-					var receiver = document.getElementById("receiver_" + action_id);
-					receiver.addEventListener("mouseover", function(event) { tooltip_show(actions[action_id]["receiver"], receiver, event, ""); });
-					receiver.addEventListener("mouseout", function(event) { tooltip_hide(); });
-				}
+			if (actions[action_id]["file"])
+			{
+				let file = document.getElementById("file_" + action_id);
+				file.addEventListener("mouseover", function(event) { tooltip_show("file missing!", file, event, ""); });
+				file.addEventListener("mouseout", function(event) { tooltip_hide(); });
+			}
+			';
 
-				if (actions[action_id]["file"])
-				{
-					var file = document.getElementById("file_" + action_id);
-					file.addEventListener("mouseover", function(event) { tooltip_show("file missing!", file, event, ""); });
-					file.addEventListener("mouseout", function(event) { tooltip_hide(); });
-				}
-				';
-
-				if (in_array($_SESSION['contact']['access'], $access_grouping['admin_editor']))
-				{
-					echo '
-					document.getElementById("update_action_" + action_id).addEventListener("click", function(event) { lightbox("on","popup.php?page=update&action_id=" + action_id,0,0,300,100); event.preventDefault(); });
-					document.getElementById("delete_action_" + action_id).addEventListener("click", function(event) { if (!confirm_prompt("delete", "action", action_id)) {event.preventDefault();} });
-					';
-				}
-
+			if (in_array($_SESSION['contact']['access'], $access_grouping['admin_editor']))
+			{
 				echo '
-			})();
+				document.getElementById("update_action_" + action_id).addEventListener("click", function(event) { lightbox("on","popup.php?page=update&action_id=" + action_id,0,0,300,100); event.preventDefault(); });
+				document.getElementById("delete_action_" + action_id).addEventListener("click", function(event) { if (!confirm_prompt("delete", "action", action_id)) {event.preventDefault();} });
+				';
+			}
+
+			echo '
 		}
 		';
 	}
@@ -5168,17 +5159,14 @@ if ($GLOBALS['js_object'])
 		echo '
 		for (var key in contacts)
 		{
-			(function()
-			{
-				var contact_id = key;
+			let contact_id = key;
 
-				if (contacts[contact_id]["contact"])
-				{
-					var contact = document.getElementById("contact_" + contact_id);
-					contact.addEventListener("mouseover", function(event) { tooltip_show(contacts[contact_id]["contact"], contact, event, ""); });
-					contact.addEventListener("mouseout", function(event) { tooltip_hide(); });
-				}
-			})();
+			if (contacts[contact_id]["contact"])
+			{
+				let contact = document.getElementById("contact_" + contact_id);
+				contact.addEventListener("mouseover", function(event) { tooltip_show(contacts[contact_id]["contact"], contact, event, ""); });
+				contact.addEventListener("mouseout", function(event) { tooltip_hide(); });
+			}
 		}
 		';
 	}
@@ -5188,39 +5176,33 @@ if ($GLOBALS['js_object'])
 		echo '
 		for (var key in submissions)
 		{
-			(function()
-			{
-				var submission_id = key;
+			let submission_id = key;
 
-				if (submissions[submission_id]["writer"])
-				{
-					var writer = document.getElementById("writer_" + submission_id);
-					writer.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["writer"], writer, event, ""); });
-					writer.addEventListener("mouseout", function(event) { tooltip_hide(); });
-				}
-			})();
+			if (submissions[submission_id]["writer"])
+			{
+				let writer = document.getElementById("writer_" + submission_id);
+				writer.addEventListener("mouseover", function(event) { tooltip_show(submissions[submission_id]["writer"], writer, event, ""); });
+				writer.addEventListener("mouseout", function(event) { tooltip_hide(); });
+			}
 		}
 
 		for (var key in actions)
 		{
-			(function()
+			let action_id = key;
+
+			if (actions[action_id]["reader"])
 			{
-				var action_id = key;
+				let reader = document.getElementById("reader_" + action_id);
+				reader.addEventListener("mouseover", function(event) { tooltip_show(actions[action_id]["reader"], reader, event, ""); });
+				reader.addEventListener("mouseout", function(event) { tooltip_hide(); });
+			}
 
-				if (actions[action_id]["reader"])
-				{
-					var reader = document.getElementById("reader_" + action_id);
-					reader.addEventListener("mouseover", function(event) { tooltip_show(actions[action_id]["reader"], reader, event, ""); });
-					reader.addEventListener("mouseout", function(event) { tooltip_hide(); });
-				}
-
-				if (actions[action_id]["receiver"])
-				{
-					var receiver = document.getElementById("receiver_" + action_id);
-					receiver.addEventListener("mouseover", function(event) { tooltip_show(actions[action_id]["receiver"], receiver, event, ""); });
-					receiver.addEventListener("mouseout", function(event) { tooltip_hide(); });
-				}
-			})();
+			if (actions[action_id]["receiver"])
+			{
+				let receiver = document.getElementById("receiver_" + action_id);
+				receiver.addEventListener("mouseover", function(event) { tooltip_show(actions[action_id]["receiver"], receiver, event, ""); });
+				receiver.addEventListener("mouseout", function(event) { tooltip_hide(); });
+			}
 		}
 		';
 	}
