@@ -349,7 +349,7 @@ $defaults = array(
 		),
 		'csp' => array(
 			'name' => 'csp',
-			'value' => 'default-src \'self\'; script-src \'self\' \'nonce-[nonce]\' \'unsafe-inline\'; style-src \'self\' \'unsafe-inline\';',
+			'value' => 'default-src \'self\'; script-src \'self\' \'nonce-[nonce]\'; style-src \'self\' \'unsafe-inline\';',
 			'description' => 'Content Security Policy',
 			'type' => 'text',
 			'required' => '',
