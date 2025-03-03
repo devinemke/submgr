@@ -1,5 +1,9 @@
-version 3.41 2025-02-13
+version 3.42 2025-03-01
 - added JavaScript date picker to date_paid form field (litepicker.js)
+- removed unsafe-inline from default script-src (CSP Level 2 now required)
+- refactoring of IIFEs to let/const keywords (ES6/ECMAScript2015 now required)
+
+version 3.41 2025-01-03
 - fixed "admin only" logic: removed from index.php
 - upgraded to PHPMailer 6.9.3 (2024-11-22)
 - added "purge legacy password hashes" to /maintenance/purge/
