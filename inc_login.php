@@ -984,8 +984,9 @@ if ($_SESSION['contact']['access'])
 		if ($submodule == 'sample')
 		{
 			$copy = '
-			<p>This function will insert or delete 100 sample contacts and subissions for testing purposes. Please note that all example contacts will have an email address with the domain <b>@example.com</b>.</p>
-			<input type="submit" id="submit_insert_sample_data" name="submit" value="insert sample data" class="form_button" style="width: 150px;"> <input type="submit" id="submit_delete_sample_data" name="submit" value="delete sample data" class="form_button" style="width: 150px;">
+			<p>This function will insert or delete 100 sample contacts and subissions for testing purposes.<br>Please note that all example contacts will have an email address with the domain <b>@example.com</b>.</p>
+			<input type="submit" id="submit_insert_sample_data" name="submit" value="insert sample data" class="form_button" style="width: 150px; margin: 0px 10px 10px 0px;"><input type="checkbox" id="submit_insert_sample_data_passwords" name="submit_insert_sample_data_passwords" value="Y"><label for="submit_insert_sample_data_passwords">include passwords?</label><br>
+			<input type="submit" id="submit_delete_sample_data" name="submit" value="delete sample data" class="form_button" style="width: 150px;">
 			';
 
 			if ($submit) {form_hash('validate');}
@@ -1023,8 +1024,8 @@ if ($_SESSION['contact']['access'])
 					$contact_id = mysqli_insert_id($GLOBALS['db_connect']);
 
 					$email = strtolower($names[0]) . $contact_id . '@example.com';
-					$password = password_wrapper('hash', 'password' . $contact_id);
-					$sql = "UPDATE contacts SET email = '$email', password = '$password' WHERE contact_id = $contact_id";
+					if (isset($_POST['submit_insert_sample_data_passwords'])) {$password = "'" . password_wrapper('hash', 'password' . $contact_id) . "'";} else {$password = 'NULL';}
+					$sql = "UPDATE contacts SET email = '$email', password = $password WHERE contact_id = $contact_id";
 					@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: UPDATE sample contacts');
 
 					$comments = implode(' ', array_slice($titles, 0, 20));

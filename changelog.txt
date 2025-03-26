@@ -1,4 +1,5 @@
-version 3.42 2025-03-01
+version 3.42 2025-03-25
+- added "include passwords" to /maintenance/sample data/
 - added JavaScript date picker to date_paid form field (litepicker.js)
 - removed unsafe-inline from default script-src (CSP Level 2 now required)
 - refactoring of IIFEs to let/const keywords (ES6/ECMAScript2015 now required)
