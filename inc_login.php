@@ -1310,14 +1310,13 @@ if ($_SESSION['contact']['access'])
 			get_min_max('submissions', 'submission_id');
 
 			$copy = '
-			<p>This function will purge submissions and their related actions and files.</p>
 			<p class="notice"><i>WARNING:</i> This will permanently delete data from your database! Please backup and archive your database before proceeding.</p>
+			<p>This function will purge submissions and their related actions and files.</p>
 			<b>purge range:</b><br>
 			<table class="padding_lr_5">
 			<tr><td>date created</td><td class="small"><label for="purge_range[min]" id="label_purge_range[min]">min:</label> <input type="text" id="purge_range[min]" name="purge_range[min]" value="' . $min_max['submissions']['min_date_time'] . '" style="width: 100px;"> <label for="purge_range[max]" id="label_purge_range[max]">max:</label> <input type="text" id="purge_range[max]" name="purge_range[max]" value="' . $min_max['submissions']['max_date_time'] . '" style="width: 100px;"></td></tr>
 			</table>
-			<br>
-			<input type="submit" id="submit_purge" name="submit" value="purge" class="form_button" style="width: 100px;">
+			<input type="submit" id="submit_purge" name="submit" value="purge" class="form_button" style="width: 100px; margin-top: 10px;">
 			';
 
 			if ($submit == 'purge')

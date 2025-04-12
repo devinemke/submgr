@@ -4476,12 +4476,11 @@ else // if staff login
 					if ($submodule == 'purge')
 					{
 						echo'
-						<p style="margin-top: 40px;">
+						<p>
 						This function will purge legacy password hashes.<br>
 						Submission Manager < version 3.33 (running on PHP < version 5.5) stored passwords using the legacy SHA1 hashing algorithm.<br>
 						This function will purge all SHA1 password hashes and force those users to reset their passwords.
 						</p>
-						<p class="notice"><i>WARNING:</i> This will permanently delete data from your database! Please backup and archive your database before proceeding.</p>
 						<input type="submit" id="submit_purge_hashes" name="submit" value="purge hashes" class="form_button" style="width: 100px;">
 						';
 
