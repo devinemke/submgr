@@ -31,10 +31,10 @@ This user-friendly system allows **submitters** to log their own address informa
 System Requirements:
 
 * Web Server
-* PHP (version 5.5 or higher)
-* mySQL (version 5 or higher)
+* PHP (version >= 5.5)
+* mySQL (version >= 5)
 * SMTP (for email notifications)
-* Web Browser (set to accept cookies)
+* Web Browser (with JavaScript enabled and set to accept cookies)
 
 Helpful Links:
 
