@@ -4686,9 +4686,9 @@ else // if staff login
 							while ($row = mysqli_fetch_assoc($result)) {$show_varibles[$row['Variable_name']] = $row['Value'];}
 							if (strpos($show_varibles['character_set_database'], 'utf8') === false || strpos($show_varibles['collation_database'], 'utf8') === false)
 							{
-								$sql = 'ALTER DATABASE `' . $config_db['name'] . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
+								$sql = 'ALTER DATABASE `' . DB_NAME . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
 								$result = @mysqli_query($GLOBALS['db_connect'], $sql);
-								if ($result) {$updates[] = 'database altered to UTF-8: ' . $config_db['name'];}
+								if ($result) {$updates[] = 'database altered to UTF-8: ' . DB_NAME;}
 							}
 
 							// check for missing tables

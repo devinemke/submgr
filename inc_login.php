@@ -1282,9 +1282,12 @@ if ($_SESSION['contact']['access'])
 				if (isset($config['mysqldump_path']) && $config['mysqldump_path']) {$mysqldump_path = trim($config['mysqldump_path']);} else {$mysqldump_path = 'mysqldump';}
 				if (strpos($mysqldump_path, ' ') !== false && substr($mysqldump_path, 0, 1) != '"' && substr($mysqldump_path, -1) != '"') {$mysqldump_path = '"' . $mysqldump_path . '"';}
 				if (strpos($mysqldump_path, 'mysqldump') === false) {$mysqldump_path = '';}
-				foreach ($config_db as $key => $value) {if ($key == 'name') {$config_db_escaped[$key] = addslashes($value);} else {$config_db_escaped[$key] = str_replace("'", "'\''", $value);}}
+				define('DB_HOST_ESCAPED', str_replace("'", "'\''", DB_HOST));
+				define('DB_USERNAME_ESCAPED', str_replace("'", "'\''", DB_USERNAME));
+				define('DB_PASSWORD_ESCAPED', str_replace("'", "'\''", DB_PASSWORD));
+				define('DB_NAME_ESCAPED', addslashes(DB_NAME));
 				$backup = '';
-				$command = $mysqldump_path . " --host='" . $config_db_escaped['host'] . "' --user='" . $config_db_escaped['username'] . "' --password='" . $config_db_escaped['password'] . "' " . $config_db_escaped['name'];
+				$command = $mysqldump_path . " --host='" . DB_HOST_ESCAPED . "' --user='" . DB_USERNAME_ESCAPED . "' --password='" . DB_PASSWORD_ESCAPED . "' " . DB_NAME_ESCAPED;
 				$backup = shell_exec($command);
 
 				if ($backup == NULL)
