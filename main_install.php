@@ -160,7 +160,7 @@ if ($step == 3)
 			foreach ($_SESSION['config_db'] as $key => $value) {$config_db_keys[] = '[' . $key . ']'; $config_db_escaped[$key] = addcslashes($value, "'");}
 			$config_db_string = str_replace($config_db_keys, $config_db_escaped, $config_db_string);
 			$_SESSION['config_db_string'] = $config_db_string;
-			@file_put_contents('config_db.php', $config_db_string) or exit_error('cannot open config_db.php');
+			@file_put_contents('config_db.php', $config_db_string) or exit_error('cannot write to config_db.php');
 			$step = 3;
 		}
 		else
@@ -283,7 +283,7 @@ if ($step == 5)
 		@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT INTO contacts');
 
 		$config_db_string = str_replace("define('INSTALLED', false);", "define('INSTALLED', true);", $_SESSION['config_db_string']);
-		@file_put_contents('config_db.php', $config_db_string) or exit_error('cannot open config_db.php');
+		@file_put_contents('config_db.php', $config_db_string) or exit_error('cannot write to config_db.php');
 
 		$_SESSION['goto_config'] = true;
 	}

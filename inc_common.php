@@ -208,9 +208,21 @@ function reset_defaults($table, $name, $array = '')
 
 if (INSTALLED)
 {
+	$config_db_constants = array(
+	'host' => 'DB_HOST',
+	'username' => 'DB_USERNAME',
+	'password' => 'DB_PASSWORD',
+	'name' => 'DB_NAME',
+	'port' => 'DB_PORT'
+	);
+
 	if (isset($config_db) && !defined('DB_HOST') && !defined('DB_USERNAME') && !defined('DB_PASSWORD') && !defined('DB_NAME')) // legacy config_db.php
 	{
-		foreach ($config_db as $key => $value) {define('DB_' . strtoupper($key), $value);}
+		foreach ($config_db_constants as $key => $value)
+		{
+			if (isset($config_db[$key])) {$constant = $config_db[$key];} else {$constant = '';}
+			define($value, $constant);
+		}
 	}
 
 	if (DB_HOST == '' || DB_USERNAME == '' || DB_NAME == '')
@@ -219,7 +231,6 @@ if (INSTALLED)
 		exit_error('missing database info from configuration file');
 	}
 
-	if (!defined('DB_PORT')) {define('DB_PORT', '');}
 	@db_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME, DB_PORT);
 
 	if (!$GLOBALS['db_connect'])

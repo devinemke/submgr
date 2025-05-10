@@ -4909,6 +4909,36 @@ else // if staff login
 								}
 							}
 
+							// update legacy config_db.php
+							if (isset($config_db) && is_writable('config_db.php'))
+							{
+								$copy = @copy('config_db.php', 'config_db_backup.php');
+								if ($copy) {$updates[] = 'config_db.php backup saved';}
+								$config_db_array_new[] = '<?php';
+								$config_db_array_old = array();
+								$config_db_file = file('config_db.php');
+								foreach ($config_db_file as $value)
+								{
+									$value = trim($value);
+									if (substr($value, 0, 8) == "define('") {$config_db_array_old[] = $value;}
+								}
+								foreach ($config_db_constants as $key => $value)
+								{
+									if (isset($config_db[$key])) {$constant = $config_db[$key];} else {$constant = '';}
+									$config_db_array_new[$key] = "define('" . $value . "', '" . addcslashes($constant, "'") . "');";
+								}
+								$config_db_array = array_merge($config_db_array_new, $config_db_array_old);
+								$config_db_array[] = '?>';
+								foreach ($config_db_array as $value)
+								{
+									$explode = explode(',', $value);
+									$config_db_array_unique[$explode[0]] = $value;
+								}
+								$config_db_string = implode("\n", $config_db_array_unique);
+								$contents = @file_put_contents('config_db.php', $config_db_string);
+								if ($contents) {$updates[] = 'config_db.php updated';}
+							}
+
 							// sync_last_actions
 							if (isset($_POST['sync_last_actions']))
 							{
