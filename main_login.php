@@ -4922,6 +4922,12 @@ else // if staff login
 									$value = trim($value);
 									if (substr($value, 0, 8) == "define('") {$config_db_array_old[] = $value;}
 								}
+								$config_db_array_old_string = implode("\n", $config_db_array_old);
+								$config_db_constants_extra = array('TEST_MAIL' => 'false', 'TIDY' => 'true');
+								foreach ($config_db_constants_extra as $key => $value)
+								{
+									if (strpos($config_db_array_old_string, "define('" . $key . "'") === false) {$config_db_array_old[] = "define('" . $key . "', " . $value . ");";}
+								}
 								foreach ($config_db_constants as $key => $value)
 								{
 									if (isset($config_db[$key])) {$constant = $config_db[$key];} else {$constant = '';}
