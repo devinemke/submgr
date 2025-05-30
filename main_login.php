@@ -4701,9 +4701,9 @@ else // if staff login
 									$sql_fields = '';
 									$sql_indexes = '';
 
-									$sql = "CREATE TABLE `$value` (" . "\r\n";
-									foreach ($schema[$value]['fields'] as $sub_key => $sub_value) {$sql_fields .= "`$sub_key` $sub_value[type] $sub_value[extra]," . "\r\n";}
-									foreach ($schema[$value]['indexes'] as $sub_key => $sub_value) {$sql_indexes .= "$sub_value[type] `$sub_key` ($sub_value[fields])," . "\r\n";}
+									$sql = "CREATE TABLE `$value` (" . "\n";
+									foreach ($schema[$value]['fields'] as $sub_key => $sub_value) {$sql_fields .= "`$sub_key` $sub_value[type] $sub_value[extra]," . "\n";}
+									foreach ($schema[$value]['indexes'] as $sub_key => $sub_value) {$sql_indexes .= "$sub_value[type] `$sub_key` ($sub_value[fields])," . "\n";}
 									$sql_indexes = substr(trim($sql_indexes), 0, -1);
 									$sql .= $sql_fields . $sql_indexes . ') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;';
 

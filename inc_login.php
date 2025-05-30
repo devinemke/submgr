@@ -1029,7 +1029,7 @@ if ($_SESSION['contact']['access'])
 					@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: UPDATE sample contacts');
 
 					$comments = implode(' ', array_slice($titles, 0, 20));
-					$text = $titles[0] . ' ' . $titles[1] . "\r\n" . 'by ' . $names[0] . ' ' . $names[1] . "\r\n\r\n" . implode(' ', $titles);
+					$text = $titles[0] . ' ' . $titles[1] . "\n" . 'by ' . $names[0] . ' ' . $names[1] . "\n\n" . implode(' ', $titles);
 
 					$sql = "INSERT INTO submissions SET
 					date_time = '$rand_date_time',
@@ -1210,7 +1210,7 @@ if ($_SESSION['contact']['access'])
 						if (!isset($_POST['export'][$table]['primary_key'])) {unset($fields[$table][$id_field]);}
 						if (isset($_POST['export'][$table]['clmp'])) {$fields[$table]['submgr_id'] = 'submgr_id';} else {$fields[$table] = array_keys($fields[$table]);}
 						foreach ($fields[$table] as $key => $value) {$fields[$table][$key] = '"' . $value . '"';}
-						$csv = implode(',', $fields[$table]) . "\r\n";
+						$csv = implode(',', $fields[$table]) . "\n";
 					}
 
 					if ($table == 'submissions' && isset($_POST['export'][$table]['actions']))
@@ -1250,7 +1250,7 @@ if ($_SESSION['contact']['access'])
 							$row[$key] = $value;
 							if (isset($_POST['export'][$table]['clmp'])) {$row['submgr_id'] = '"' . $id . '"';}
 						}
-						$csv .= implode(',', $row) . "\r\n";
+						$csv .= implode(',', $row) . "\n";
 					}
 
 					$csv = trim($csv);

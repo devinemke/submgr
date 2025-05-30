@@ -189,9 +189,9 @@ if ($step == 4)
 		$extra = '';
 		if ($key == 'config' && isset($version_local)) {$extra = " COMMENT = '$version_local'";}
 
-		$sql .= "DROP TABLE IF EXISTS `$key`;" . "\r\n" . "CREATE TABLE `$key` (" . "\r\n";
-		foreach ($value['fields'] as $sub_key => $sub_value) {$sql_fields .= "`$sub_key` $sub_value[type] $sub_value[extra]," . "\r\n";}
-		foreach ($value['indexes'] as $sub_key => $sub_value) {$sql_indexes .= "$sub_value[type] `$sub_key` ($sub_value[fields])," . "\r\n";}
+		$sql .= "DROP TABLE IF EXISTS `$key`;" . "\n" . "CREATE TABLE `$key` (" . "\n";
+		foreach ($value['fields'] as $sub_key => $sub_value) {$sql_fields .= "`$sub_key` $sub_value[type] $sub_value[extra]," . "\n";}
+		foreach ($value['indexes'] as $sub_key => $sub_value) {$sql_indexes .= "$sub_value[type] `$sub_key` ($sub_value[fields])," . "\n";}
 		$sql_indexes = substr(trim($sql_indexes), 0, -1);
 		$sql .= $sql_fields . $sql_indexes . ') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci' . $extra . ';';
 	}
