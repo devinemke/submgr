@@ -4292,13 +4292,8 @@ else // if staff login
 						function get_files($path)
 						{
 							$file_array = array();
-
-							$dir = scandir($path);
-							foreach ($dir as $value)
-							{
-								if ($value != '.' && $value != '..') {$file_array[] = $value;}
-							}
-
+							$dir = array_diff(scandir($path), ['.','..']);
+							foreach ($dir as $value) {$file_array[] = $value;}
 							natsort($file_array);
 							return $file_array;
 						}
@@ -4333,10 +4328,10 @@ else // if staff login
 						}
 
 						$compare = array();
-						$dir = scandir($config['upload_path']);
+						$dir = array_diff(scandir($config['upload_path']), ['.','..']);
 						foreach ($dir as $value)
 						{
-							if ($value != '.' && $value != '..' && is_dir($config['upload_path'] . $value))
+							if (is_dir($config['upload_path'] . $value))
 							{
 								$compare[$value]['records'] = array();
 								$compare[$value]['files'] = array();
