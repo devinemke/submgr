@@ -484,6 +484,10 @@ if ($GLOBALS['db_connect'])
 	// extract needed for app_url and company_name global vars
 	extract($config);
 
+	$company_name_the = false;
+	if (stripos((string) $company_name, 'the ') === 0) {$company_name_the = true;}
+	if ($company_name_the) {foreach ($config as $key => $value) {$config[$key] = str_ireplace('the [company_name]', '[company_name]', (string) $value);}}
+
 	$app_url_slash = $app_url;
 	if (substr((string) $app_url_slash, -1) != '/') {$app_url_slash .= '/';}
 
@@ -1716,7 +1720,7 @@ function display($arg)
 	$display = preg_replace("~[\n]{2,}~", "\n", $display);
 	$display = str_replace($odd_boxes['email'], array_keys($odd_boxes['email']), $display);
 	$output .= trim($display);
-	if ($page == 'login' && $module == 'update' && $_SESSION['post']['password'] && password_wrapper('hash', $_SESSION['post']['password']) != $_SESSION['contact']['password']) {$output .= '<div class="notice"><i>* new password detected</i></div>';}
+	if ($page == 'login' && $module == 'update' && isset($_SESSION['post']['password']) && $_SESSION['post']['password'] && password_wrapper('hash', $_SESSION['post']['password']) != $_SESSION['contact']['password']) {$output .= '<div class="notice"><i>* new password detected</i></div>';}
 
 	if (isset($title) && $title)
 	{

@@ -1413,7 +1413,10 @@ $display_login = false;
 
 if ($module == 'logout')
 {
-	if ($config['system_online'] == 'admin only' && $_SESSION['contact']['access'] != 'admin') {$output = '';} else {$output = '<p class="header">You have successfully logged out. Thank you for using the ' . htmlspecialchars((string) $config['company_name']) . ' Submission Manager.</p>';}
+	$logout_text = 'You have successfully logged out. Thank you for using the [company_name] Submission Manager.';
+	if ($company_name_the) {$logout_text = str_replace('the ', '', $logout_text);}
+	$logout_text = str_replace('[company_name]', htmlspecialchars((string) $config['company_name']), $logout_text);
+	if ($config['system_online'] == 'admin only' && $_SESSION['contact']['access'] != 'admin') {$output = '';} else {$output = '<p class="header">' . $logout_text . '</p>';}
 	foreach ($_SESSION['contact'] as $key => $value) {unset($$key);} // so forms are blank
 	if (isset($_SESSION['contact_display']['email'])) {$_REQUEST['email'] = $_SESSION['contact_display']['email'];} // to pre-populate form_login() but not form_main()
 	kill_session('regenerate'); // session needed for form_hash()
