@@ -1293,7 +1293,7 @@ else // if staff login
 						echo '</table>';
 					}
 
-					if (in_array($_SESSION['contact']['access'], $access_grouping['admin_editor']) || (in_array($_SESSION['contact']['access'], $access_grouping['active']) && in_array($submission_id, $_SESSION['forwards']))) {echo '<input type="submit" name="submit" value="insert new action" class="form_button" style="width: 150px; margin-top: 5px;">';}
+					if (in_array($_SESSION['contact']['access'], $access_grouping['admin_editor']) || (in_array($_SESSION['contact']['access'], $access_grouping['active']) && in_array($submission_id, $_SESSION['forwards']))) {echo '<button type="submit" name="submit" value="insert new action" class="form_button" style="margin-top: 5px;">new action</button>';}
 				}
 
 				if ($submodule == 'insert_action')
@@ -2393,7 +2393,7 @@ else // if staff login
 
 					if (in_array($_SESSION['contact']['access'], $access_grouping['admin_editor']))
 					{
-						echo '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&submodule=insert"><img src="button_insert.png" alt="insert" width="13" height="12"> <b>insert a new contact</b></a>';
+						echo '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&submodule=insert"><img src="button_insert.png" alt="insert" width="13" height="12"> <b>new contact</b></a>';
 					}
 
 				echo '
@@ -2709,7 +2709,7 @@ else // if staff login
 					if ($submodule != 'insert')
 					{
 						$extra = '';
-						if (in_array($_SESSION['contact']['access'], $access_grouping['admin_editor'])) {$extra = ' <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&contact_id=' . $contact_id . '&submodule=insert_submission" style="margin-left: 10px;">insert new submission</a>';}
+						if (in_array($_SESSION['contact']['access'], $access_grouping['admin_editor'])) {$extra = ' <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&contact_id=' . $contact_id . '&submodule=insert_submission" style="margin-left: 10px;">new submission</a>';}
 
 						echo '
 						<tr>
@@ -2721,13 +2721,15 @@ else // if staff login
 
 					if ($_SESSION['contact']['access'] == 'admin' || ($_SESSION['contact']['access'] != 'admin' && ($submodule == 'insert' || $_SESSION['current_contact_array']['access'] != 'admin')))
 					{
-						$submit1 = 'update';
+						$submit1_value = 'update';
+						$submit1_display = 'update';
 						$submit2 = 'delete';
 						$extra = '';
 
 						if ($submodule == 'insert')
 						{
-							$submit1 = 'insert';
+							$submit1_value = 'insert';
+							$submit1_display = 'add';
 							$submit2 = 'cancel';
 						}
 
@@ -2741,7 +2743,7 @@ else // if staff login
 						<tr>
 						<td>&nbsp;</td>
 						<td style="padding-top: 5px;">
-						<input type="submit" id="submit_contacts1" name="submit" value="' . $submit1 . '" class="form_button"> <input type="submit" id="submit_contacts2" name="submit" value="' . $submit2 . '" class="form_button">
+						<button type="submit" id="submit_contacts1" name="submit" value="' . $submit1_value . '" class="form_button">' . $submit1_display . '</button> <input type="submit" id="submit_contacts2" name="submit" value="' . $submit2 . '" class="form_button">
 						</td>
 						</tr>
 						</table>

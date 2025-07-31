@@ -655,7 +655,7 @@ if ($_SESSION['contact']['access'])
 					send_mail('contact', 'action');
 				}
 
-				$notice = count($_POST['tag']) . ' new action(s) inserted';
+				$notice = count($_POST['tag']) . ' new action(s) added';
 				$submit = 'search submissions';
 				if (isset($_SESSION['offset'])) {$_GET['offset'] = $_SESSION['offset'];}
 				unset($_POST['tag']);
@@ -688,7 +688,7 @@ if ($_SESSION['contact']['access'])
 			@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT actions');
 			$action_id = mysqli_insert_id($GLOBALS['db_connect']);
 			sync_last_action($_SESSION['insert_action']['submission_id']);
-			$notice = 'action_id ' . $action_id . ' inserted';
+			$notice = 'action_id ' . $action_id . ' added';
 
 			if (isset($_SESSION['file_upload']) && $_SESSION['file_upload']['is_uploaded_file'])
 			{
@@ -836,7 +836,7 @@ if ($_SESSION['contact']['access'])
 			{
 				// only admins can insert/update admins
 				$form_check = false;
-				$errors[] = 'You are not authorized to insert/update <b>admin</b> access status contacts.';
+				$errors[] = 'You are not authorized to add/update <b>admin</b> contacts.';
 			}
 
 			if (!$form_check)
@@ -856,7 +856,7 @@ if ($_SESSION['contact']['access'])
 				}
 
 				if ($submodule == 'update') {$sql = 'UPDATE'; $notice_ending = 'updated';}
-				if ($submodule == 'insert') {$sql = 'INSERT INTO'; $notice_ending = 'inserted'; $sql_array[] = "date_time = '$gm_date_time'";}
+				if ($submodule == 'insert') {$sql = 'INSERT INTO'; $notice_ending = 'added'; $sql_array[] = "date_time = '$gm_date_time'";}
 				$sql .= ' contacts SET ' . implode(', ', $sql_array);
 				if ($submodule == 'update') {$sql .= ' WHERE contact_id = ' . $_SESSION['current_contact_id'];}
 				@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: ' . strtoupper($submodule) . ' contacts');
@@ -917,7 +917,7 @@ if ($_SESSION['contact']['access'])
 			}
 
 			unset($_SESSION['file_upload']);
-			$notice = 'submission successfully inserted';
+			$notice = 'submission successfully added';
 			$submodule = 'fin';
 		}
 
@@ -984,8 +984,8 @@ if ($_SESSION['contact']['access'])
 		if ($submodule == 'sample')
 		{
 			$copy = '
-			<p>This function will insert or delete 100 sample contacts and subissions for testing purposes.<br>Please note that all example contacts will have an email address with the domain <b>@example.com</b>.</p>
-			<input type="submit" id="submit_insert_sample_data" name="submit" value="insert sample data" class="form_button" style="width: 150px; margin: 0px 10px 10px 0px;"><input type="checkbox" id="submit_insert_sample_data_passwords" name="submit_insert_sample_data_passwords" value="Y"><label for="submit_insert_sample_data_passwords">include passwords?</label><br>
+			<p>This function will add or delete 100 sample contacts and subissions for testing purposes.<br>Please note that all example contacts will have an email address with the domain <b>@example.com</b>.</p>
+			<button type="submit" id="submit_insert_sample_data" name="submit" value="insert sample data" class="form_button" style="width: 150px; margin: 0px 10px 10px 0px;">add sample data</button><input type="checkbox" id="submit_insert_sample_data_passwords" name="submit_insert_sample_data_passwords" value="Y"><label for="submit_insert_sample_data_passwords">include passwords?</label><br>
 			<input type="submit" id="submit_delete_sample_data" name="submit" value="delete sample data" class="form_button" style="width: 150px;">
 			';
 
@@ -1047,7 +1047,7 @@ if ($_SESSION['contact']['access'])
 					@file_put_contents($rand_path . $submission_id . '.txt', $text) or exit_error('cannot write to ' . $rand_path);
 				}
 
-				$notice = 'sample data inserted successfully';
+				$notice = 'sample data added successfully';
 			}
 
 			if ($submit == 'delete sample data')

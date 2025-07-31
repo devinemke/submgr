@@ -1,4 +1,5 @@
-version 3.42 2025-07-28
+version 3.42 2025-08-01
+- changed all "insert" copy to "add"
 - fixes for $config['company_name'] with "the" prefix
 - added update legacy config_db.php to /maintenance/update data structure/
 - changed $config_db array to DB_* constants in config_db.php

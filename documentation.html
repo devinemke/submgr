@@ -116,7 +116,7 @@ code
 <div style="text-align: center;">
 <div style="font-size: 25pt; font-weight: bold;">Submission Manager</div>
 <div style="font-size: 15pt;">System Documentation</div>
-<div style="font-size: 10pt;">updated 2025-02-06<br>&copy;2025 Devin Emke</div>
+<div style="font-size: 10pt;">updated 2025-08-01<br>&copy;2025 Devin Emke</div>
 </div>
 
 <hr>
@@ -439,7 +439,7 @@ define('DB_PORT', '[port]');
 
 		<p><b>Viewing a submission:</b><br>To view a submission, the staff member should click on the file name. Depending on how their browser is configured, the submission will either appear in the user&rsquo;s browser window, or they will be prompted to save the document to their computer.</p>
 		<p><b>Performing one action on one submission:</b><br>To perform an action on one submission, a staff member should click on either the submission ID number or the number in the action column. All actions that have been created for this submission will now be displayed.</p>
-		<p>To create a new action, the staff member should click on &ldquo;insert new action&rdquo;. The create action form will be displayed.</p>
+		<p>To create a new action, the staff member should click on <b>&ldquo;new action&rdquo;</b>. The create action form will be displayed.</p>
 		<p>Let&rsquo;s say they are forwarding this story to a reader.</p>
 
 		<ul>
@@ -506,7 +506,7 @@ define('DB_PORT', '[port]');
 		<p><b>Deciding whether or not a staff member receives system notification emails:</b> The contact form also contains two checkboxes that determine whether or not a staff member will receive notification of each submission and action entered into the system. These checkboxes will not be active for contacts with a null access level.</p>
 		<p><b>Deleting a contact:</b> The delete button will delete a contact from the system. When a staff member deletes a contact, they will be asked whether or not they also want to delete any submissions or actions related to this contact.</p>
 		<p><b>Adding staff members to the system:</b></p>
-		<p>Admin level users and editors can add contacts to the table and assign their access level. This is done by clicking on &ldquo;insert a new contact&rdquo; and filling in the form.</p>
+		<p>Admin level users and editors can add contacts to the table and assign their access level. This is done by clicking on <b>&ldquo;new contact&rdquo;</b> and filling in the form.</p>
 		<p>The minimum amount of information needed to create a staff contact is first name, last name, email and password.</p>
 		<p>To create staff members, the admin or editor must select an access level of 1-5, admin, or editor. Access Levels are described in the overview section of this document. Editors cannot create an admin level user.</p>
 		<p>Before testing the system you should create a few staff accounts.</p>
@@ -610,14 +610,14 @@ define('DB_PORT', '[port]');
 		<p>Clicking on the name of an unrecorded file will display the file that is missing its record. Clicking on a missing file will show the submission record that is missing its corresponding file. You can delete orphaned files by clicking <b>delete temp files</b>.</p>
 		<p><b>Important Note:</b> Temp files are <i>always</i> created during the submission process. They are created as soon as a submitter selects the file from their computer and retains the temporary name until the submission is complete. It is therefore safest to make sure that all temp files that you delete are at least a few hours old.</p>
 
-		<p style="margin-top: 40px;"><b>Sample Data:</b><br>In order to test the system you&rsquo;ll need a set of dummy submissions to work with. Clicking <b>insert sample data</b> will create 100 dummy contacts, submissions and files to test the system. Clicking <b>delete sample data</b> will delete all of those dummy records. All sample contact records will have an email with the domain name <b>@example.com</b>. (for example: <b>sally123@example.com</b>).</p>
+		<p style="margin-top: 40px;"><b>Sample Data:</b><br>In order to test the system you&rsquo;ll need a set of dummy submissions to work with. Clicking <b>add sample data</b> will create 100 dummy contacts, submissions and files to test the system. Clicking <b>delete sample data</b> will delete all of those dummy records. All sample contact records will have an email with the domain name <b>@example.com</b>. (for example: <b>sally123@example.com</b>).</p>
 
 		<p style="margin-top: 40px;"><b>Export Data:</b><br>This function will allow you to export the contact data to a .csv file. This format is easily read by other database applications.</p>
 		<p>When exporting data you have four options:</p>
 		<table>
 		<tr class="table"><td class="row_left"><b>include primary key field:</b></td><td class="table">When this is checked, the Submission Manager contact ID will be included in the export.</td></tr>
+		<tr class="table"><td class="row_left"><b>include field names as first row:</b></td><td class="table">When this is checked, the first row of the export will be the names of the fields.</td></tr>
 		<tr class="table"><td class="row_left"><b>include staff contacts:</b></td><td class="table">When this is checked, staff contacts will be included in the export.</td></tr>
-		<tr class="table"><td class="row_left"><b>insert field names as first row:</b></td><td class="table">When this is checked, the first row of the export will be the names of the fields.</td></tr>
 		<tr class="table"><td class="row_left"><b>use CLMP data structure:</b></td><td class="table">When this is checked, the field names will be the same as the field names in the CLMP fulfillment template. This will make it easier to merge these records for mailing or other uses. However, it is not recommended that you import this data into the current CLMP fulfillment template.</td></tr>
 		</table>
 		<p>You can select the records to be exported in three ways. You can use a range of primary keys (the default is to select all records), you can select all records created after a certain date, or you can select all records modified after a certain date.</p>
@@ -669,8 +669,8 @@ define('DB_PORT', '[port]');
 			<p>Some notes:<br>To see how you can customize the email templates, see the sample rejections on the action page.</p>
 			<table>
 			<tr class="table"><td class="row_left"><b>reject 1:</b></td><td class="table">uses only one placeholder - the name of your company in the subject of the email</td></tr>
-			<tr class="table"><td class="row_left"><b>reject 2:</b></td><td class="table">inserts the writer&rsquo;s name, the title of the story, and the company name into the body of the email</td></tr>
-			<tr class="table"><td class="row_left"><b>reject 3:</b></td><td class="table">inserts the same fields as reject 2, and allows the staff member to insert a message to the submitter</td></tr>
+			<tr class="table"><td class="row_left"><b>reject 2:</b></td><td class="table">includes the writer&rsquo;s name, the title of the story, and the company name into the body of the email</td></tr>
+			<tr class="table"><td class="row_left"><b>reject 3:</b></td><td class="table">includes the same fields as reject 2, and allows the staff member to include a message to the submitter</td></tr>
 			<tr class="table"><td class="row_left"><b>reject 4:</b></td><td class="table">is a completely personal email. It uses no form language, and simply allows the staff member to compose their own email text.</td></tr>
 			</table>
 		</div>
