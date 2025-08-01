@@ -968,6 +968,7 @@ if ($continue)
 					}
 					';
 
+					$message_bodies = array();
 					if ($action_types)
 					{
 						foreach ($action_types['all'] as $key => $value)
@@ -976,36 +977,22 @@ if ($continue)
 						}
 					}
 
-					if (isset($message_bodies))
-					{
-						echo '
-						var message_bodies = new Array(' . implode(',', $message_bodies) . ');
-						var message_warning = "only for message actions";
-						var message_enable = false;
-
-						for (i = 0; i < message_bodies.length; i++)
-						{
-							if (message_bodies[i] == parseInt(document.getElementById("new_action_type_id").value))
-							{
-								message_enable = true;
-								break;
-							}
-						}
-
-						if (message_enable)
-						{
-							document.getElementById("message").disabled = false;
-							if (document.getElementById("message").value == message_warning) {document.getElementById("message").value = "";}
-						}
-						else
-						{
-							document.getElementById("message").disabled = true;
-							document.getElementById("message").value = message_warning;
-						}
-						';
-					}
-
 					echo '
+					var message_bodies = [' . implode(',', $message_bodies) . '];
+					var message_warning = "only for message actions";
+					var message_enable = false;
+					if (message_bodies.indexOf(parseInt(document.getElementById("new_action_type_id").value)) >= 0) {message_enable = true;}
+
+					if (message_enable)
+					{
+						document.getElementById("message").disabled = false;
+						if (document.getElementById("message").value == message_warning) {document.getElementById("message").value = "";}
+					}
+					else
+					{
+						document.getElementById("message").disabled = true;
+						document.getElementById("message").value = message_warning;
+					}
 				}
 			}
 
@@ -1379,7 +1366,7 @@ if ($continue)
 				{
 					var form_check = true;
 					var error = "ERROR: ";
-					var genre_names = new Array();
+					var genre_names = [];
 
 					for (i = 0; i < document.getElementById("form_configuration").length; i++)
 					{

@@ -323,7 +323,7 @@ if ($page == 'update')
 	{
 		var form_check = true;
 		var error = "ERROR: required fields missing:\n\n";
-		var fields = new Array();
+		var fields = [];
 
 		for (i = 0; i < document.getElementById("form_update").length; i++)
 		{
