@@ -890,6 +890,11 @@ else // if staff login
 						$GLOBALS['single_display'] = true; // needed to prevent tag form
 						$_SESSION['submission'] = $submissions[$submission_id];
 					}
+					else
+					{
+						$GLOBALS['single_display'] = false;
+						unset($_SESSION['submission']); // needed here to flush out first_name + last_name from global scope
+					}
 				}
 				else
 				{
