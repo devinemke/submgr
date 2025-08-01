@@ -2563,6 +2563,12 @@ else // if staff login
 					}
 				}
 
+				if ($contact && isset($_SESSION['file_upload']) && $submit == 'cancel')
+				{
+					if (isset($_SESSION['file_upload']['filename_temp'])) {@unlink($upload_path_year . $_SESSION['file_upload']['filename_temp']);}
+					unset($_SESSION['file_upload']);
+				}
+
 				if (($contact || $submodule == 'insert') && $submodule != 'insert_submission')
 				{
 					if (!isset($_SESSION['current_contact_array']['access'])) {$_SESSION['current_contact_array']['access'] = '';}

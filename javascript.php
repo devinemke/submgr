@@ -1129,7 +1129,7 @@ if ($continue)
 				';
 
 				// only echo file validation if it's the first time hitting submit, otherwise "file" will always have to be revalidated
-				if (!isset($_SESSION['file_upload']['filename']) && !isset($_FILES['file']['name']))
+				if ($fields['file']['required'] && !isset($_SESSION['file_upload']['filename']) && !isset($_FILES['file']['name']))
 				{
 					echo '
 					if (!document.getElementById("file").value)
