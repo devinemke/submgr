@@ -336,7 +336,7 @@ if ($continue)
 
 			var form_check = true;
 			var error = "ERROR: Required fields missing or incomplete:\n\n";
-			var fields = new Object();
+			var fields = {};
 			';
 
 			if ($page == 'home' || ($page == 'login' && $module == 'submit'))
@@ -535,7 +535,7 @@ if ($continue)
 		echo '
 		function cc_display()
 		{
-			var genres = new Object();
+			var genres = {};
 			price = 0;
 			show_payment_fields = false;
 			';
@@ -1184,7 +1184,7 @@ if ($continue)
 				{
 					var form_check = true;
 					var error = "ERROR: Required fields missing:\n\n";
-					var fields_config = new Object();
+					var fields_config = {};
 					';
 
 					// build the fields object
@@ -1444,7 +1444,7 @@ if ($continue)
 				{
 					var form_check = true;
 					var error = "ERROR: ";
-					var payment_vars = new Object();
+					var payment_vars = {};
 					var count_submission_id_in = 0;
 					var count_result_code_in = 0;
 					var count_result_code_out = 0;

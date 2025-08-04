@@ -228,7 +228,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 
 		if ($submissions)
 		{
-			$GLOBALS['js_object'] .= 'var submissions = new Object();' . "\n";
+			$GLOBALS['js_object'] .= 'var submissions = {};' . "\n";
 
 			echo '
 			<table class="table_list">
@@ -1054,7 +1054,7 @@ else // if staff login
 
 			$contact_access = str_replace('active ', '', $_SESSION['contact']['access']);
 			$_SESSION['contact_access'] = $contact_access;
-			$GLOBALS['js_object'] .= 'var submissions = new Object();' . "\n" . 'var actions = new Object();' . "\n";
+			$GLOBALS['js_object'] .= 'var submissions = {};' . "\n" . 'var actions = {};' . "\n";
 			$i = 1;
 
 			foreach ($submissions as $value)
@@ -2469,7 +2469,7 @@ else // if staff login
 				</tr>
 				';
 
-				$GLOBALS['js_object'] .= 'var contacts = new Object();' . "\n";
+				$GLOBALS['js_object'] .= 'var contacts = {};' . "\n";
 
 				foreach ($contacts as $value)
 				{
@@ -2928,7 +2928,7 @@ else // if staff login
 							}
 						}
 
-						$GLOBALS['js_object'] .= 'var submissions = new Object();' . "\n" . 'var actions = new Object();' . "\n";
+						$GLOBALS['js_object'] .= 'var submissions = {};' . "\n" . 'var actions = {};' . "\n";
 
 						echo '<b>Submissions:</b> (' . count($submissions) . ')<br>';
 						if ($submissions)
