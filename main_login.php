@@ -2861,6 +2861,7 @@ else // if staff login
 						$date_report_end = date('Y-m-d H:i:s', $date_report_ts + ((60 * 60 * 24) - 1));
 
 						echo '
+						<script src="litepicker.js" nonce="' . $GLOBALS['nonce'] . '"></script>
 						<table class="padding_lr_5">
 						<tr><td>&nbsp;</td><td><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&report=' . $report . '&date_report=' . $date_prev . '"><img src="arrow_left_1.png" width="8" height="13" alt="previous" style="margin-right: 2px;"></a> <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&report=' . $report . '&date_report=' . $date_next . '"><img src="arrow_right_1.png" width="8" height="13" alt="next" style="margin-left: 2px;"></a></td></tr>
 						<tr><td><label for="date" id="label_date">date:</label></td><td><input type="text" id="date" name="date_report" value="' . $date_report . '" style="width: 100px;"> <span class="small">(YYYY-MM-DD)</span></td></tr>
@@ -5248,6 +5249,16 @@ if ($GLOBALS['js_object'])
 			}
 		}
 		';
+
+		if ($report == 'daily')
+		{
+			echo '
+			const picker = new Litepicker({
+				element: document.getElementById("date"),
+				setup: (picker) => { picker.on("selected", () => { document.getElementById("form_reports").requestSubmit(); }); }
+			});
+			';
+		}
 	}
 
 	echo '</script>';

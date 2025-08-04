@@ -8,7 +8,7 @@ version 3.42 2025-08-01
 - changed $config_db array to DB_* constants in config_db.php
 - upgraded to PHPMailer 6.10.0 (2025-04-24)
 - added "include passwords" to /maintenance/sample data/
-- added JavaScript date picker to date_paid form field (litepicker.js)
+- added JavaScript date picker to date form fields (litepicker.js)
 - removed unsafe-inline from default script-src (CSP Level 2 now required)
 - refactoring of IIFEs to let/const keywords (ES6/ECMAScript2015 now required)
 

@@ -406,7 +406,7 @@ if ($page == 'update')
 
 	if (isset($row['date_paid']))
 	{
-		echo '<script src="litepicker.js"></script>';
+		echo '<script src="litepicker.js" nonce="' . $GLOBALS['nonce'] . '"></script>';
 	}
 }
 
