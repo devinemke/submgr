@@ -52,7 +52,7 @@ if ($submit == 'reset password')
 	}
 	else
 	{
-		$notice_generic = 'Password reset link will be sent to <b>' . htmlspecialchars($reset_email) . '</b> if it exists.<br>The message containing your password reset link will come from <b>' . htmlspecialchars($config['general_dnr_email']) . '</b>.<br>Please make sure to check your bulk mail folders in case this message is marked as spam.';
+		$notice_generic = 'Password reset link will be sent to <b>' . htmlspecialchars((string) $reset_email) . '</b> if it exists.<br>The message containing your password reset link will come from <b>' . htmlspecialchars((string) $config['general_dnr_email']) . '</b>.<br>Please make sure to check your bulk mail folders in case this message is marked as spam.';
 
 		$result = @mysqli_query($GLOBALS['db_connect'], "SELECT contact_id, first_name, last_name, email, access FROM contacts WHERE email = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $reset_email) . "'") or exit_error('query failure: SELECT FROM contacts');
 		if (!mysqli_num_rows($result))
@@ -70,7 +70,11 @@ if ($submit == 'reset password')
 			if (mysqli_num_rows($result_reset))
 			{
 				$row_reset = mysqli_fetch_assoc($result_reset);
-				if ($gm_timestamp - strtotime($row_reset['date_time'] . ' GMT') <= 3600) {$errors[] = 'This account password was reset within the last hour. For security, passwords can only be reset once per hour. Please try again later.<br>If you have recently reset your password, and have not yet received your password reset link, please check your spam folder.';}
+				if ($gm_timestamp - strtotime($row_reset['date_time'] . ' GMT') <= $config['password_reset_exp'])
+				{
+					if (strpos((string) $password_reset_exp_formatted, '1 ') === 0) {$password_reset_exp_formatted = str_replace('1 ', '', $password_reset_exp_formatted);}
+					$errors[] = 'This account password was recently reset. For security, passwords can only be reset once every ' . $password_reset_exp_formatted . '. Please try again later.<br>If you have recently reset your password, and have not yet received your password reset link, please check your spam folder.';
+				}
 			}
 
 			if ($errors)
@@ -112,8 +116,7 @@ echo '
 <li style="margin-bottom: 20px;"><b>Why log in?</b><br>Logging in allows you to manage your account. Once logged in you can easily update your personal information or submit more work.</li>
 <li style="margin-bottom: 20px;"><b>Do I need to set up an account?</b><br>If you have already submitted work using our automated system you already have an account. If not, doing so will create an account.</li>
 <li style="margin-bottom: 20px;"><b>How do I access my account?</b><br>To access your account, you will need the email address and password you originally used to submit your work.</li>
-<li style="margin-bottom: 20px;"><b>What if I forget my password?</b><br>You can reset your password using the form below. Enter the email address you used to create your account and a password reset link will be sent to that address.<br><br>' . form_reset() . '</li>
-<li><b>What if I still need help?</b><br>Please email ' . mail_to($config['admin_email']) . '.</li>
-</ul>
-';
+<li style="margin-bottom: 20px;"><b>What if I forget my password?</b><br>You can reset your password using the form below. Enter the email address you used to create your account and a password reset link will be sent to that address.<br><br>' . form_reset() . '</li>';
+if ($config['admin_email']) {echo '<li><b>What if I still need help?</b><br>Please email ' . mail_to((string) $config['admin_email']) . '.</li>';}
+echo '</ul>';
 ?>

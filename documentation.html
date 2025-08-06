@@ -116,7 +116,7 @@ code
 <div style="text-align: center;">
 <div style="font-size: 25pt; font-weight: bold;">Submission Manager</div>
 <div style="font-size: 15pt;">System Documentation</div>
-<div style="font-size: 10pt;">updated 2025-08-01<br>&copy;2025 Devin Emke</div>
+<div style="font-size: 10pt;">updated 2025-08-06<br>&copy;2025 Devin Emke</div>
 </div>
 
 <hr>
@@ -249,14 +249,13 @@ code
 		<tr class="table"><td class="row_left"><b>offline_text:</b></td><td>This text will appear to anyone who visits Submission Manager when the system is offline. <span style="font-size: 10pt;">(HTML allowed)</span></td></tr>
 		<tr class="table"><td class="row_left"><b>instruction_text:</b></td><td>This text will appear on the home page above the submission form. <span style="font-size: 10pt;">(HTML allowed)</span></td></tr>
 		<tr class="table"><td class="row_left"><b>submission_text:</b></td><td>This is the text that is displayed in the browser immediately after a contact submits a document and is sent to the contact in their confirmation email.</td></tr>
-		<tr class="table"><td class="row_left"><b><span id="redirect_url">redirect_url</span>:</b></td><td>Submitters will be sent to this URL following a successful submission. If you are accepting payments for submissions, this URL should point to your payment gateway. Redirect URLs can be set globally here, or by genre in the <a href="#genre_configuration">genre configuration</a>. If left blank, the default submission confirmation will be displayed.</td></tr>
-		<tr class="table"><td class="row_left"><b>test_mode:</b></td><td>Use this when testing the system. Administrators can test different actions, but no emails will be sent to contacts. When you are working in test mode, the phrase &ldquo;test mode&rdquo; will appear in brackets above the name of your publication.</td></tr>
 		<tr class="table"><td class="row_left"><b>timezone:</b></td><td>Choose your local time zone. All dates and times are stored in the database as GMT, but this setting controls how users see these dates and times.</td></tr>
 		<tr class="table"><td class="row_left"><b>dst:</b></td><td>Check this box if Daylight Saving Time is used in your locale. Submission Manager uses your web server&rsquo;s interpretation of daylight savings time (DST). This means that if your web server is in a locale that recognizes DST differently than your locale, your times may be off by one hour during DST.</td></tr>
 		<tr class="table"><td class="row_left"><span style="color: red;">*</span> <b>company_name:</b></td><td>Fill in your company name here.</td></tr>
 		<tr class="table"><td class="row_left"><b>show_company_name:</b></td><td>Checking this will display your company name (as listed above) in the upper left corner of the screen on all pages of Submission Manager.</td></tr>
 		<tr class="table"><td class="row_left"><b>logo_path:</b></td><td>Fill in the server path to your company&rsquo;s logo graphic (.gif or .jpeg) for it to appear in the upper left corner. The logo can appear in addition to the company name or instead of the company name.</td></tr>
 		<tr class="table"><td class="row_left"><span style="color: red;">*</span> <b>app_url:</b></td><td>The absolute URL to your installation of Submission Manager. (<b>https://www.example.com/submissions</b>).</td></tr>
+		<tr class="table"><td class="row_left"><b><span id="redirect_url">redirect_url</span>:</b></td><td>Submitters will be sent to this URL following a successful submission. If you are accepting payments for submissions, this URL should point to your payment gateway. Redirect URLs can be set globally here, or by genre in the <a href="#genre_configuration">genre configuration</a>. If left blank, the default submission confirmation will be displayed.</td></tr>
 		<tr class="table"><td class="row_left"><b>fonts:</b></td><td>A comma-separated list of fonts to use. Browsers will use the first font available on a user&rsquo;s computer.</td></tr>
 		<tr class="table"><td class="row_left"><b>font_size:</b></td><td>Base font size. Other fonts will be larger/smaller relative to the base.</td></tr>
 		<tr class="table"><td class="row_left"><b>color_background:</b></td><td>The color of the background of the page. The default for this area is white.</td></tr>
@@ -290,12 +289,14 @@ code
 		<tr class="table"><td class="row_left"><b>mysqldump_path:</b></td><td>Path to the <a href="https://dev.mysql.com/doc/refman/5.0/en/mysqldump.html" target="_blank">mysqldump</a> program to make database backups</td></tr>
 		<tr class="table"><td class="row_left"><b>csp:</b></td><td>Content Security Policy</td></tr>
 		<tr class="table"><td class="row_left"><b>exclude_countries:</b></td><td>comma-separated list of excluded country codes (use &ldquo;USA_only&rdquo; to exclude all but USA)</td></tr>
+		<tr class="table"><td class="row_left"><b>password_reset_exp:</b></td><td>number of seconds for password reset expiration</td></tr>
 		<tr class="table"><td class="row_left"><b>send_mail_staff:</b></td><td>If this box is checked, the system will send email notifications of all submissions and all actions to selected staff members. Whether or not a staff member receives these emails is determined in their record in the contacts area.</td></tr>
 		<tr class="table"><td class="row_left"><b>send_mail_contact:</b></td><td>When this is checked, a submitter will receive a submission confirmation email.</td></tr>
 		<tr class="table"><td class="row_left"><b>allow_withdraw:</b></td><td>When this is checked, submitters will have the option of withdrawing their own submissions from consideration. Submitters will only be able to withdraw submissions that have a status of &ldquo;received&rdquo;.</td></tr>
 		<tr class="table"><td class="row_left"><b>show_date_paid:</b></td><td>When this is checked, the &ldquo;date paid&rdquo; column will be visible in all submission displays. Unpaid submissions will be displayed with a red border.</td></tr>
 		<tr class="table"><td class="row_left"><b>show_payment_fields:</b></td><td>show credit card fields on submission forms</td></tr>
 		<tr class="table"><td class="row_left"><b>check_updates:</b></td><td>check for new versions of Submission Manager</td></tr>
+		<tr class="table"><td class="row_left"><b>test_mode:</b></td><td>Use this when testing the system. Administrators can test different actions, but no emails will be sent to contacts. When you are working in test mode, the phrase &ldquo;test mode&rdquo; will appear in brackets above the name of your publication.</td></tr>
 		</table>
 	</div>
 

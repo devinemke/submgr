@@ -35,22 +35,6 @@ $defaults = array(
 			'required' => '',
 			'allowed' => 'html'
 		),
-		'redirect_url' => array(
-			'name' => 'redirect_url',
-			'value' => '',
-			'description' => 'redirect URL after submission (leave blank for default confirmation)',
-			'type' => 'text',
-			'required' => '',
-			'allowed' => ''
-		),
-		'test_mode' => array(
-			'name' => 'test_mode',
-			'value' => '',
-			'description' => 'no emails are sent',
-			'type' => 'checkbox',
-			'required' => '',
-			'allowed' => ''
-		),
 		'timezone' => array(
 			'name' => 'timezone',
 			'value' => 0,
@@ -97,6 +81,14 @@ $defaults = array(
 			'description' => 'absolute URL to Submission Manager',
 			'type' => 'text',
 			'required' => 'Y',
+			'allowed' => ''
+		),
+		'redirect_url' => array(
+			'name' => 'redirect_url',
+			'value' => '',
+			'description' => 'redirect URL after submission (leave blank for default confirmation)',
+			'type' => 'text',
+			'required' => '',
 			'allowed' => ''
 		),
 		'fonts' => array(
@@ -363,6 +355,14 @@ $defaults = array(
 			'required' => '',
 			'allowed' => ''
 		),
+		'password_reset_exp' => array(
+			'name' => 'password_reset_exp',
+			'value' => 3600,
+			'description' => 'number of seconds for password reset expiration',
+			'type' => 'text',
+			'required' => '',
+			'allowed' => ''
+		),
 		'send_mail_staff' => array(
 			'name' => 'send_mail_staff',
 			'value' => 'Y',
@@ -407,6 +407,14 @@ $defaults = array(
 			'name' => 'check_updates',
 			'value' => 'Y',
 			'description' => 'check for new versions of Submission Manager',
+			'type' => 'checkbox',
+			'required' => '',
+			'allowed' => ''
+		),
+		'test_mode' => array(
+			'name' => 'test_mode',
+			'value' => '',
+			'description' => 'no emails are sent',
 			'type' => 'checkbox',
 			'required' => '',
 			'allowed' => ''

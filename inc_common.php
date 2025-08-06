@@ -392,6 +392,13 @@ if ($GLOBALS['db_connect'])
 						if ($key == 'submission_price' && is_numeric($clean)) {$clean = number_format($clean, 2, '.', '');}
 					}
 
+					if ($key == 'password_reset_exp')
+					{
+						$clean = (int) preg_replace('/[^0-9]/i', '', $clean);
+						if ($clean == 0) {$clean = 3600;}
+						if ($clean > 86400) {$clean = 86400;}
+					}
+
 					$post_config[$key] = $clean;
 				}
 				else
@@ -504,6 +511,15 @@ if ($GLOBALS['db_connect'])
 		$csp = str_replace('[nonce]', $GLOBALS['nonce'], $config['csp']);
 		header('Content-Security-Policy: ' . $csp);
 	}
+
+	$password_reset_exp_int = 0;
+	$password_reset_exp_hours = $config['password_reset_exp'] / 3600;
+	$password_reset_exp_minutes = $config['password_reset_exp'] / 60;
+	if (is_int($password_reset_exp_hours) && $password_reset_exp_hours >= 1) {$password_reset_exp_int = $password_reset_exp_hours; $password_reset_exp_suffix = 'hour';}
+	if (is_int($password_reset_exp_minutes) && $password_reset_exp_minutes < 60) {$password_reset_exp_int = $password_reset_exp_minutes; $password_reset_exp_suffix = 'minute';}
+	if ($config['password_reset_exp'] < 60) {$password_reset_exp_int = $config['password_reset_exp']; $password_reset_exp_suffix = 'second';}
+	if ($password_reset_exp_int > 1) {$password_reset_exp_suffix .= 's';}
+	if ($password_reset_exp_int) {$password_reset_exp_formatted = $password_reset_exp_int . ' ' . $password_reset_exp_suffix;} else {$password_reset_exp_formatted = gmdate('H:i:s', $config['password_reset_exp']);}
 }
 
 if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['contact']['access'] == 'admin')
@@ -2019,7 +2035,7 @@ function send_mail($arg1, $arg2)
 		{
 			$app_url_reset = $app_url_slash . 'index.php?page=login&token=' . $GLOBALS['token'];
 			$subject = $config['company_name'] . ' Submission Manager password reset information';
-			$body .= 'You have reset the password for your ' . $config['company_name'] . ' Submission Manager account. To login to your account please follow the link below:' . "\n\n" . '<a href="' . $app_url_reset . '"><b>Reset Account Password</b></a>' . "\n\n" . 'This link will expire in one hour. If you need any further help accessing your account please contact <a href="mailto:' . $config['admin_email'] . '">' . $config['admin_email'] . '</a>';
+			$body .= 'You have reset the password for your ' . $config['company_name'] . ' Submission Manager account. To login to your account please follow the link below:' . "\n\n" . '<a href="' . $app_url_reset . '"><b>Reset Account Password</b></a>' . "\n\n" . 'This link will expire in ' . $password_reset_exp_formatted . '. If you need any further help accessing your account please contact <a href="mailto:' . $config['admin_email'] . '">' . $config['admin_email'] . '</a>';
 			$html_mail = true;
 		}
 

@@ -1,4 +1,5 @@
-version 3.42 2025-08-01
+version 3.42 2025-08-06
+- added $config['password_reset_exp'] (default = 3600)
 - form_insert_submission_check() now honors $fields['file']['required']
 - fixed bug in tag action form: first_name + last_name placeholders, $_SESSION['submission'] flush after $single_display
 - fixed bug in new action form: messages field always disabled when only 1 action type has messages enabled
