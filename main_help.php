@@ -7,9 +7,8 @@ function form_reset()
 
 	if (!isset($reset_email)) {$reset_email = '';}
 	if (isset($_REQUEST['reset_email']) && $_REQUEST['reset_email']) {$reset_email = htmlspecialchars(trim($_REQUEST['reset_email']));}
-	$output = '';
 
-	$output .= '
+	$output = '
 	<form action="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '" method="post" name="form_reset" id="form_reset">
 	<table class="foreground" style="border-spacing: 5px; border: 1px solid ' . $config['color_text'] . ';">
 	<tr>

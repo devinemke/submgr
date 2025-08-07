@@ -59,10 +59,11 @@ function sync_last_action($submission_id)
 
 if (isset($_GET['token']) && $_GET['token'])
 {
+	kill_session('regenerate');
 	$token = trim($_GET['token']);
-	if (strlen($token) != 40 || !ctype_alnum($token)) {kill_session('regenerate'); exit_error('invalid reset token');} // session needed for form_hash()
+	if (strlen($token) != 40 || !ctype_alnum($token)) {exit_error('invalid reset token');}
 
-	$sql = "SELECT * FROM resets WHERE token = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $token) . "' ORDER BY date_time DESC LIMIT 1";
+	$sql = "SELECT contact_id, date_time FROM resets WHERE token = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $token) . "' ORDER BY date_time DESC LIMIT 1";
 	$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('SELECT reset');
 	if (mysqli_num_rows($result))
 	{
@@ -70,19 +71,17 @@ if (isset($_GET['token']) && $_GET['token'])
 		if ($gm_timestamp - strtotime($row['date_time'] . ' GMT') > $config['password_reset_exp'])
 		{
 			$error_output = 'This account password reset has expired. For security, password resets expire after <b>' . $password_reset_exp_formatted . '</b>.<br>You may reset your password again <a href="' . $app_url_slash . 'index.php?page=help">here</a>.<br>If you need additional help please contact ' . mail_to($config['admin_email']) . '.';
-			kill_session('regenerate'); // session needed for form_hash()
 			exit_error();
 		}
 		else
 		{
-			$result_contact = @mysqli_query($GLOBALS['db_connect'], "SELECT * FROM contacts WHERE contact_id = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $row['contact_id']) . "'") or exit_error('query failure: SELECT FROM contacts');
+			$result_contact = @mysqli_query($GLOBALS['db_connect'], "SELECT contact_id, email, access FROM contacts WHERE contact_id = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $row['contact_id']) . "'") or exit_error('query failure: SELECT FROM contacts');
 			$contact_reset = mysqli_fetch_assoc($result_contact);
-			if ($config['system_online'] == 'admin only' && $contact_reset['access'] != 'admin') {unset($contact_reset);} else {$_SESSION['contact_reset'] = $contact_reset; $_SESSION['reset'] = $row;}
+			if ($config['system_online'] == 'admin only' && $contact_reset['access'] != 'admin') {unset($contact_reset);} else {$_SESSION['contact_reset'] = $contact_reset;} // session needed for multiple page loads during password reset
 		}
 	}
 	else
 	{
-		kill_session('regenerate'); // session needed for form_hash()
 		exit_error('reset token not found');
 	}
 }
@@ -235,9 +234,8 @@ elseif (isset($_SESSION['contact_reset']))
 	function form_new_password()
 	{
 		extract($GLOBALS);
-		$output = '';
 
-		$output .= '
+		$output = '
 		Please enter a new password.<br><br>
 		<form action="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '" method="post" name="form_new_password" id="form_new_password">
 		<table>
