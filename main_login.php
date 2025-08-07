@@ -4582,7 +4582,8 @@ else // if staff login
 						if ($submit == 'test mail')
 						{
 							echo '<div style="font-family: monospace; font-weight: bold; white-space: nowrap;">';
-							$test_from = 'test mail from ' . $test_mail['from_name'] . ' Submission Manager using ' . strtoupper($test_mail['mail_method']);
+							$subject = 'test mail from ' . $test_mail['from_name'] . ' Submission Manager using ' . strtoupper($test_mail['mail_method']);
+							$body = $subject ."\n\n" . $local_date_time;
 							$config = $test_mail; // needed for mail_setup()
 							$mail = mail_setup();
 							$mail->SMTPDebug = 2;
@@ -4590,8 +4591,8 @@ else // if staff login
 							$mail->SMTPKeepAlive = false;
 							$mail->SetFrom($test_mail['from_email'], $test_mail['from_name']);
 							$mail->AddAddress($test_mail['to_email']);
-							$mail->Subject = $test_from;
-							$mail->Body = $test_from;
+							$mail->Subject = $subject;
+							$mail->Body = $body;
 							if ($mail->Send()) {echo '<div class="notice">Message Sent</div>';} else {echo '<div class="notice">Mailer Error</div>' . $mail->ErrorInfo;}
 							echo '</div>';
 						}
