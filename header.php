@@ -22,21 +22,21 @@ echo '
 
 if ($page == 'login' && ($module == 'account' || $module == 'submissions' || $module == 'contacts' || $module == 'reports'))
 {
-	echo '
-	<div id="tooltip_div"></div>
-	<script src="tooltip.js" nonce="' . $GLOBALS['nonce'] . '"></script>
-	';
+	echo '<div id="tooltip_div"></div>' . "\n" . '<script src="tooltip.js" nonce="' . $GLOBALS['nonce'] . '"></script>';
 }
 
 echo '
 <table style="border-collapse: collapse; width: 100%;">
 	<tr>
-		<td style="width: 200px;'; if (defined('TEST_MAIL') && TEST_MAIL) {echo ' border: 2px solid red;';} echo '">
+		<td style="width: 200px;">
 		';
-
 			if ($config)
 			{
-				if ($config['test_mode']) {echo '<div class="small notice">[ TEST MODE ]</div>';}
+				$test_block = array();
+				if ($config['test_mode']) {$test_block[] = 'TEST MODE';}
+				if (defined('TEST_MAIL') && TEST_MAIL) {$test_block[] = 'TEST MAIL';}
+				if ($test_block) {echo '<div class="small notice">[ ' . implode(' | ', $test_block) . ' ]</div>';}
+
 				if ($config['logo_path'])
 				{
 					$logo = '';
@@ -50,12 +50,12 @@ echo '
 						echo '<a href="' . $_SERVER['PHP_SELF'] . '?kill_session=1"><img src="' . $config['logo_path'] . '" alt="' . htmlspecialchars($config['company_name']) . ' logo" ' . $image_size . '></a><br>';
 					}
 				}
+
 				if ($config['company_name'] && $config['show_company_name']) {echo '<div style="font-size: ' . $font_size_plus10 . 'pt; font-weight: bold;"><a href="' . $_SERVER['PHP_SELF'] . '?kill_session=1">' . htmlspecialchars($config['company_name']) . '</a></div>';}
 			}
 
 			echo '
 			<div class="header">Submission Manager</div>
-
 		</td>
 		<td>
 		';
