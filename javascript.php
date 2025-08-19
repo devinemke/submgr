@@ -968,7 +968,7 @@ if ($continue)
 					}
 					';
 
-					$message_bodies = array();
+					$message_bodies = [];
 					if ($action_types)
 					{
 						foreach ($action_types['all'] as $key => $value)

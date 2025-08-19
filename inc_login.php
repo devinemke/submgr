@@ -11,7 +11,7 @@ function get_describe($full_columns = false)
 {
 	global $show_tables;
 
-	$describe = array();
+	$describe = [];
 	foreach ($show_tables as $value)
 	{
 		if ($full_columns)
@@ -124,7 +124,7 @@ if ($submit == 'login')
 {
 	form_hash('validate');
 	if (isset($_SESSION['goto_config'])) {$goto_config = 'Y';} // for install
-	$keep = array('csrf_token', 'goto_config', 'module');
+	$keep = ['csrf_token', 'goto_config', 'module'];
 	flush_session($keep);
 	$_SESSION['login'] = false;
 
@@ -220,11 +220,11 @@ if (isset($_SESSION['login']) && $_SESSION['login'])
 	$page_title = $module;
 	if (isset($modules[$module]) && !$_SESSION['contact']['access']) {$page_title = $modules[$module];}
 
-	$access_grouping = array(
-	'admin_editor' => array('admin', 'editor'),
-	'active' => array('active 1', 'active 2', 'active 3', 'active 4', 'active 5'),
-	'no_access' => array('', 'inactive', 'blocked'),
-	);
+	$access_grouping = [
+	'admin_editor' => ['admin', 'editor'],
+	'active' => ['active 1', 'active 2', 'active 3', 'active 4', 'active 5'],
+	'no_access' => ['', 'inactive', 'blocked'],
+	];
 	$access_grouping['staff'] = array_merge($access_grouping['admin_editor'], $access_grouping['active']);
 
 	if ($_SESSION['contact']['access'] && in_array($_SESSION['contact']['access'], $access_grouping['active'])) {$access_number = substr($_SESSION['contact']['access'], -1);}
@@ -332,7 +332,7 @@ if ($_SESSION['contact']['access'])
 {
 	function get_readers()
 	{
-		$readers = array();
+		$readers = [];
 
 		$result = @mysqli_query($GLOBALS['db_connect'], "SELECT contact_id, first_name, last_name, email, access FROM contacts WHERE access IS NOT NULL AND access != 'blocked' ORDER BY last_name, first_name") or exit_error('query failure: SELECT readers');
 		while ($row = mysqli_fetch_assoc($result))
@@ -554,7 +554,7 @@ if ($_SESSION['contact']['access'])
 					$from = make_email($config['company_name'], $config['general_dnr_email']);
 				}
 
-				$preview_all = array(
+				$preview_all = [
 				'reader' => $reader,
 				'action' => $action,
 				'receiver' => $receiver,
@@ -565,9 +565,9 @@ if ($_SESSION['contact']['access'])
 				'to' => '',
 				'subject' => $action_types['all'][$_SESSION['tag_action_type_id']]['subject'],
 				'body' => trim(str_replace('[message]', '', $action_types['all'][$_SESSION['tag_action_type_id']]['body']))
-				);
+				];
 
-				$tag = array();
+				$tag = [];
 				$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT submission_id, submitter_id, title, writer, genre_id FROM submissions WHERE submission_id IN(' . implode(',', $_POST['tag']) . ') ORDER BY date_time, submission_id') or exit_error('query failure: SELECT tag submissions');
 				while ($row = mysqli_fetch_assoc($result))
 				{
@@ -731,7 +731,7 @@ if ($_SESSION['contact']['access'])
 	{
 		if (isset($_GET['single_contact'])) {$submodule = '';} // so contact_id won't be flushed out when coming from other modules
 
-		$non_searchable = array('date_time', 'timestamp', 'password', 'access');
+		$non_searchable = ['date_time', 'timestamp', 'password', 'access'];
 
 		foreach ($describe['contacts'] as $key => $value)
 		{
@@ -741,11 +741,11 @@ if ($_SESSION['contact']['access'])
 
 		if (!isset($_SESSION['current_contact_id'])) {$_SESSION['current_contact_id'] = '';}
 
-		$submit_submodule = array(
+		$submit_submodule = [
 		'update' => 'update',
 		'delete' => 'delete',
 		'confirm' => 'delete'
-		);
+		];
 
 		if (isset($submit_submodule[$submit])) {$submodule = $submit_submodule[$submit];}
 
@@ -771,7 +771,7 @@ if ($_SESSION['contact']['access'])
 			if (!isset($_POST['mailing_list'])) {$_POST['mailing_list'] = '';}
 			if (isset($_POST['email_notification'])) {$_POST['email_notification'] = implode(',', $_POST['email_notification']);} else {$_POST['email_notification'] = '';}
 
-			if ($submodule == 'update') {$_POST = array('contact_id' => $_SESSION['current_contact_id']) + $_POST;}
+			if ($submodule == 'update') {$_POST = ['contact_id' => $_SESSION['current_contact_id']] + $_POST;}
 
 			extract($_POST);
 
@@ -991,8 +991,8 @@ if ($_SESSION['contact']['access'])
 
 			if ($submit == 'insert sample data')
 			{
-				$names = array('Joe','John','Robert','Richard','Tom','William','Charles','Christopher','Kenneth','Jason','Noah','Aaron','Baker','Allen','George','Andrew','Bert','Earnest','James','Stephen','David','Taylor','Fredrick','Brian','Roger','Ann','Sally','Jane','Helen','Jennifer','Rachel','Mary','Hillary','Barbara','Ginger','Judy','Rebecca','Laura','Lauren','Betty','Joan','Margaret','Katherine','Christine','Phoebe','Melissa','May','Dina','Cindy','Lisa');
-				$titles = array('River','Dream','Summer','Winter','Spring','Fall','Autumn','Fine','Joy','Madness','Anger','Clown','Year','Day','Morning','Evening','Night','Future','Past','Ocean','Lake','First','Second','Mother','Father','Brother','Sister','Earth','Sky','Water','Wind','Fire','Why','Depression','Battle','War','Peace','Breakfast','Lunch','Dinner','Up','Down','Left','Right','Black','White','Back','Front','Side','Top');
+				$names = ['Joe','John','Robert','Richard','Tom','William','Charles','Christopher','Kenneth','Jason','Noah','Aaron','Baker','Allen','George','Andrew','Bert','Earnest','James','Stephen','David','Taylor','Fredrick','Brian','Roger','Ann','Sally','Jane','Helen','Jennifer','Rachel','Mary','Hillary','Barbara','Ginger','Judy','Rebecca','Laura','Lauren','Betty','Joan','Margaret','Katherine','Christine','Phoebe','Melissa','May','Dina','Cindy','Lisa'];
+				$titles = ['River','Dream','Summer','Winter','Spring','Fall','Autumn','Fine','Joy','Madness','Anger','Clown','Year','Day','Morning','Evening','Night','Future','Past','Ocean','Lake','First','Second','Mother','Father','Brother','Sister','Earth','Sky','Water','Wind','Fire','Why','Depression','Battle','War','Peace','Breakfast','Lunch','Dinner','Up','Down','Left','Right','Black','White','Back','Front','Side','Top'];
 
 				include_once('inc_lists.php');
 				$timestamp_minus3 = $gm_timestamp - (60 * 60 * 24 * 365 * 3);
@@ -1123,7 +1123,7 @@ if ($_SESSION['contact']['access'])
 				if ($submit == 'export contacts') {$table = 'contacts'; $id_field = 'contact_id';}
 				if ($submit == 'export submissions') {$table = 'submissions'; $id_field = 'submission_id';}
 
-				$fields['contacts'] = array(
+				$fields['contacts'] = [
 				'contact_id' => 'AccountNo',
 				'date_time' => 'date_time',
 				'timestamp' => 'timestamp',
@@ -1142,9 +1142,9 @@ if ($_SESSION['contact']['access'])
 				'access' => 'access',
 				'email_notification' => 'email_notification',
 				'notes' => 'notes'
-				);
+				];
 
-				$fields['submissions'] = array(
+				$fields['submissions'] = [
 				'submission_id' => 'submissions.submission_id',
 				'date_time' => 'submissions.date_time',
 				'timestamp' => 'submissions.timestamp',
@@ -1156,7 +1156,7 @@ if ($_SESSION['contact']['access'])
 				'ext' => 'submissions.ext',
 				'comments' => 'submissions.comments',
 				'notes' => 'submissions.notes'
-				);
+				];
 
 				foreach ($_POST['export'][$table]['range'][$_POST['export'][$table]['field']] as $key => $value)
 				{
@@ -1335,8 +1335,8 @@ if ($_SESSION['contact']['access'])
 					$date['min'] = date('Y-m-d', $timestamp['min']) . ' 00:00:00';
 					$date['max'] = date('Y-m-d', $timestamp['max']) . ' 23:59:59';
 
-					$to_purge['submissions'] = array();
-					$to_purge['actions'] = array();
+					$to_purge['submissions'] = [];
+					$to_purge['actions'] = [];
 					$purged['submissions'] = 0;
 					$purged['actions'] = 0;
 					$purged['files'] = 0;

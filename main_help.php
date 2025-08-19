@@ -91,11 +91,11 @@ if ($submit == 'reset password')
 					$token = $GLOBALS['nonce'];
 					send_mail('contact', 'reset');
 
-					$sql_array = array(
+					$sql_array = [
 					'date_time' => $gm_date_time,
 					'contact_id' => $row['contact_id'],
 					'token' => $token
-					);
+					];
 
 					foreach ($sql_array as $key => $value) {$sql_array[$key] = "$key = '$value'";}
 					$sql = 'INSERT INTO resets SET ' . implode(',', $sql_array);

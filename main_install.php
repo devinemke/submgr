@@ -3,13 +3,13 @@ if (count(get_included_files()) == 1) {header('location: http://' . $_SERVER['HT
 if (INSTALLED) {exit_error('app already installed');}
 if (isset($_POST['step'])) {$step = $_POST['step'];} else {$step = 1;}
 
-$copy = array(
+$copy = [
 1 => 'Welcome to the <b>Submission Manager</b> installation. Basic information is needed for your database connection. Please fill out the form below. If you do not know this information, please speak to your system administrator.',
 2 => 'Now please eneter the name of the database that you wish to use for the <b>Submission Manager</b>',
 3 => 'The <b>Submission Manager</b> installation will now attempt to create the necessary tables in your database.<br><br><span class="notice"><i>WARNING!</i> all data in existing tables will be overwritten. If necessary, please backup your database tables before going forward.</span>',
 4 => 'Please enter your name, email address and a password of your choice. This info will be used to create a adminstrator level account in the <b>Submission Manager</b>. Passwords must be ' . $password_length_min . '-' . $password_length_max . ' characters (no spaces).',
 5 => 'The final step in the <b>Submission Manager</b> installation is to configure some of the program&rsquo;s basic settings. Please verify your account login info below and you will be taken to the main configuration page.'
-);
+];
 
 $config_db_string = file_get_contents('config_db_default.php');
 
@@ -96,12 +96,12 @@ function display_step($step)
 
 if ($step == 1)
 {
-	$config_db = array();
+	$config_db = [];
 }
 
 if ($step == 2)
 {
-	$config_db = array();
+	$config_db = [];
 	foreach ($_POST['config_db'] as $key => $value)
 	{
 		$value = trim($value);
@@ -239,7 +239,7 @@ if ($step == 5)
 {
 	@db_connect($_SESSION['config_db']['host'], $_SESSION['config_db']['username'], $_SESSION['config_db']['password'], $_SESSION['config_db']['name'], $_SESSION['config_db']['port']) or exit_error('unable to connect to database');
 
-	$admin = array();
+	$admin = [];
 	foreach ($_POST['admin'] as $key => $value)
 	{
 		$value = trim($value);

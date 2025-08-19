@@ -87,7 +87,7 @@ if ($page == 'update')
 	<table class="padding_lr_5">
 	';
 
-	$fixed_fields = array(
+	$fixed_fields = [
 	'submission_id',
 	'action_id',
 	'date_time',
@@ -96,7 +96,7 @@ if ($page == 'update')
 	'last_reader_id',
 	'last_action_type_id',
 	'last_receiver_id'
-	);
+	];
 
 	foreach ($row as $key => $value)
 	{
@@ -108,7 +108,7 @@ if ($page == 'update')
 		';
 
 		$value = htmlspecialchars((string) $value);
-		$enum_array = array();
+		$enum_array = [];
 		$type = 'text';
 		$extra = '';
 		if ($key == 'comments' || $key == 'message' || $key == 'notes') {$type = 'textarea';}

@@ -57,7 +57,7 @@ function address_check()
 {
 	extract($GLOBALS);
 
-	$address_check_fields = array();
+	$address_check_fields = [];
 
 	foreach ($fields as $key => $value)
 	{
@@ -183,7 +183,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 	}
 
 	// gather submissions regardless of module to get submission pending count
-	$submissions = array();
+	$submissions = [];
 
 	$genre_limits = false;
 	foreach ($genres['all'] as $key => $value)
@@ -474,7 +474,7 @@ else // if staff login
 
 	if ($submit == 'Go')
 	{
-		$keep = array('login', 'contact', 'csrf_token');
+		$keep = ['login', 'contact', 'csrf_token'];
 		flush_session($keep);
 		$submodule = '';
 	}
@@ -509,12 +509,12 @@ else // if staff login
 	{
 		global $action_types;
 
-		$action_types_form = array(
+		$action_types_form = [
 		'all' => 'all',
 		'no action' => 'no action',
 		'all forwards' => 'all forwards',
 		'all rejects' => 'all rejects'
-		);
+		];
 
 		if (isset($action_types['active']))
 		{
@@ -575,7 +575,7 @@ else // if staff login
 	{
 		if (!in_array('action_types', $show_tables)) {exit_error('action_types table unavailable');}
 
-		$submissions = array();
+		$submissions = [];
 		$single_display = false;
 
 		unset($_SESSION['sql']); // conflict with contacts area
@@ -588,14 +588,14 @@ else // if staff login
 			$submit = 'search submissions';
 		}
 
-		$search_fields = array(
+		$search_fields = [
 		'search_keyword',
 		'search_action_type_id',
 		'search_receiver_id',
 		'search_date_order',
 		'search_genre_id',
 		'search_payment'
-		);
+		];
 		foreach ($search_fields as $value)
 		{
 			if (isset($_REQUEST[$value]))
@@ -656,12 +656,12 @@ else // if staff login
 					{
 						$temp = substr($search_keyword, 1);
 						$temp = substr($temp, 0, -1);
-						$search_keyword_array = array($temp);
+						$search_keyword_array = [$temp];
 						$keyword_exact = true;
 					}
 					unset($temp);
 
-					$keyword_fields = array(
+					$keyword_fields = [
 					'submissions.submission_id',
 					'submissions.submitter_id',
 					'submissions.writer',
@@ -673,7 +673,7 @@ else // if staff login
 					'contacts.email',
 					'actions.notes',
 					'actions.message'
-					);
+					];
 
 					// FULLTEXT search
 					// mimimum search length = 4 set by ft_min_word_len
@@ -701,7 +701,7 @@ else // if staff login
 						$sql_array[$key] = 'MATCH(' . implode(',', $value) . ') AGAINST(' . $against . ')';
 					}
 
-					$keyword_clause = array();
+					$keyword_clause = [];
 					$keyword_clause['like'] = $sql_array['like'];
 					$keyword_clause['submissions'] = $sql_array['submissions'];
 					$keyword_clause['contacts'] = $sql_array['contacts'];
@@ -844,7 +844,7 @@ else // if staff login
 				$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: SELECT submissions');
 				$num_rows = mysqli_num_rows($result);
 				if (!$GLOBALS['result_count']) {$GLOBALS['result_count'] = $num_rows;}
-				if ($submodule == 'forwards') {$_SESSION['forwards'] = array();}
+				if ($submodule == 'forwards') {$_SESSION['forwards'] = [];}
 
 				if ($num_rows)
 				{
@@ -852,8 +852,8 @@ else // if staff login
 					{
 						// moved to display level
 						// if ($row['date_time']) {$row['date_time'] = timezone_adjust($row['date_time']);}
-						$row['contact'] = array();
-						$row['actions'] = array();
+						$row['contact'] = [];
+						$row['actions'] = [];
 						$submissions[$row['submission_id']] = $row;
 						$submission_ids[] = $row['submission_id'];
 						$submitters[$row['submitter_id']] = $row['submitter_id'];
@@ -865,7 +865,7 @@ else // if staff login
 
 					// get full contact info
 					$result_contacts = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM contacts WHERE contact_id IN(' . implode(',', $submitters) . ')') or exit_error('query failure: SELECT contacts');
-					$submitters = array();
+					$submitters = [];
 					while ($row = mysqli_fetch_assoc($result_contacts)) {$submitters[$row['contact_id']] = $row;}
 					foreach ($submissions as $key => $value)
 					{
@@ -1015,7 +1015,7 @@ else // if staff login
 				';
 			}
 
-			$headings = array(
+			$headings = [
 			'ID',
 			'date / time',
 			'date_paid' => 'date paid',
@@ -1027,7 +1027,7 @@ else // if staff login
 			'notes<br>(by staff)',
 			'status',
 			'actions'
-			);
+			];
 
 			if (!$config['show_date_paid']) {unset($headings['date_paid']);}
 
@@ -1195,7 +1195,7 @@ else // if staff login
 					}
 					else
 					{
-						$headings = array(
+						$headings = [
 						'ID',
 						'date / time',
 						'reader',
@@ -1204,7 +1204,7 @@ else // if staff login
 						'file',
 						'notes<br>(by staff)',
 						'message<br>(sent to receiver)'
-						);
+						];
 
 						echo $header . '<br>
 						<table class="table_list" style="margin-top: 5px;">
@@ -1227,7 +1227,7 @@ else // if staff login
 							$date_time = timezone_adjust($date_time);
 							if (isset($reader_id) && $reader_id)
 							{
-								$display_array = array();
+								$display_array = [];
 								if (isset($readers['all'][$reader_id])) {$display_array = $readers['all'][$reader_id];}
 								if ($reader_id == $submitter_id) {$display_array = $submissions[$submission_id]['contact']; $display_array = array_map('strval', $display_array); $display_array = array_map('htmlspecialchars', $display_array);}
 								if ($display_array)
@@ -1426,7 +1426,7 @@ else // if staff login
 
 							if (isset($_SESSION['file_upload']['filename'])) {$filename = $_SESSION['file_upload']['filename'];} else {$filename = '';}
 
-							$preview = array(
+							$preview = [
 							'reader' => $reader,
 							'action' => $action,
 							'receiver' => $receiver,
@@ -1438,7 +1438,7 @@ else // if staff login
 							'file' => $filename,
 							'subject' => $subject,
 							'body' => $body
-							);
+							];
 
 							$_SESSION['preview'] = $preview;
 
@@ -1455,14 +1455,14 @@ else // if staff login
 							unset($preview_display['from_name']);
 							unset($preview_display['from_email']);
 
-							$_SESSION['insert_action'] = array(
+							$_SESSION['insert_action'] = [
 							 'submission_id' => $submission_id,
 							 'reader_id' => $_SESSION['contact']['contact_id'],
 							 'action_type_id' => $new_action_type_id,
 							 'receiver_id' => $new_receiver_id,
 							 'notes' => $notes,
 							 'message' => $message
-							);
+							];
 						}
 					}
 
@@ -1581,7 +1581,7 @@ else // if staff login
 		{
 			global $action_types;
 
-			$forwards = array();
+			$forwards = [];
 
 			// sync_last_actions
 			$sql = 'SELECT submission_id FROM submissions WHERE last_action_type_id IN(' . implode(',', $action_types['forwards']) . ') AND last_receiver_id = ' . $_SESSION['contact']['contact_id'] . ' ORDER BY date_time';
@@ -1833,7 +1833,7 @@ else // if staff login
 
 									if (!isset($_SESSION['criteria']['search_date_order']) && isset($config['default_sort_order'])) {$_SESSION['criteria']['search_date_order'] = $config['default_sort_order'];}
 
-									$date_order_array = array('ascending', 'descending');
+									$date_order_array = ['ascending', 'descending'];
 									foreach ($date_order_array as $value)
 									{
 										echo '<option value="' . $value . '"';
@@ -1850,7 +1850,7 @@ else // if staff login
 
 							if ($config['show_date_paid'])
 							{
-								$payment_array = array('all', 'paid', 'unpaid');
+								$payment_array = ['all', 'paid', 'unpaid'];
 
 								echo '
 								<tr>
@@ -1887,7 +1887,7 @@ else // if staff login
 
 								if (isset($_GET['from_reports']))
 								{
-									$allowed_reports = array('daily', 'monthly', 'status', 'forwards');
+									$allowed_reports = ['daily', 'monthly', 'status', 'forwards'];
 									if (!in_array($_GET['from_reports'], $allowed_reports)) {exit_error('unauthorized report');}
 
 									$extra = '<b>[ <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=reports&report=[url_rest]">back to reports</a> ]</b>';
@@ -2052,7 +2052,7 @@ else // if staff login
 			if ($submit == 'login' || $submodule == 'forwards')
 			{
 				$submodule = 'forwards';
-				$keep = array('login', 'contact', 'forwards');
+				$keep = ['login', 'contact', 'forwards'];
 				flush_session($keep);
 				$submit = 'search submissions';
 			}
@@ -2090,8 +2090,8 @@ else // if staff login
 		$contact_id = '';
 		$contact_id_safe = '';
 		$header = '';
-		$contacts = array();
-		$contact = array();
+		$contacts = [];
+		$contact = [];
 		$access_array = field2array('enum', $describe['contacts']['access']);
 
 		// coming from reports
@@ -2106,12 +2106,12 @@ else // if staff login
 			$submit = 'search contacts';
 		}
 
-		$search_fields = array(
+		$search_fields = [
 		'search_access',
 		'search_field',
 		'search_operator',
 		'search_value'
-		);
+		];
 
 		foreach ($search_fields as $value)
 		{
@@ -2330,7 +2330,7 @@ else // if staff login
 									<select name="search_operator" style="width: 75px;">
 									';
 
-									$operators = array('contains', 'equals');
+									$operators = ['contains', 'equals'];
 
 									foreach ($operators as $value)
 									{
@@ -2356,7 +2356,7 @@ else // if staff login
 								$extra = '';
 								if (isset($_GET['from_reports']))
 								{
-									$allowed_reports = array('daily', 'contacts');
+									$allowed_reports = ['daily', 'contacts'];
 									if (!in_array($_GET['from_reports'], $allowed_reports)) {exit_error('unauthorized report');}
 
 									$extra = '<b>[ <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=reports&report=[url_rest]">back to reports</a> ]</b>';
@@ -2632,7 +2632,7 @@ else // if staff login
 						{
 							$type = 'check_list';
 							$check_array = field2array('set', $describe['contacts']['email_notification']);
-							if ($value) {$value_array = explode(',', $value);} else {$value_array = array();}
+							if ($value) {$value_array = explode(',', $value);} else {$value_array = [];}
 						}
 						if ($key == 'notes') {$type = 'textarea'; $maxlength = $fields['comments']['maxlength'];}
 
@@ -2780,14 +2780,14 @@ else // if staff login
 
 		if (!$genres) {exit_error('genres table unavailable');}
 
-		$reports = array(
+		$reports = [
 		'daily' => 'daily report',
 		'monthly' => 'monthly counts',
 		'status' => 'submissions by status',
 		'actions' => 'actions by staff',
 		'forwards' => 'forwards by staff',
 		'contacts' => 'contacts by access'
-		);
+		];
 
 		$report = '';
 		if (isset($_REQUEST['report']) && isset($reports[$_REQUEST['report']])) {$report = $_REQUEST['report'];}
@@ -2825,7 +2825,7 @@ else // if staff login
 
 					if ($report) {echo '<div class="header">' . $reports[$report] . ':</div><br>';}
 
-					$counts = array();
+					$counts = [];
 					$colspan = count($genres['all']) + 3;
 
 					$genre_headers = '<th>all</th><th>no genre</th>';
@@ -2872,8 +2872,8 @@ else // if staff login
 
 						echo '<br><br><div class="header">' . $date_report_formatted . '</div><br>';
 
-						$submissions = array();
-						$actions = array();
+						$submissions = [];
+						$actions = [];
 
 						// get submissions
 						$sql = "SELECT * FROM submissions WHERE date_time BETWEEN '$date_report_start' AND '$date_report_end' ORDER BY date_time";
@@ -2884,13 +2884,13 @@ else // if staff login
 							{
 								// moved to display level
 								// if ($row['date_time']) {$row['date_time'] = timezone_adjust($row['date_time']);}
-								$row['contact'] = array();
+								$row['contact'] = [];
 								$submissions[$row['submission_id']] = $row;
 								$submitters[$row['submitter_id']] = $row['submitter_id'];
 							}
 
 							$result_contacts = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM contacts WHERE contact_id IN(' . implode(',', $submitters) . ')') or exit_error('query failure: SELECT contacts for report');
-							$submitters = array();
+							$submitters = [];
 							while ($row = mysqli_fetch_assoc($result_contacts)) {$submitters[$row['contact_id']] = $row;}
 							foreach ($submissions as $key => $value)
 							{
@@ -2910,7 +2910,7 @@ else // if staff login
 							{
 								// moved to display level
 								// if ($row['date_time']) {$row['date_time'] = timezone_adjust($row['date_time']);}
-								$row['reader'] = array();
+								$row['reader'] = [];
 								if (isset($readers['all'][$row['reader_id']])) {$row['reader'] = $readers['all'][$row['reader_id']];} else {$readers_submitters[$row['reader_id']] = $row['reader_id'];}
 								$actions[$row['action_id']] = $row;
 							}
@@ -2919,7 +2919,7 @@ else // if staff login
 							if (isset($readers_submitters))
 							{
 								$result_contacts = @mysqli_query($GLOBALS['db_connect'], 'SELECT contact_id, first_name, last_name, email, access FROM contacts WHERE contact_id IN(' . implode(',', $readers_submitters) . ')') or exit_error('query failure: SELECT contacts for report');
-								$readers_submitters = array();
+								$readers_submitters = [];
 								while ($row = mysqli_fetch_assoc($result_contacts)) {$readers_submitters[$row['contact_id']] = $row;}
 								foreach ($actions as $key => $value)
 								{
@@ -2934,14 +2934,14 @@ else // if staff login
 						echo '<b>Submissions:</b> (' . count($submissions) . ')<br>';
 						if ($submissions)
 						{
-							$headers = array(
+							$headers = [
 							'ID',
 							'date / time',
 							'writer',
 							'title(s)',
 							'genre',
 							'status'
-							);
+							];
 
 							echo '
 							<table class="table_list" style="width: auto;">
@@ -3008,14 +3008,14 @@ else // if staff login
 						echo '<br><b>Actions:</b> (' . count($actions) . ')<br>';
 						if ($actions)
 						{
-							$headers = array(
+							$headers = [
 							'ID',
 							'date / time',
 							'submission',
 							'reader',
 							'type',
 							'receiver'
-							);
+							];
 
 							echo '
 							<table class="table_list" style="width: auto;">
@@ -3038,7 +3038,7 @@ else // if staff login
 
 								if (isset($reader_id) && $reader_id)
 								{
-									$display_array = array();
+									$display_array = [];
 
 									if (isset($readers['all'][$reader_id])) {$display_array = $readers['all'][$reader_id];}
 									if ($reader) {$display_array = $reader;}
@@ -3123,7 +3123,7 @@ else // if staff login
 							return $range;
 						}
 
-						$range = array();
+						$range = [];
 						if ($db_totals['submissions']) {$range = get_minmax('submissions');}
 						if ($db_totals['actions']) {$range = get_minmax('actions');}
 						asort($range['min_year']);
@@ -3621,7 +3621,7 @@ else // if staff login
 			exit_error();
 		}
 
-		$submodules = array(
+		$submodules = [
 		'general' => 'general configuration',
 		'action_types' => 'action types',
 		'file_types' => 'file types',
@@ -3629,7 +3629,7 @@ else // if staff login
 		'groups' => 'groups',
 		'genres' => 'genres',
 		'payment_vars' => 'payment variables'
-		);
+		];
 
 		if (!$submodule) {$submodule = 'general';}
 		$extra = '';
@@ -3730,7 +3730,7 @@ else // if staff login
 							$input = '<input type="text" id="config_' . $key . '" name="config[' . $key . ']" value="' . $value . '" class="' . $class . '">';
 							if (strpos($defaults['config'][$key]['type'], 'select|') !== false)
 							{
-								$select = array();
+								$select = [];
 								$explode = explode('|', $defaults['config'][$key]['type']);
 								if (isset($GLOBALS[$explode[1]])) {$select = $GLOBALS[$explode[1]];} else {$explode2 = explode(',', $explode[1]);}
 								if (isset($explode2)) {foreach ($explode2 as $sub_value) {$select[$sub_value] = $sub_value;} unset($explode2);}
@@ -4000,8 +4000,8 @@ else // if staff login
 						function genre_class($genre_id)
 						{
 							global $errors;
-							$class = array();
-							$genre_fields = array('name', 'submission_limit', 'price');
+							$class = [];
+							$genre_fields = ['name', 'submission_limit', 'price'];
 
 							foreach ($genre_fields as $value)
 							{
@@ -4258,7 +4258,7 @@ else // if staff login
 			exit_error();
 		}
 
-		$maintenance_submodules = array(
+		$maintenance_submodules = [
 		'cleanup' => 'cleanup temp files',
 		'sample' => 'sample data',
 		'export' => 'export data',
@@ -4268,7 +4268,7 @@ else // if staff login
 		'test_upload' => 'test upload',
 		'update_structure' => 'update data structure',
 		'versions' => 'versions'
-		);
+		];
 
 		echo '
 		<table style="border-collapse: collapse; width: 100%;">
@@ -4305,15 +4305,15 @@ else // if staff login
 					{
 						function get_files($path)
 						{
-							$file_array = array();
+							$file_array = [];
 							$dir = array_diff(scandir($path), ['.','..']);
 							foreach ($dir as $value) {$file_array[] = $value;}
 							natsort($file_array);
 							return $file_array;
 						}
 
-						$record_array = array();
-						$dates_array = array();
+						$record_array = [];
+						$dates_array = [];
 
 						$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT submission_id, date_time, YEAR(date_time) AS year, ext FROM submissions') or exit_error('query failure: SELECT submissions for cleanup');
 						if (mysqli_num_rows($result))
@@ -4341,14 +4341,14 @@ else // if staff login
 							}
 						}
 
-						$compare = array();
+						$compare = [];
 						$dir = array_diff(scandir($config['upload_path']), ['.','..']);
 						foreach ($dir as $value)
 						{
 							if (is_dir($config['upload_path'] . $value))
 							{
-								$compare[$value]['records'] = array();
-								$compare[$value]['files'] = array();
+								$compare[$value]['records'] = [];
+								$compare[$value]['files'] = [];
 							}
 						}
 
@@ -4380,13 +4380,13 @@ else // if staff login
 							}
 						}
 
-						$columns = array(
+						$columns = [
 						'year',
 						'records',
 						'files',
 						'unrecorded files',
 						'missing files'
-						);
+						];
 
 						echo '
 						<table class="table_list" style="width: auto;">
@@ -4541,7 +4541,7 @@ else // if staff login
 							$input = '<input type="text" id="test_mail_' . $key . '" name="test_mail[' . $key . ']" value="' . $value . '">';
 							if (isset($defaults['config'][$key]) && strpos($defaults['config'][$key]['type'], 'select|') !== false)
 							{
-								$select = array();
+								$select = [];
 								$explode = explode('|', $defaults['config'][$key]['type']);
 								$explode2 = explode(',', $explode[1]);
 								foreach ($explode2 as $sub_value) {$select[$sub_value] = $sub_value;}
@@ -4684,7 +4684,7 @@ else // if staff login
 
 						if ($submit == 'update data structure')
 						{
-							$updates = array();
+							$updates = [];
 
 							// needed here becuase password field type will change below
 							$hash_passwords = false;
@@ -4799,7 +4799,7 @@ else // if staff login
 							{
 								foreach ($value['fields'] as $sub_key => $sub_value)
 								{
-									$needs = array();
+									$needs = [];
 									// mySQL >= 8 deprecated parentheses in integer types
 									if (preg_match('~\(.*\)~', $describe[$key][$sub_key]['Type'])) {$type_compare = $sub_value['type'];} else {$type_compare = preg_replace('~\(.*\)~', '', $sub_value['type']);}
 									if (strtolower($type_compare) != strtolower($describe[$key][$sub_key]['Type'])) {$needs[] = 'type';}
@@ -4841,7 +4841,7 @@ else // if staff login
 
 								if ($missing_indexes)
 								{
-									$sql_array = array();
+									$sql_array = [];
 									foreach ($missing_indexes as $sub_value)
 									{
 										if ($schema[$key]['indexes'][$sub_value]['type'] == 'KEY') {$sql_array[] = "ADD INDEX `$sub_value` (" . $schema[$key]['indexes'][$sub_value]['fields'] . ')';}
@@ -4857,7 +4857,7 @@ else // if staff login
 
 								if ($extra_indexes)
 								{
-									$sql_array = array();
+									$sql_array = [];
 									foreach ($extra_indexes as $sub_value)
 									{
 										$sql_array[] = 'DROP INDEX ' . $sub_value;
@@ -4925,7 +4925,7 @@ else // if staff login
 								$copy = @copy('config_db.php', 'config_db_backup.php');
 								if ($copy) {$updates[] = 'config_db.php backup saved';}
 								$config_db_array_new[] = '<?php';
-								$config_db_array_old = array();
+								$config_db_array_old = [];
 								$config_db_file = file('config_db.php');
 								foreach ($config_db_file as $value)
 								{
@@ -4933,7 +4933,7 @@ else // if staff login
 									if (substr($value, 0, 8) == "define('") {$config_db_array_old[] = $value;}
 								}
 								$config_db_array_old_string = implode("\n", $config_db_array_old);
-								$config_db_constants_extra = array('TEST_MAIL' => 'false', 'TIDY' => 'true');
+								$config_db_constants_extra = ['TEST_MAIL' => 'false', 'TIDY' => 'true'];
 								foreach ($config_db_constants_extra as $key => $value)
 								{
 									if (strpos($config_db_array_old_string, "define('" . $key . "'") === false) {$config_db_array_old[] = "define('" . $key . "', " . $value . ");";}

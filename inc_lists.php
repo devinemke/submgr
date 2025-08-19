@@ -1,7 +1,7 @@
 <?php
 if (count(get_included_files()) == 1) {header('location: http://' . $_SERVER['HTTP_HOST']); exit();}
 
-$lists['states'] = array(
+$lists['states'] = [
 'AA' => 'Armed Forces Americas',
 'AE' => 'Armed Forces Europe',
 'AK' => 'Alaska',
@@ -64,12 +64,12 @@ $lists['states'] = array(
 'WV' => 'West Virginia',
 'WI' => 'Wisconsin',
 'WY' => 'Wyoming'
-);
+];
 $lists['states'] = array_keys($lists['states']);
 $lists['states'] = array_combine($lists['states'], $lists['states']);
 asort($lists['states']);
 
-$lists['countries'] = array(
+$lists['countries'] = [
 'ABW' => 'Aruba',
 'AFG' => 'Afghanistan',
 'AGO' => 'Angola',
@@ -320,10 +320,10 @@ $lists['countries'] = array(
 'ZAF' => 'South Africa',
 'ZMB' => 'Zambia',
 'ZWE' => 'Zimbabwe'
-);
+];
 asort($lists['countries']);
 
-$lists['timezones'] = array(
+$lists['timezones'] = [
 '-12' => 'GMT -12:00 Eniwetok, Kwajalein',
 '-11' => 'GMT -11:00 Midway Island, Samoa',
 '-10' => 'GMT -10:00 Hawaii',
@@ -354,9 +354,9 @@ $lists['timezones'] = array(
 '10' => 'GMT +10:00 Eastern Australia, Guam, Vladivostok',
 '11' => 'GMT +11:00 Magadan, Solomon Islands, New Caledonia',
 '12' => 'GMT +12:00 Auckland, Wellington, Fiji, Kamchatka'
-);
+];
 
-$lists['months'] = array(
+$lists['months'] = [
 '01' => 'January',
 '02' => 'February',
 '03' => 'March',
@@ -369,7 +369,7 @@ $lists['months'] = array(
 '10' => 'October',
 '11' => 'November',
 '12' => 'December'
-);
+];
 $lists['months_long'] = $lists['months'];
 $lists['months'] = array_keys($lists['months']);
 $lists['months'] = array_combine($lists['months'], $lists['months']);
@@ -382,7 +382,7 @@ foreach ($lists as $key => $value) {$GLOBALS[$key] = $value;}
 
 function convert_country_codes($country_code3)
 {
-	$countries = array(
+	$countries = [
 	'AFG' => 'AF',
 	'ALA' => 'AX',
 	'ALB' => 'AL',
@@ -633,7 +633,7 @@ function convert_country_codes($country_code3)
 	'YEM' => 'YE',
 	'ZMB' => 'ZM',
 	'ZWE' => 'ZW'
-	);
+	];
 
 	if (isset($countries[$country_code3])) {$country_code2 = $countries[$country_code3];} else {$country_code2 = $country_code3;}
 	return $country_code2;

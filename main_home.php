@@ -60,7 +60,7 @@ if ($submit == 'continue')
 	}
 	else
 	{
-		$keep = array('csrf_token');
+		$keep = ['csrf_token'];
 		flush_session($keep); // cannot kill_session() because form_login() has already been rendered with form_hash()
 	}
 }

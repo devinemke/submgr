@@ -32,7 +32,7 @@ echo '
 		';
 			if ($config)
 			{
-				$test_block = array();
+				$test_block = [];
 				if ($config['test_mode']) {$test_block[] = 'TEST MODE';}
 				if (defined('TEST_MAIL') && TEST_MAIL) {$test_block[] = 'TEST MAIL';}
 				if ($test_block) {echo '<div class="small notice">[ ' . implode(' | ', $test_block) . ' ]</div>';}

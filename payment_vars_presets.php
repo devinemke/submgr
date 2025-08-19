@@ -1,7 +1,7 @@
 <?php
-$payment_vars_presets = array(
+$payment_vars_presets = [
 
-'PayPal_Payments_Standard' => array(
+'PayPal_Payments_Standard' => [
 	'sql' => 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
 		(1, "out", "cmd", "_xclick"),
 		(2, "out", "business", "paypal@example.com"),
@@ -25,7 +25,7 @@ $payment_vars_presets = array(
 		(20, "in", "invoice", "$submission_id"),
 		(21, "in", "payment_status", "$result_code"),
 		(22, "in", "custom", "$hash");',
-	'config' => array(
+	'config' => [
 		'redirect_url TEST' => 'https://www.sandbox.paypal.com/cgi-bin/webscr',
 		'redirect_url LIVE' => 'https://www.paypal.com/cgi-bin/webscr',
 		'payment_redirect_method' => 'GET',
@@ -33,10 +33,10 @@ $payment_vars_presets = array(
 		'cc_exp_date_format' => 'MMYYYY',
 		'show_date_paid' => 'Y',
 		'show_payment_fields' => ''
-	)
-	),
+	]
+	],
 
-'PayPal_Payments_Pro_NVP' => array(
+'PayPal_Payments_Pro_NVP' => [
 	'sql' => 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
 		(1, "out", "METHOD", "DoDirectPayment"),
 		(2, "out", "VERSION", "51.0"),
@@ -66,7 +66,7 @@ $payment_vars_presets = array(
 		(26, "in", "L_ERRORCODE0", "$error"),
 		(27, "in", "L_SHORTMESSAGE0", "$error"),
 		(28, "in", "L_LONGMESSAGE0", "$error");',
-	'config' => array(
+	'config' => [
 		'redirect_url TEST' => 'https://api-3t.sandbox.paypal.com/nvp',
 		'redirect_url LIVE' => 'https://api-3t.paypal.com/nvp',
 		'payment_redirect_method' => 'cURL',
@@ -74,10 +74,10 @@ $payment_vars_presets = array(
 		'cc_exp_date_format' => 'MMYYYY',
 		'show_date_paid' => 'Y',
 		'show_payment_fields' => 'Y'
-	)
-	),
+	]
+	],
 
-'PayPal_Payments_Pro_REST' => array(
+'PayPal_Payments_Pro_REST' => [
 	'sql' => 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
 		(1, "out", "PayPal_REST_clientID", "PayPal_REST_clientID"),
 		(2, "out", "PayPal_REST_secret", "PayPal_REST_secret"),
@@ -99,7 +99,7 @@ $payment_vars_presets = array(
 		(18, "out", "security_code", "$cc_csc"),
 		(19, "in", "status", "$result_code"),
 		(20, "in", "error", "$error");',
-	'config' => array(
+	'config' => [
 		'redirect_url TEST' => 'https://api-m.sandbox.paypal.com',
 		'redirect_url LIVE' => 'https://api-m.paypal.com',
 		'payment_redirect_method' => 'cURL',
@@ -107,10 +107,10 @@ $payment_vars_presets = array(
 		'cc_exp_date_format' => 'YYYY-MM',
 		'show_date_paid' => 'Y',
 		'show_payment_fields' => 'Y'
-	)
-	),
+	]
+	],
 
-'PayPal_Payflow_Link' => array(
+'PayPal_Payflow_Link' => [
 	'sql' => 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
 		(1, "out", "LOGIN", "login"),
 		(2, "out", "PARTNER", "partner"),
@@ -138,7 +138,7 @@ $payment_vars_presets = array(
 		(24, "in", "INVOICE", "$submission_id"),
 		(25, "in", "RESULT", "$result_code"),
 		(26, "in", "USER4", "$hash");',
-	'config' => array(
+	'config' => [
 		'redirect_url TEST' => 'https://pilot-payflowlink.paypal.com',
 		'redirect_url LIVE' => 'https://payflowlink.paypal.com',
 		'payment_redirect_method' => 'POST',
@@ -146,10 +146,10 @@ $payment_vars_presets = array(
 		'cc_exp_date_format' => 'MMYYYY',
 		'show_date_paid' => 'Y',
 		'show_payment_fields' => 'Y'
-	)
-	),
+	]
+	],
 
-'TouchNet_uPay' => array(
+'TouchNet_uPay' => [
 	'sql' => 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
 		(1, "out", "UPAY_SITE_ID", "UPAY_SITE_ID"),
 		(2, "out", "EXT_TRANS_ID", "$submission_id"),
@@ -169,7 +169,7 @@ $payment_vars_presets = array(
 		(16, "in", "EXT_TRANS_ID", "$submission_id"),
 		(17, "in", "pmt_status", "$result_code"),
 		(18, "in", "hash", "$hash");',
-	'config' => array(
+	'config' => [
 		'redirect_url TEST' => 'https://secure.touchnet.com/C21797_upay/ext_site_test.jsp',
 		'redirect_url LIVE' => 'https://secure.touchnet.net/UPAY_SITE_ID_upay/web/index.jsp',
 		'payment_redirect_method' => 'POST',
@@ -177,10 +177,10 @@ $payment_vars_presets = array(
 		'cc_exp_date_format' => 'MMYYYY',
 		'show_date_paid' => 'Y',
 		'show_payment_fields' => ''
-	)
-	),
+	]
+	],
 
-'AuthorizeNet' => array(
+'AuthorizeNet' => [
 	'sql' => 'INSERT INTO `payment_vars` (`payment_var_id`, `direction`, `name`, `value`) VALUES
 		(1, "out", "name", "AuthorizeNet_APILoginID"),
 		(2, "out", "transactionKey", "AuthorizeNet_TransactionKey"),
@@ -202,7 +202,7 @@ $payment_vars_presets = array(
 		(18, "in", "responseCode", "$result_code"),
 		(19, "in", "errorCode", "$error"),
 		(20, "in", "errorText", "$error");',
-	'config' => array(
+	'config' => [
 		'redirect_url TEST' => 'https://apitest.authorize.net/xml/v1/request.api',
 		'redirect_url LIVE' => 'https://api.authorize.net/xml/v1/request.api',
 		'payment_redirect_method' => 'cURL',
@@ -210,7 +210,7 @@ $payment_vars_presets = array(
 		'cc_exp_date_format' => 'YYYY-MM',
 		'show_date_paid' => 'Y',
 		'show_payment_fields' => 'Y'
-	)
-	)
-);
+	]
+	]
+];
 ?>

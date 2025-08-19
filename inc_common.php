@@ -12,7 +12,7 @@ $nonce = get_token();
 form_hash('session'); // needed here so csrf_token exists in javascript
 $_SERVER['PHP_SELF'] = htmlentities($_SERVER['PHP_SELF']);
 
-$pages = array('home', 'login', 'install', 'help', 'error');
+$pages = ['home', 'login', 'install', 'help', 'error'];
 if (isset($_GET['page'])) {$page = htmlentities($_GET['page']);} else {$page = 'home';}
 if (!in_array($page, $pages)) {$page = 'error';}
 if ($page != 'home') {$page_title = $page;}
@@ -33,11 +33,11 @@ $output = '';
 $notice = '';
 $db_connect = false;
 $configuration_status = true;
-$config = array();
+$config = [];
 $display_login = true;
 $continue = true;
 $form_check = true;
-$errors = array();
+$errors = [];
 $password_length_min = 8; $password_length_max = 72; // needed here globally for install, will be overwritten by $fields
 
 if (!$session_start) {$display_login = false; exit_error('session_start failed');}
@@ -45,35 +45,35 @@ if (file_exists('config_defaults.php')) {include('config_defaults.php'); $config
 if (file_exists('config_db.php')) {include('config_db.php');} elseif (file_exists('config_db_default.php')) {include('config_db_default.php');} else {$display_login = false; exit_error('missing config_db.php');}
 if (file_exists('db_schema.php')) {include('db_schema.php');} else {$display_login = false; exit_error('missing db_schema.php');}
 
-$no_text = array(
+$no_text = [
 'no_submissions' => 'Submission Manager is currently in <b>&ldquo;no submissions&rdquo;</b> mode.<br>Submitters and staff may log into their accounts however no new submissions are being accepted at this time.',
 'admin_only' => 'Submission Manager is currently in <b>admin only</b> mode.<br>Only the system administrators have access at this time.',
 'no_cookies' => '<b>Submission Manager</b> requires that cookies be enabled in your web browser. Please enable cookies and try again.<br>You may also need to empty your browser cache and restart your browser.'
-);
+];
 
-$modules = array(
+$modules = [
 'account' => 'account summary',
 'update' => 'update your account',
 'submit' => 'submit your work',
 'pay_submission' => 'pay for submission',
 'logout' => 'logout'
-);
+];
 
-$modules_admin = array(
+$modules_admin = [
 'submissions',
 'contacts',
 'reports',
 'configuration',
 'maintenance'
-);
+];
 
-$login_required_fields = array(
-'submissions' => array('submitter_id', 'title'),
-'actions' => array('reader_id', 'action_type_id')
-);
+$login_required_fields = [
+'submissions' => ['submitter_id', 'title'],
+'actions' => ['reader_id', 'action_type_id']
+];
 
-$local_variables = array(
-'contacts' => array(
+$local_variables = [
+'contacts' => [
 	'contact_id',
 	'first_name',
 	'last_name',
@@ -87,12 +87,12 @@ $local_variables = array(
 	'zip',
 	'country',
 	'phone'
-	),
-'submissions' => array(
+	],
+'submissions' => [
 	'submission_id',
 	'genre_id'
-	),
-'payment' => array(
+	],
+'payment' => [
 	'price',
 	'cc_number',
 	'cc_exp_month',
@@ -103,8 +103,8 @@ $local_variables = array(
 	'timestamp',
 	'result_code',
 	'error'
-)
-);
+]
+];
 
 function check_version($software, $get_remote = false)
 {
@@ -131,7 +131,7 @@ function check_version($software, $get_remote = false)
 
 		if ($get_remote)
 		{
-			$options = array('http' => array('user_agent' => $_SERVER['HTTP_USER_AGENT'], 'timeout' => 10.0, 'ignore_errors' => true));
+			$options = ['http' => ['user_agent' => $_SERVER['HTTP_USER_AGENT'], 'timeout' => 10.0, 'ignore_errors' => true]];
 			$context = stream_context_create($options);
 			$version = @file_get_contents('https://www.submissionmanager.net/version.txt', false, $context);
 			if ($version) {$version_remote = trim($version);} else {$version_remote = '???';}
@@ -188,7 +188,7 @@ function insert_from_array($table, $array)
 {
 	foreach ($array as $value)
 	{
-		$sql_array = array();
+		$sql_array = [];
 		foreach ($value as $field_name => $field_value)
 		{
 			if ($field_value != '') {$field_value = "'" . mysqli_real_escape_string($GLOBALS['db_connect'], $field_value) . "'";} else {$field_value = 'NULL';}
@@ -208,13 +208,13 @@ function reset_defaults($table, $name, $array = '')
 
 if (INSTALLED)
 {
-	$config_db_constants = array(
+	$config_db_constants = [
 	'host' => 'DB_HOST',
 	'username' => 'DB_USERNAME',
 	'password' => 'DB_PASSWORD',
 	'name' => 'DB_NAME',
 	'port' => 'DB_PORT'
-	);
+	];
 
 	if (isset($config_db) && !defined('DB_HOST') && !defined('DB_USERNAME') && !defined('DB_PASSWORD') && !defined('DB_NAME')) // legacy config_db.php
 	{
@@ -251,7 +251,7 @@ if ($GLOBALS['db_connect'])
 
 	function get_tables()
 	{
-		$GLOBALS['show_tables'] = array();
+		$GLOBALS['show_tables'] = [];
 		$result = @mysqli_query($GLOBALS['db_connect'], 'SHOW TABLES') or exit_error('query failure: SHOW TABLES');
 		while ($row = mysqli_fetch_row($result))
 		{
@@ -261,7 +261,7 @@ if ($GLOBALS['db_connect'])
 	get_tables();
 
 	// check for required tables
-	$required_tables = array('config','contacts','submissions');
+	$required_tables = ['config','contacts','submissions'];
 	foreach ($required_tables as $value)
 	{
 		if (!in_array($value, $show_tables))
@@ -276,7 +276,7 @@ if ($GLOBALS['db_connect'])
 	{
 		extract($GLOBALS);
 
-		$config_invalid = array();
+		$config_invalid = [];
 
 		foreach ($array as $key => $value)
 		{
@@ -308,7 +308,7 @@ if ($GLOBALS['db_connect'])
 			}
 		}
 
-		$emails = array();
+		$emails = [];
 		if ($array['general_dnr_email']) {$emails['general_dnr_email'] = $array['general_dnr_email'];}
 		if ($array['admin_email']) {$emails['admin_email'] = $array['admin_email'];}
 
@@ -442,14 +442,14 @@ if ($GLOBALS['db_connect'])
 
 		if ($submit == 'reset defaults')
 		{
-			foreach ($config_defaults as $key => $value) {$config_defaults_reset[$key] = array('name' => $key, 'value' => $value);}
+			foreach ($config_defaults as $key => $value) {$config_defaults_reset[$key] = ['name' => $key, 'value' => $value];}
 			reset_defaults('config', 'General Configuration', $config_defaults_reset);
 		}
 	}
 
 	function get_config()
 	{
-		$GLOBALS['config'] = array(); // flush out config
+		$GLOBALS['config'] = []; // flush out config
 
 		$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM config') or exit_error('query failure: SELECT config');
 		if (mysqli_num_rows($result))
@@ -565,7 +565,7 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 			{
 				foreach ($post_action_types_insert as $key => $value)
 				{
-					$sql_array = array();
+					$sql_array = [];
 					foreach ($value as $field_name => $field_value)
 					{
 						if ($field_value != '') {$field_value = "'" . mysqli_real_escape_string($GLOBALS['db_connect'], $field_value) . "'";} else {$field_value = 'NULL';}
@@ -627,15 +627,15 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 
 	if ($module == 'configuration' && $submodule == 'fields')
 	{
-		$fields_editable = array(
+		$fields_editable = [
 		'name' => 'text',
 		'value' => 'text',
 		'maxlength' => 'text',
 		'enabled' => 'checkbox',
 		'required' => 'checkbox'
-		);
+		];
 
-		$fields_checkbox_disabled = array('email', 'password', 'password2', 'cc_number', 'cc_exp_month', 'cc_exp_year', 'cc_csc');
+		$fields_checkbox_disabled = ['email', 'password', 'password2', 'cc_number', 'cc_exp_month', 'cc_exp_year', 'cc_csc'];
 
 		include_once('inc_lists.php');
 
@@ -701,7 +701,7 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 			{
 				foreach ($post_fields as $key => $value)
 				{
-					$sql_array = array();
+					$sql_array = [];
 					foreach ($value as $sub_key => $sub_value)
 					{
 						if ($sub_value != '') {$sub_value = "'" . mysqli_real_escape_string($GLOBALS['db_connect'], $sub_value) . "'";} else {$sub_value = 'NULL';}
@@ -835,7 +835,7 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 			{
 				foreach ($post_genres as $key => $value)
 				{
-					$sql_array = array();
+					$sql_array = [];
 					foreach ($value as $field_name => $field_value)
 					{
 						if ($field_value != '') {$field_value = "'" . mysqli_real_escape_string($GLOBALS['db_connect'], $field_value) . "'";} else {$field_value = 'NULL';}
@@ -894,8 +894,8 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 
 		if ($submit == 'update')
 		{
-			$out_in = array('out' => 0, 'in' => 0);
-			$counts = array('$submission_id' => $out_in, '$result_code' => $out_in);
+			$out_in = ['out' => 0, 'in' => 0];
+			$counts = ['$submission_id' => $out_in, '$result_code' => $out_in];
 
 			foreach ($_POST['payment_vars'] as $key => $value)
 			{
@@ -977,13 +977,13 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 			reset_defaults('payment_vars', 'Payment Variables');
 			@mysqli_query($GLOBALS['db_connect'], 'ALTER TABLE `payment_vars` COMMENT = ""') or exit('query failure: ALTER TABLE payment_vars COMMENT');
 
-			$payment_vars_config = array(
+			$payment_vars_config = [
 			'payment_redirect_method',
 			'success_result_code',
 			'cc_exp_date_format',
 			'show_date_paid',
 			'show_payment_fields'
-			);
+			];
 
 			foreach ($payment_vars_config as $value)
 			{
@@ -1031,7 +1031,7 @@ function get_genres()
 {
 	global $show_tables;
 
-	$GLOBALS['genres'] = array();
+	$GLOBALS['genres'] = [];
 	if (in_array('genres', $show_tables))
 	{
 		$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM genres ORDER BY genre_id') or exit_error('query failure: SELECT genres');
@@ -1052,7 +1052,7 @@ function get_file_types()
 {
 	global $show_tables;
 
-	$GLOBALS['file_types'] = array();
+	$GLOBALS['file_types'] = [];
 	if (in_array('file_types', $show_tables))
 	{
 		$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM file_types ORDER BY ext') or exit_error('query failure: SELECT file_types');
@@ -1068,7 +1068,7 @@ function get_fields()
 {
 	global $show_tables;
 
-	$GLOBALS['fields'] = array();
+	$GLOBALS['fields'] = [];
 	if (in_array('fields', $show_tables))
 	{
 		$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM `fields`') or exit_error('query failure: SELECT fields');
@@ -1093,7 +1093,7 @@ function get_groups()
 {
 	global $show_tables;
 
-	$GLOBALS['groups'] = array();
+	$GLOBALS['groups'] = [];
 	if (in_array('groups', $show_tables))
 	{
 		$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM `groups`') or exit_error('query failure: SELECT groups');
@@ -1107,7 +1107,7 @@ function get_groups()
 
 function get_action_types()
 {
-	$GLOBALS['action_types'] = array();
+	$GLOBALS['action_types'] = [];
 	$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM action_types ORDER BY action_type_id');
 	if ($result && mysqli_num_rows($result))
 	{
@@ -1126,7 +1126,7 @@ function get_bytes_formatted($bytes)
 {
 	$bytes_formatted = '';
 
-	$size_array = array(1 => 'B', 1024 => 'KB', 1048576 => 'MB', 1073741824 => 'GB', 1099511627776 => 'TB');
+	$size_array = [1 => 'B', 1024 => 'KB', 1048576 => 'MB', 1073741824 => 'GB', 1099511627776 => 'TB'];
 	foreach ($size_array as $key => $value)
 	{
 		if ($bytes >= $key) {$bytes_formatted = number_format(round($bytes / $key, 2), 2) . ' ' . $value;}
@@ -1168,7 +1168,7 @@ function kill_session($arg = '')
 {
 	global $session_name;
 
-	$_SESSION = array();
+	$_SESSION = [];
 
 	if (ini_get('session.use_cookies') && $arg != 'regenerate')
 	{
@@ -1193,8 +1193,8 @@ function flush_session($keep)
 
 function get_payment_vars()
 {
-	$payment_vars['out'] = array();
-	$payment_vars['in'] = array();
+	$payment_vars['out'] = [];
+	$payment_vars['in'] = [];
 	$payment_vars_count = 0;
 
 	$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM payment_vars ORDER BY payment_var_id') or exit_error('query failure: SELECT payment_vars');
@@ -1307,7 +1307,7 @@ function form_main()
 	{
 		if ($config['exclude_countries'] == 'USA_only')
 		{
-			$GLOBALS['countries'] = array('USA' => 'United States');
+			$GLOBALS['countries'] = ['USA' => 'United States'];
 			$GLOBALS['country'] = 'USA';
 		}
 		else
@@ -1323,7 +1323,7 @@ function form_main()
 	if (isset($_SESSION['post']['password']) && $_SESSION['post']['password']) {$GLOBALS['password'] = $_SESSION['post']['password'];} else {$GLOBALS['password'] = '';}
 	if (!isset($genres['active'])) {unset($fields['genre_id']);}
 
-	$GLOBALS['form_sections'] = array('contact' => '', 'submission' => '', 'payment' => '');
+	$GLOBALS['form_sections'] = ['contact' => '', 'submission' => '', 'payment' => ''];
 	foreach ($fields as $key => $value) {$GLOBALS['form_sections'][$value['section']] .= display_form_row($key, $value);}
 
 	$action = $_SERVER['PHP_SELF'] . '?page=' . $page;
@@ -1538,20 +1538,20 @@ function password_check($password)
 function form_check()
 {
 	extract($GLOBALS);
-	if ($file_types) {$file_types_list = implode(', ', $file_types);} else {$file_types_list = array();}
+	if ($file_types) {$file_types_list = implode(', ', $file_types);} else {$file_types_list = [];}
 
-	$checks = array(
-	'blank' => array('status' => true, 'warning' => 'Required field(s) missing'),
-	'email' => array('status' => true, 'warning' => 'Invalid email address'),
-	'zip' => array('status' => true, 'warning' => 'Incomplete zip code'),
-	'password' => array('status' => true, 'warning' => 'Passwords must be ' . $password_length_min . '-' . $password_length_max . ' characters and cannot contain spaces'),
-	'password_match' => array('status' => true, 'warning' => 'Passwords do not match'),
-	'file' => array('status' => true, 'warning' => 'No upload file selected'),
-	'filesize_big' => array('status' => true, 'warning' => 'Uploaded file exceeds the maximum file size limit of ' . $max_file_size_formatted),
-	'filesize_small' => array('status' => true, 'warning' => 'Uploaded file is empty (0 bytes)'),
-	'file_ext' => array('status' => true, 'warning' => 'Invalid file extension. Allowed file extensions: ' . $file_types_list),
-	'cc_expired' => array('status' => true, 'warning' => 'Expiration Date entered indicates that your credit card has expired')
-	);
+	$checks = [
+	'blank' => ['status' => true, 'warning' => 'Required field(s) missing'],
+	'email' => ['status' => true, 'warning' => 'Invalid email address'],
+	'zip' => ['status' => true, 'warning' => 'Incomplete zip code'],
+	'password' => ['status' => true, 'warning' => 'Passwords must be ' . $password_length_min . '-' . $password_length_max . ' characters and cannot contain spaces'],
+	'password_match' => ['status' => true, 'warning' => 'Passwords do not match'],
+	'file' => ['status' => true, 'warning' => 'No upload file selected'],
+	'filesize_big' => ['status' => true, 'warning' => 'Uploaded file exceeds the maximum file size limit of ' . $max_file_size_formatted],
+	'filesize_small' => ['status' => true, 'warning' => 'Uploaded file is empty (0 bytes)'],
+	'file_ext' => ['status' => true, 'warning' => 'Invalid file extension. Allowed file extensions: ' . $file_types_list],
+	'cc_expired' => ['status' => true, 'warning' => 'Expiration Date entered indicates that your credit card has expired']
+	];
 
 	if ((isset($_SESSION['post']['genre_id']) && (float) $genres['all'][$_SESSION['post']['genre_id']]['price'] && $config['show_payment_fields']) || $form_type == 'pay_submission')
 	{
@@ -1669,17 +1669,17 @@ function process_captcha()
 {
 	global $config;
 
-	$captcha = array(
+	$captcha = [
 	'secret' => $config['captcha_secret_key'],
 	'response' => $_POST['g-recaptcha-response'],
 	'remoteip' => $_SERVER['REMOTE_ADDR']
-	);
+	];
 	$curl = curl_init('https://www.google.com/recaptcha/api/siteverify');
-	curl_setopt_array($curl, array(
+	curl_setopt_array($curl, [
 	CURLOPT_RETURNTRANSFER => 1,
-	CURLOPT_HTTPHEADER => array('Accept: application/json'),
+	CURLOPT_HTTPHEADER => ['Accept: application/json'],
 	CURLOPT_POST => 1,
-	CURLOPT_POSTFIELDS => $captcha));
+	CURLOPT_POSTFIELDS => $captcha]);
 	$response = curl_exec($curl);
 	curl_close($curl);
 	$response = json_decode($response);
@@ -1714,8 +1714,8 @@ function display($arg)
 	$display_source = $GLOBALS; // need to work with a copy
 	$output = '';
 	$display_template = '[first_name] [last_name]' . "\n" . '[email]' . "\n" . '[company]' . "\n" . '[address1]' . "\n" . '[address2]' . "\n" . '[city], [state] [zip]' . "\n" . '[country]' . "\n" . '[phone]';
-	$odd_boxes['comma'] = array('[city],', ', [state]'); // orphaned boxes with commas
-	$odd_boxes['email'] = array('[at]' => '|at|', '[dot]' => '|dot|'); // needed when email is run through mail_to()
+	$odd_boxes['comma'] = ['[city],', ', [state]']; // orphaned boxes with commas
+	$odd_boxes['email'] = ['[at]' => '|at|', '[dot]' => '|dot|']; // needed when email is run through mail_to()
 
 	foreach ($fields as $key => $value)
 	{
@@ -1878,12 +1878,12 @@ function get_row_string($table, $field_name, $field_value)
 	$array = mysqli_fetch_assoc($result);
 	unset($array['password']);
 
-	$foreign_keys = array(
+	$foreign_keys = [
 	'reader_id',
 	'receiver_id',
 	'action_type_id',
 	'genre_id'
-	);
+	];
 
 	foreach ($array as $key => $value)
 	{
@@ -2063,7 +2063,7 @@ function send_mail($arg1, $arg2)
 	}
 }
 
-$placeholders = array(
+$placeholders = [
 'app_url' => 'the URL of the Submission Manager',
 'company_name' => 'your company&rsquo;s name',
 'reader' => 'the name of the staff reader sending the action',
@@ -2075,7 +2075,7 @@ $placeholders = array(
 'last_name' => 'the writer&rsquo;s last name',
 'genre' => 'the submission&rsquo;s genre',
 'message' => 'a personalized message'
-);
+];
 
 function replace_placeholders($arg)
 {
@@ -2181,14 +2181,14 @@ function redirect()
 			curl_setopt($ch, CURLOPT_VERBOSE, 1);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-			if ($GLOBALS['IsAuthorizeNet']) {curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));}
+			if ($GLOBALS['IsAuthorizeNet']) {curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);}
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $nvp);
 			$httpResponse = curl_exec($ch);
 			curl_close($ch);
 			if (!$httpResponse) {$GLOBALS['error_output'] = str_replace('[error]', $method . ' failed: ' . curl_error($ch) . ' (' . curl_errno($ch) . ')', $GLOBALS['error_output']); exit_error();}
-			$httpParsedResponseAr = array();
+			$httpParsedResponseAr = [];
 
 			// invalid EXPDATE from PayPal Payments Pro NVP (single string, not NVP)
 			if (strpos($httpResponse, 'is not a valid uint32') !== false)
@@ -2283,7 +2283,7 @@ function redirect()
 			include_once('inc_lists.php');
 
 			$endpoint = $url . '/v1/oauth2/token';
-			$http_header_array = array('Content-Type: application/x-www-form-urlencoded');
+			$http_header_array = ['Content-Type: application/x-www-form-urlencoded'];
 			$post_fields = 'grant_type=client_credentials';
 			$response = curl_paypal($endpoint, $http_header_array, $post_fields);
 			if (isset($response['error']) && isset($response['error_description'])) {$GLOBALS['error_output'] = str_replace('[error]', $response['error'] . ' : ' . $response['error_description'], $GLOBALS['error_output']); exit_error();}
@@ -2342,7 +2342,7 @@ function redirect()
 			}
 
 			$endpoint = $url . '/v2/checkout/orders';
-			$http_header_array = array('Authorization: Bearer ' . $PayPal_REST_access_token, 'PayPal-Request-Id: ' . $PayPal_REST_requestID, 'Content-Type: application/json');
+			$http_header_array = ['Authorization: Bearer ' . $PayPal_REST_access_token, 'PayPal-Request-Id: ' . $PayPal_REST_requestID, 'Content-Type: application/json'];
 			$post_fields = $PayPal_REST_json;
 			$response = curl_paypal($endpoint, $http_header_array, $post_fields);
 
@@ -2444,7 +2444,7 @@ function redirect()
 			if ($httpParsedResponseAr[$GLOBALS['result_field']] == $config['success_result_code']) {$payment_status = true;}
 		}
 
-		$keep = array('login', 'contact', 'csrf_token');
+		$keep = ['login', 'contact', 'csrf_token'];
 		flush_session($keep);
 
 		if ($payment_status)
@@ -2569,7 +2569,7 @@ function output_tidy()
 
 	if (extension_loaded('tidy') && $output_tidy)
 	{
-		$tidy_config = array('indent' => true, 'wrap' => 0);
+		$tidy_config = ['indent' => true, 'wrap' => 0];
 		$buffer = ob_get_clean();
 		$tidy = new tidy;
 		$tidy->parseString($buffer, $tidy_config, 'utf8');

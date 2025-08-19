@@ -4,11 +4,11 @@ get_payment_vars();
 
 if (!isset($payment_vars['in']) || (isset($payment_vars['in']) && !$payment_vars['in'])) {exit('payment_vars not set');}
 
-$fields = array(
+$fields = [
 'submission_id' => '',
 'result_code' => '',
 'hash' => ''
-);
+];
 
 foreach ($payment_vars['in'] as $value)
 {
@@ -52,7 +52,7 @@ if ($ipn)
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $req);
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
 	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Host: www.paypal.com'));
+	curl_setopt($ch, CURLOPT_HTTPHEADER, ['Host: www.paypal.com']);
 	$res = curl_exec($ch);
 	curl_close($ch);
 
