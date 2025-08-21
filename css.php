@@ -128,6 +128,12 @@ input[type="text"], input[type="password"], input[type="file"]
 	border: 1px solid ' . $config['color_text'] . ';
 	border-radius: ' . $config['border_radius'] . 'px;
 	width: 300px;
+	height: 20px;
+}
+
+input[type="file"]
+{
+	height: 24px;
 }
 
 input[type="checkbox"], input[type="radio"]
@@ -145,6 +151,7 @@ select
 	border: 1px solid ' . $config['color_text'] . ';
 	border-radius: ' . $config['border_radius'] . 'px;
 	width: 300px;
+	height: 22px;
 }
 
 textarea
