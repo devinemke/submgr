@@ -1582,6 +1582,70 @@ if ($continue)
 			event_listener("click", "popup_version_php", function(event) { lightbox("on","popup.php?page=phpinfo",1200,700,100,10); event.preventDefault(); });
 			event_listener("click", "popup_version_mysql", function(event) { lightbox("on","popup.php?page=mysqlinfo",1200,700,100,10); event.preventDefault(); });
 			';
+
+			if ($submodule == 'export')
+			{
+				echo '
+				document.addEventListener("DOMContentLoaded", function()
+				{
+					export_fields = [
+					"contacts|contact_id",
+					"contacts|date_time",
+					"contacts|timestamp",
+					"submissions|submission_id",
+					"submissions|date_time",
+					"submissions|timestamp"
+					];
+
+					for (let i = 0; i < export_fields.length; i++)
+					{
+						let export_field = export_fields[i];
+						export_field_split = export_field.split("|");
+						export_field = "export[" + export_field_split[0] + "][field][" + export_field_split[1] + "]";
+						export_range = export_field.replace("field", "range");
+						let export_range_min = export_range + "[min]";
+						let export_range_max = export_range + "[max]";
+						if (document.getElementById(export_field))
+						{
+							document.getElementById(export_range_min).addEventListener("focus", function(event) { document.getElementById(export_field).checked = true; });
+							document.getElementById(export_range_max).addEventListener("focus", function(event) { document.getElementById(export_field).checked = true; });
+							if (export_range_min.indexOf("_id") >= 0) {document.getElementById(export_range_min).addEventListener("blur", function(event) { document.getElementById(export_range_min).value = document.getElementById(export_range_min).value.replace(/[^0-9]/g, ""); });}
+							if (export_range_max.indexOf("_id") >= 0) {document.getElementById(export_range_max).addEventListener("blur", function(event) { document.getElementById(export_range_max).value = document.getElementById(export_range_max).value.replace(/[^0-9]/g, ""); });}
+						}
+					}
+
+					export_ranges = [
+					"contacts|date_time|min",
+					"contacts|date_time|max",
+					"contacts|timestamp|min",
+					"contacts|timestamp|max",
+					"submissions|date_time|min",
+					"submissions|date_time|max",
+					"submissions|timestamp|min",
+					"submissions|timestamp|max"
+					];
+
+					for (let i = 0; i < export_ranges.length; i++)
+					{
+						let export_range = export_ranges[i];
+						export_range_split = export_range.split("|");
+						export_range = "export[" + export_range_split[0] + "][range][" + export_range_split[1] + "][" + export_range_split[2] + "]";
+						if (document.getElementById(export_range)) {const picker_export = new Litepicker({element: document.getElementById(export_range)});}
+					}
+				});
+				';
+			}
+
+			if ($submodule == 'purge')
+			{
+				echo '
+				document.addEventListener("DOMContentLoaded", function()
+				{
+					const picker_purge_range_min = new Litepicker({element: document.getElementById("purge_range[min]")});
+					const picker_purge_range_max = new Litepicker({element: document.getElementById("purge_range[max]")});
+				});
+				';
+			}
 		}
 	}
 

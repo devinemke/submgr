@@ -4482,9 +4482,14 @@ else // if staff login
 						if ($deletes['truncate_resets']) {echo '<div class="notice" style="font-style: italic;">TRUNCATE resets</div>';}
 					}
 
+					if ($submodule == 'export')
+					{
+						if ($notice) {echo '<p><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&submodule=' . $submodule . '" style="font-weight: bold;">new export</a></p>';}
+					}
+
 					if ($submodule == 'purge')
 					{
-						echo'
+						echo '
 						<p>
 						This function will purge legacy password hashes.<br>
 						Submission Manager < version 3.33 (running on PHP < version 5.5) stored passwords using the legacy SHA1 hashing algorithm.<br>

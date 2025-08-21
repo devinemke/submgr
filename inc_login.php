@@ -1088,6 +1088,7 @@ if ($_SESSION['contact']['access'])
 			if (!$submit)
 			{
 				$copy = '
+				<script src="litepicker.js" nonce="' . $GLOBALS['nonce'] . '"></script>
 				<p>These functions will export Submission Manager data into CSV files.</p>
 
 				<p class="header">Export Contacts</p>
@@ -1122,6 +1123,7 @@ if ($_SESSION['contact']['access'])
 			{
 				if ($submit == 'export contacts') {$table = 'contacts'; $id_field = 'contact_id';}
 				if ($submit == 'export submissions') {$table = 'submissions'; $id_field = 'submission_id';}
+				if (strpos($_POST['export'][$table]['field'], 'id') !== false) {$var = 'id';} else {$var = $_POST['export'][$table]['field'];}
 
 				$fields['contacts'] = [
 				'contact_id' => 'AccountNo',
@@ -1163,7 +1165,17 @@ if ($_SESSION['contact']['access'])
 					$value = trim($value);
 					$value = strip_tags($value);
 					$value = stripslashes($value);
-					if (strpos($_POST['export'][$table]['field'], 'id') !== false) {$var = 'id';} else {$var = $_POST['export'][$table]['field'];}
+					if ($var == 'id')
+					{
+						$value = preg_replace('/[^0-9]/i', '', $value);
+					}
+					else
+					{
+						$value = preg_replace('/[^0-9-]/i', '', $value);
+						if ($key == 'min') {$date_suffix = ' 00:00:00';}
+						if ($key == 'max') {$date_suffix = ' 23:59:59';}
+						$value = date('Y-m-d', strtotime($value)) . $date_suffix;
+					}
 					$var_name = $key . '_' . $var;
 					if ($value == '') {$value = $min_max[$table][$var_name];}
 					$$key = $value;
@@ -1193,7 +1205,7 @@ if ($_SESSION['contact']['access'])
 					$extra .= ', contacts';
 				}
 
-				$sql = 'SELECT ' . implode(', ', $fields_array) . ' FROM ' . $table . $extra . ' WHERE ' . $field . " BETWEEN '" . mysqli_real_escape_string($GLOBALS['db_connect'], $min) . "' AND '" . mysqli_real_escape_string($GLOBALS['db_connect'], $max) . "'";
+				$sql = 'SELECT ' . implode(', ', $fields_array) . ' FROM ' . $table . $extra . ' WHERE ' . $field . " BETWEEN '" . mysqli_real_escape_string($GLOBALS['db_connect'], (string) $min) . "' AND '" . mysqli_real_escape_string($GLOBALS['db_connect'], (string) $max) . "'";
 				if ($table == 'contacts' && !isset($_POST['export'][$table]['staff'])) {$sql .= " AND (access IS NULL OR access = 'blocked')";}
 				if ($table == 'submissions' && isset($_POST['export'][$table]['contacts'])) {$sql .= ' AND submitter_id = contact_id';}
 				$sql .= ' ORDER BY ' . $id_field;
@@ -1311,6 +1323,7 @@ if ($_SESSION['contact']['access'])
 			get_min_max('submissions', 'submission_id');
 
 			$copy = '
+			<script src="litepicker.js" nonce="' . $GLOBALS['nonce'] . '"></script>
 			<p class="notice"><i>WARNING:</i> This will permanently delete data from your database! Please backup and archive your database before proceeding.</p>
 			<p>This function will purge submissions and their related actions and files.</p>
 			<b>purge range:</b><br>
