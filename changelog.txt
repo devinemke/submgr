@@ -1,4 +1,5 @@
-version 3.42 2025-08-19
+version 3.42 2025-09-06
+- moved PayPal_REST + AuthorizeNet API requests to JSON files
 - PHP short array syntax
 - added $config['password_reset_exp'] (default = 3600)
 - form_insert_submission_check() now honors $fields['file']['required']

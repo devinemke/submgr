@@ -1191,6 +1191,14 @@ function flush_session($keep)
 	foreach ($_SESSION as $key => $value) {if (!in_array($key, $keep)) {unset($_SESSION[$key]);}}
 }
 
+function cc_exp_date_format($year, $month)
+{
+	$date_format = $GLOBALS['config']['cc_exp_date_format'];
+	$date_format = str_replace('YYYY', 'Y', $date_format);
+	$date_format = str_replace('MM', 'm', $date_format);
+	return gmdate($date_format, strtotime($year . '-' . $month));
+}
+
 function get_payment_vars()
 {
 	$payment_vars['out'] = [];
@@ -1226,10 +1234,7 @@ function get_local_variables($arg)
 		$local_variables_flat['cc_number'] = $cc_number;
 		$local_variables_flat['cc_exp_month'] = $cc_exp_month;
 		$local_variables_flat['cc_exp_year'] = $cc_exp_year;
-		if ($config['cc_exp_date_format'] == 'MMYYYY') {$local_variables_flat['cc_exp_date'] = $cc_exp_month . $cc_exp_year;}
-		if ($config['cc_exp_date_format'] == 'MM-YYYY') {$local_variables_flat['cc_exp_date'] = $cc_exp_month . '-' . $cc_exp_year;}
-		if ($config['cc_exp_date_format'] == 'YYYYMM') {$local_variables_flat['cc_exp_date'] = $cc_exp_year . $cc_exp_month;}
-		if ($config['cc_exp_date_format'] == 'YYYY-MM') {$local_variables_flat['cc_exp_date'] = $cc_exp_year . '-' . $cc_exp_month;}
+		$local_variables_flat['cc_exp_date'] = cc_exp_date_format($cc_exp_year, $cc_exp_month);
 		$local_variables_flat['cc_csc'] = $cc_csc;
 	}
 
@@ -1765,11 +1770,8 @@ function display($arg)
 		$output .= '<hr><table style="border-collapse: collapse;"><tr><td class="row_left">price:</td><td><b>' . $config['currency_symbol'] . $price . '</b></td></tr>';
 		if (isset($cc_number) && $cc_number)
 		{
-			$cc_number_display = str_repeat('xxxx ', 3) . substr($cc_number, -4);
-			if ($config['cc_exp_date_format'] == 'MMYYYY') {$cc_exp_date = $cc_exp_month . $cc_exp_year;}
-			if ($config['cc_exp_date_format'] == 'MM-YYYY') {$cc_exp_date = $cc_exp_month . '-' . $cc_exp_year;}
-			if ($config['cc_exp_date_format'] == 'YYYYMM') {$cc_exp_date = $cc_exp_year . $cc_exp_month;}
-			if ($config['cc_exp_date_format'] == 'YYYY-MM') {$cc_exp_date = $cc_exp_year . '-' . $cc_exp_month;}
+			$cc_number_display = str_repeat('&bull;&bull;&bull;&bull; ', 3) . substr($cc_number, -4);
+			$cc_exp_date = $cc_exp_year . '-' . $cc_exp_month;
 			$output .= '<tr><td class="row_left">[cc_number]:</td><td><b>' . $cc_number_display . '</b></td></tr><tr><td class="row_left">expiration date:</td><td><b>' . $cc_exp_date . '</b></td></tr><tr><td class="row_left">[cc_csc]:</td><td><b>' . $cc_csc . '</b></td></tr>';
 		}
 		$output .= '</table>';
@@ -2172,6 +2174,12 @@ function redirect()
 
 	if ($config['payment_redirect_method'] == 'cURL')
 	{
+		function error_output_replace_exit($error_text)
+		{
+			$GLOBALS['error_output'] = str_replace('[error]', $error_text, $GLOBALS['error_output']);
+			exit_error();
+		}
+
 		function PPHttpPost($method, $nvp, $url)
 		{
 			extract($GLOBALS);
@@ -2187,7 +2195,7 @@ function redirect()
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $nvp);
 			$httpResponse = curl_exec($ch);
 			curl_close($ch);
-			if (!$httpResponse) {$GLOBALS['error_output'] = str_replace('[error]', $method . ' failed: ' . curl_error($ch) . ' (' . curl_errno($ch) . ')', $GLOBALS['error_output']); exit_error();}
+			if (!$httpResponse) {error_output_replace_exit($method . ' failed: ' . curl_error($ch) . ' (' . curl_errno($ch) . ')');}
 			$httpParsedResponseAr = [];
 
 			// invalid EXPDATE from PayPal Payments Pro NVP (single string, not NVP)
@@ -2229,7 +2237,7 @@ function redirect()
 				}
 			}
 
-			if (count($httpParsedResponseAr) == 0 || !isset($httpParsedResponseAr[$GLOBALS['result_field']])) {$GLOBALS['error_output'] = str_replace('[error]', 'Invalid HTTP Response for POST request to ' . $url, $GLOBALS['error_output']); exit_error();}
+			if (count($httpParsedResponseAr) == 0 || !isset($httpParsedResponseAr[$GLOBALS['result_field']])) {error_output_replace_exit('Invalid HTTP Response for POST request to ' . $url);}
 			return $httpParsedResponseAr;
 		}
 
@@ -2273,7 +2281,7 @@ function redirect()
 				curl_setopt($curl, CURLOPT_POSTFIELDS, $post_fields);
 				$response = curl_exec($curl);
 				curl_close($curl);
-				if (!$response) {$GLOBALS['error_output'] = str_replace('[error]', 'cURL failed: ' . curl_error($curl) . ' (' . curl_errno($curl) . ')', $GLOBALS['error_output']); exit_error();}
+				if (!$response) {error_output_replace_exit('cURL failed: ' . curl_error($curl) . ' (' . curl_errno($curl) . ')');}
 				$response = json_decode($response, true);
 				return $response;
 			}
@@ -2286,54 +2294,11 @@ function redirect()
 			$http_header_array = ['Content-Type: application/x-www-form-urlencoded'];
 			$post_fields = 'grant_type=client_credentials';
 			$response = curl_paypal($endpoint, $http_header_array, $post_fields);
-			if (isset($response['error']) && isset($response['error_description'])) {$GLOBALS['error_output'] = str_replace('[error]', $response['error'] . ' : ' . $response['error_description'], $GLOBALS['error_output']); exit_error();}
-			if (isset($response['access_token'])) {$PayPal_REST_access_token = $response['access_token'];} else {$GLOBALS['error_output'] = str_replace('[error]', 'Invalid access_token', $GLOBALS['error_output']); exit_error();}
+			if (isset($response['error']) && isset($response['error_description'])) {error_output_replace_exit($response['error'] . ' : ' . $response['error_description']);}
+			if (isset($response['access_token'])) {$PayPal_REST_access_token = $response['access_token'];} else {error_output_replace_exit('Invalid access_token');}
 
-			$PayPal_REST_json = '
-			{
-				"intent": "CAPTURE",
-				"purchase_units":
-				[
-					{
-						"custom_id": "[custom_id]",
-						"description": "[description]",
-						"amount":
-						{
-							"currency_code": "[currency_code]",
-							"value": "[value]"
-						}
-					}
-				],
-				"payer":
-				{
-					"name":
-					{
-						"given_name": "[given_name]",
-						"surname": "[surname]"
-					},
-					"email_address": "[email_address]",
-					"address":
-					{
-						"address_line_1": "[address_line_1]",
-						"address_line_2": "[address_line_2]",
-						"admin_area_2": "[admin_area_2]",
-						"admin_area_1": "[admin_area_1]",
-						"postal_code": "[postal_code]",
-						"country_code": "[country_code]"
-					}
-				},
-				"payment_source":
-				{
-					"card":
-					{
-						"number": "[number]",
-						"expiry": "[expiry]",
-						"security_code": "[security_code]"
-					}
-				}
-			}
-			';
-
+			$PayPal_REST_json = @file_get_contents('payment_PayPal_REST.json');
+			if (!$PayPal_REST_json) {error_output_replace_exit('cannot read payment_PayPal_REST.json');}
 			$prep_array = prep_payment_vars('post');
 			foreach ($prep_array as $key => $value)
 			{
@@ -2375,58 +2340,8 @@ function redirect()
 
 		if ($GLOBALS['IsAuthorizeNet'])
 		{
-			$AuthorizeNet_json = '
-			{
-				"createTransactionRequest":
-				{
-					"merchantAuthentication":
-					{
-						"name": "[name]",
-						"transactionKey": "[transactionKey]"
-					},
-					"refId": "[refId]",
-					"transactionRequest":
-					{
-						"transactionType": "authCaptureTransaction",
-						"amount": "[amount]",
-						"payment":
-						{
-							"creditCard":
-							{
-								"cardNumber": "[cardNumber]",
-								"expirationDate": "[expirationDate]",
-								"cardCode": "[cardCode]"
-							}
-						},
-						"customer":
-						{
-							"id": "[customer_id]",
-							"email": "[email]"
-						},
-						"billTo":
-						{
-							"firstName": "[firstName]",
-							"lastName": "[lastName]",
-							"company": "[company]",
-							"address": "[address]",
-							"city": "[city]",
-							"state": "[state]",
-							"zip": "[zip]",
-							"country": "[country]"
-						},
-						"transactionSettings":
-						{
-							"setting":
-							{
-								"settingName": "duplicateWindow",
-								"settingValue": "10"
-							}
-						}
-					}
-				}
-			}
-			';
-
+			$AuthorizeNet_json = @file_get_contents('payment_AuthorizeNet.json');
+			if (!$AuthorizeNet_json) {error_output_replace_exit('cannot read payment_AuthorizeNet.json');}
 			$prep_array = prep_payment_vars('post');
 			foreach ($prep_array as $key => $value) {$AuthorizeNet_json = str_replace("[$key]", $value, $AuthorizeNet_json);}
 			$nvp = $AuthorizeNet_json;
@@ -2462,8 +2377,7 @@ function redirect()
 				if (isset($httpParsedResponseAr[$key])) {$GLOBALS['errors'][$key] = $httpParsedResponseAr[$key];}
 			}
 
-			$GLOBALS['error_output'] = str_replace('[error]', implode(' : ', $GLOBALS['errors']), $GLOBALS['error_output']);
-			exit_error();
+			error_output_replace_exit(implode(' : ', $GLOBALS['errors']));
 		}
 	}
 }

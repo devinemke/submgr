@@ -1,0 +1,42 @@
+{
+	"intent": "CAPTURE",
+	"purchase_units":
+	[
+		{
+			"custom_id": "[custom_id]",
+			"description": "[description]",
+			"amount":
+			{
+				"currency_code": "[currency_code]",
+				"value": "[value]"
+			}
+		}
+	],
+	"payer":
+	{
+		"name":
+		{
+			"given_name": "[given_name]",
+			"surname": "[surname]"
+		},
+		"email_address": "[email_address]",
+		"address":
+		{
+			"address_line_1": "[address_line_1]",
+			"address_line_2": "[address_line_2]",
+			"admin_area_2": "[admin_area_2]",
+			"admin_area_1": "[admin_area_1]",
+			"postal_code": "[postal_code]",
+			"country_code": "[country_code]"
+		}
+	},
+	"payment_source":
+	{
+		"card":
+		{
+			"number": "[number]",
+			"expiry": "[expiry]",
+			"security_code": "[security_code]"
+		}
+	}
+}

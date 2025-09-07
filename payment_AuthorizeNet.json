@@ -1,0 +1,49 @@
+{
+	"createTransactionRequest":
+	{
+		"merchantAuthentication":
+		{
+			"name": "[name]",
+			"transactionKey": "[transactionKey]"
+		},
+		"refId": "[refId]",
+		"transactionRequest":
+		{
+			"transactionType": "authCaptureTransaction",
+			"amount": "[amount]",
+			"payment":
+			{
+				"creditCard":
+				{
+					"cardNumber": "[cardNumber]",
+					"expirationDate": "[expirationDate]",
+					"cardCode": "[cardCode]"
+				}
+			},
+			"customer":
+			{
+				"id": "[customer_id]",
+				"email": "[email]"
+			},
+			"billTo":
+			{
+				"firstName": "[firstName]",
+				"lastName": "[lastName]",
+				"company": "[company]",
+				"address": "[address]",
+				"city": "[city]",
+				"state": "[state]",
+				"zip": "[zip]",
+				"country": "[country]"
+			},
+			"transactionSettings":
+			{
+				"setting":
+				{
+					"settingName": "duplicateWindow",
+					"settingValue": "10"
+				}
+			}
+		}
+	}
+}
