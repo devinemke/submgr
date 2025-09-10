@@ -116,7 +116,7 @@ code
 <div style="text-align: center;">
 <div style="font-size: 25pt; font-weight: bold;">Submission Manager</div>
 <div style="font-size: 15pt;">System Documentation</div>
-<div style="font-size: 10pt;">updated 2025-08-06<br>&copy;2025 Devin Emke</div>
+<div style="font-size: 10pt;">updated 2025-09-08<br>&copy;2025 Devin Emke</div>
 </div>
 
 <hr>
@@ -207,10 +207,10 @@ code
 
 	<ul>
 	<li>Web Server</li>
-	<li><a href="https://www.php.net" target="_blank">PHP</a> (version 5.5 or higher)</li>
-	<li><a href="https://www.mysql.com" target="_blank">mySQL</a> (version 5 or higher)</li>
+	<li><a href="https://www.php.net" target="_blank">PHP</a> (version >= 5.5)</li>
+	<li><a href="https://www.mysql.com" target="_blank">mySQL</a> (version >= 5)</li>
 	<li>SMTP (for email notifications)</li>
-	<li>Web Browser (set to accept cookies)</li>
+	<li>Web Browser (with JavaScript enabled and set to accept cookies)</li>
 	</ul>
 
 	<p>Submission Manager is designed to be accessed by a web browser. It has been tested on a wide variety of current browsers (Chrome, Firefox, Safari, Internet Explorer, Edge). Some features may not work on earlier versions of these browsers, but newer versions of all of these browsers are freely available.</p>
@@ -318,7 +318,7 @@ define('DB_PORT', '[port]');
 ?&gt;
 </pre>
 
-		<p>Update the <b>[host]</b>, <b>[username]</b>, <b>[password]</b>, <b>[name]</b>, and <b>[port]</b> to match your mySQL connection parameters. The [name] field is the name of the database where you are storing Submission Manager data. Be sure to use a plain ASCII text editor when editing this file. When you have finished editing the file, upload it to your web server in the directory where you installed Submission Manager.</p>
+		<p>Update the <b>[host]</b>, <b>[username]</b>, <b>[password]</b>, <b>[name]</b>, and <b>[port]</b> to match your mySQL connection parameters. The <b>[name]</b> field is the name of the database where you are storing Submission Manager data. Be sure to use a plain ASCII text editor when editing this file. When you have finished editing the file, upload it to your web server in the directory where you installed Submission Manager.</p>
 	</div>
 
 </div>
@@ -820,9 +820,9 @@ body
 
 		<ul>
 		<li><a href="https://developer.paypal.com/api/nvp-soap/paypal-payments-standard/web/" target="_blank">PayPal Payments Standard</a></li>
-		<li><a href="https://www.paypal.com/us/webapps/mpp/paypal-payments-pro" target="_blank">PayPal Payments Pro</a></li>
+		<li><a href="https://developer.paypal.com/api/nvp-soap/paypal-payments-pro/" target="_blank">PayPal Payments Pro</a></li>
 		<li><a href="https://developer.paypal.com/api/nvp-soap/payflow/" target="_blank">PayPal Payflow Link</a></li>
-		<li><a href="https://www.touchnet.com/payment-solutions/marketplace" target="_blank">TouchNet uPay</a></li>
+		<li><a href="https://www.touchnet.com/campus-commerce/marketplace" target="_blank">TouchNet uPay</a></li>
 		<li><a href="https://www.authorize.net" target="_blank">Authorize.net</a></li>
 		</ul>
 
