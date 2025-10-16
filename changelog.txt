@@ -1,5 +1,5 @@
-version 3.42 2025-09-30
-- upgraded to PHPMailer 6.11.1 (2025-09-30)
+version 3.42 2025-10-16
+- upgraded to PHPMailer 7.0.0 (2025-10-15)
 - moved PayPal_REST + AuthorizeNet API requests to JSON files
 - PHP short array syntax
 - added $config['password_reset_exp'] (default = 3600)
