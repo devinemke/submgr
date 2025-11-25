@@ -1,5 +1,5 @@
-version 3.42 2025-10-16
-- upgraded to PHPMailer 7.0.0 (2025-10-15)
+version 3.42 2025-11-25
+- upgraded to PHPMailer 7.0.1 (2025-11-25)
 - moved PayPal_REST + AuthorizeNet API requests to JSON files
 - PHP short array syntax
 - added $config['password_reset_exp'] (default = 3600)
@@ -10,7 +10,6 @@ version 3.42 2025-10-16
 - fixes for $config['company_name'] with "the" prefix
 - added update legacy config_db.php to /maintenance/update data structure/
 - changed $config_db array to DB_* constants in config_db.php
-- upgraded to PHPMailer 6.10.0 (2025-04-24)
 - added "include passwords" to /maintenance/sample data/
 - added JavaScript date picker to date form fields (litepicker.js)
 - removed unsafe-inline from default script-src (CSP Level 2 now required)
