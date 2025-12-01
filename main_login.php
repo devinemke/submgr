@@ -3698,6 +3698,7 @@ else // if staff login
 						$colspan = 2;
 						$_SESSION['config'] = $config;
 
+						if (isset($config_hide)) {get_config();} // refetch from db so custom values are not shown
 						if ($submit == 'update' && !$form_check) {$config_array = $post_config;} else {$config_array = $config;}
 
 						foreach ($config_defaults as $key => $value)
@@ -4517,6 +4518,8 @@ else // if staff login
 						<td>Description:</td>
 						</tr>
 						';
+
+						if (isset($config_hide)) {get_config();} // refetch from db so custom values are not shown
 
 						foreach ($config_defaults as $key => $value)
 						{

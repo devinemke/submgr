@@ -1,4 +1,5 @@
-version 3.42 2025-11-25
+version 3.42 2025-12-01
+- added checks for $config_hide to suppress display of config values from custom.php
 - upgraded to PHPMailer 7.0.1 (2025-11-25)
 - moved PayPal_REST + AuthorizeNet API requests to JSON files
 - PHP short array syntax
