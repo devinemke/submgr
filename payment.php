@@ -44,17 +44,17 @@ if ($ipn)
 	// $url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 	$url = 'https://www.paypal.com/cgi-bin/webscr';
 
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_HEADER, 0);
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $req);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, ['Host: www.paypal.com']);
-	$res = curl_exec($ch);
-	curl_close($ch);
+	$curl = curl_init();
+	curl_setopt($curl, CURLOPT_URL, $url);
+	curl_setopt($curl, CURLOPT_HEADER, 0);
+	curl_setopt($curl, CURLOPT_POST, 1);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER,1);
+	curl_setopt($curl, CURLOPT_POSTFIELDS, $req);
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 1);
+	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+	curl_setopt($curl, CURLOPT_HTTPHEADER, ['Host: www.paypal.com']);
+	$res = curl_exec($curl);
+	if (version_compare(PHP_VERSION, '8.5.0', '<')) {curl_close($curl);}
 
 	// assign posted variables to local variables
 	$payment_status = $_POST['payment_status'];

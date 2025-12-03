@@ -1686,7 +1686,7 @@ function process_captcha()
 	CURLOPT_POST => 1,
 	CURLOPT_POSTFIELDS => $captcha]);
 	$response = curl_exec($curl);
-	curl_close($curl);
+	if (version_compare(PHP_VERSION, '8.5.0', '<')) {curl_close($curl);}
 	$response = json_decode($response);
 	if (!$response->success) {exit_error('CAPTCHA fail');}
 }
@@ -2184,18 +2184,18 @@ function redirect()
 		{
 			extract($GLOBALS);
 
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_VERBOSE, 1);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-			if ($GLOBALS['IsAuthorizeNet']) {curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);}
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $nvp);
-			$httpResponse = curl_exec($ch);
-			curl_close($ch);
-			if (!$httpResponse) {error_output_replace_exit($method . ' failed: ' . curl_error($ch) . ' (' . curl_errno($ch) . ')');}
+			$curl = curl_init();
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_VERBOSE, 1);
+			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+			if ($GLOBALS['IsAuthorizeNet']) {curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);}
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($curl, CURLOPT_POST, 1);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $nvp);
+			$httpResponse = curl_exec($curl);
+			if (version_compare(PHP_VERSION, '8.5.0', '<')) {curl_close($curl);}
+			if (!$httpResponse) {error_output_replace_exit($method . ' failed: ' . curl_error($curl) . ' (' . curl_errno($curl) . ')');}
 			$httpParsedResponseAr = [];
 
 			// invalid EXPDATE from PayPal Payments Pro NVP (single string, not NVP)
@@ -2280,7 +2280,7 @@ function redirect()
 				curl_setopt($curl, CURLOPT_POST, 1);
 				curl_setopt($curl, CURLOPT_POSTFIELDS, $post_fields);
 				$response = curl_exec($curl);
-				curl_close($curl);
+				if (version_compare(PHP_VERSION, '8.5.0', '<')) {curl_close($curl);}
 				if (!$response) {error_output_replace_exit('cURL failed: ' . curl_error($curl) . ' (' . curl_errno($curl) . ')');}
 				$response = json_decode($response, true);
 				return $response;
