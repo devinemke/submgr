@@ -1,4 +1,5 @@
-version 3.42 2025-12-02
+version 3.42 2025-12-05
+- fixed undefined variable warning $version_local in header.php
 - added checks for PHP 8.5 to fix curl_close() deprecation warnings
 - added checks for $config_hide to suppress display of config values from custom.php
 - upgraded to PHPMailer 7.0.1 (2025-11-25)

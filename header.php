@@ -89,6 +89,7 @@ echo '
 					}
 
 					check_version('structure');
+					if (!isset($version_local)) {check_version('SubMgr');}
 					if ($version_structure && $version_structure < $version_local) {echo '<div class="small notice"><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=maintenance&submodule=update_structure" style="color: red;">Data Structure update required!</a></div>';}
 				}
 			}
