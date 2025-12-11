@@ -131,9 +131,11 @@ function check_version($software, $get_remote = false)
 
 		if ($get_remote)
 		{
+			$version_url = 'https://www.submissionmanager.net/version.txt';
+			// $version_url = 'https://raw.githubusercontent.com/devinemke/submgr/refs/heads/main/version.txt';
 			$options = ['http' => ['user_agent' => $_SERVER['HTTP_USER_AGENT'], 'timeout' => 10.0, 'ignore_errors' => true]];
 			$context = stream_context_create($options);
-			$version = @file_get_contents('https://www.submissionmanager.net/version.txt', false, $context);
+			$version = @file_get_contents($version_url, false, $context);
 			if ($version) {$version_remote = trim($version);} else {$version_remote = '???';}
 			$GLOBALS['version_remote'] = $version_remote;
 		}
