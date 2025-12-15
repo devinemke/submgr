@@ -513,15 +513,6 @@ if ($GLOBALS['db_connect'])
 		$csp = str_replace('[nonce]', $GLOBALS['nonce'], $config['csp']);
 		header('Content-Security-Policy: ' . $csp);
 	}
-
-	$password_reset_exp_int = 0;
-	$password_reset_exp_hours = $config['password_reset_exp'] / 3600;
-	$password_reset_exp_minutes = $config['password_reset_exp'] / 60;
-	if (is_int($password_reset_exp_hours) && $password_reset_exp_hours >= 1) {$password_reset_exp_int = $password_reset_exp_hours; $password_reset_exp_suffix = 'hour';}
-	if (is_int($password_reset_exp_minutes) && $password_reset_exp_minutes < 60) {$password_reset_exp_int = $password_reset_exp_minutes; $password_reset_exp_suffix = 'minute';}
-	if ($config['password_reset_exp'] < 60) {$password_reset_exp_int = $config['password_reset_exp']; $password_reset_exp_suffix = 'second';}
-	if ($password_reset_exp_int > 1) {$password_reset_exp_suffix .= 's';}
-	if ($password_reset_exp_int) {$password_reset_exp_formatted = $password_reset_exp_int . ' ' . $password_reset_exp_suffix;} else {$password_reset_exp_formatted = gmdate('H:i:s', $config['password_reset_exp']);}
 }
 
 if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['contact']['access'] == 'admin')
@@ -1135,6 +1126,22 @@ function get_bytes_formatted($bytes)
 	}
 
 	return $bytes_formatted;
+}
+
+function get_password_reset_exp_formatted()
+{
+	global $config;
+
+	$password_reset_exp_int = 0;
+	$password_reset_exp_hours = $config['password_reset_exp'] / 3600;
+	$password_reset_exp_minutes = $config['password_reset_exp'] / 60;
+	if (is_int($password_reset_exp_hours) && $password_reset_exp_hours >= 1) {$password_reset_exp_int = $password_reset_exp_hours; $password_reset_exp_suffix = 'hour';}
+	if (is_int($password_reset_exp_minutes) && $password_reset_exp_minutes < 60) {$password_reset_exp_int = $password_reset_exp_minutes; $password_reset_exp_suffix = 'minute';}
+	if ($config['password_reset_exp'] < 60) {$password_reset_exp_int = $config['password_reset_exp']; $password_reset_exp_suffix = 'second';}
+	if ($password_reset_exp_int > 1) {$password_reset_exp_suffix .= 's';}
+	if ($password_reset_exp_int) {$password_reset_exp_formatted = $password_reset_exp_int . ' ' . $password_reset_exp_suffix;} else {$password_reset_exp_formatted = gmdate('H:i:s', $config['password_reset_exp']);}
+
+	$GLOBALS['password_reset_exp_formatted'] = $password_reset_exp_formatted;
 }
 
 function timezone_adjust($date_time)
@@ -2037,9 +2044,10 @@ function send_mail($arg1, $arg2)
 
 		if ($arg2 == 'reset')
 		{
+			get_password_reset_exp_formatted();
 			$app_url_reset = $app_url_slash . 'index.php?page=login&token=' . $GLOBALS['token'];
 			$subject = $config['company_name'] . ' Submission Manager password reset information';
-			$body .= 'You have reset the password for your ' . $config['company_name'] . ' Submission Manager account. To login to your account please follow the link below:' . "\n\n" . '<a href="' . $app_url_reset . '"><b>Reset Account Password</b></a>' . "\n\n" . 'This link will expire in ' . $password_reset_exp_formatted . '. If you need any further help accessing your account please contact <a href="mailto:' . $config['admin_email'] . '">' . $config['admin_email'] . '</a>';
+			$body .= 'You have reset the password for your ' . $config['company_name'] . ' Submission Manager account. To login to your account please follow the link below:' . "\n\n" . '<a href="' . $app_url_reset . '"><b>Reset Account Password</b></a>' . "\n\n" . 'This link will expire in ' . $GLOBALS['password_reset_exp_formatted'] . '. If you need any further help accessing your account please contact <a href="mailto:' . $config['admin_email'] . '">' . $config['admin_email'] . '</a>';
 			$html_mail = true;
 		}
 

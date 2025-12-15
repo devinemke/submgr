@@ -71,6 +71,7 @@ if ($submit == 'reset password')
 				$row_reset = mysqli_fetch_assoc($result_reset);
 				if ($gm_timestamp - strtotime($row_reset['date_time'] . ' GMT') <= $config['password_reset_exp'])
 				{
+					get_password_reset_exp_formatted();
 					if (strpos((string) $password_reset_exp_formatted, '1 ') === 0) {$password_reset_exp_formatted = str_replace('1 ', '', $password_reset_exp_formatted);}
 					$errors[] = 'This account password was recently reset. For security, passwords can only be reset once every ' . $password_reset_exp_formatted . '. Please try again later.<br>If you have recently reset your password, and have not yet received your password reset link, please check your spam folder.';
 				}

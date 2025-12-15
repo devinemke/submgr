@@ -70,6 +70,7 @@ if (isset($_GET['token']) && $_GET['token'])
 		$row = mysqli_fetch_assoc($result);
 		if ($gm_timestamp - strtotime($row['date_time'] . ' GMT') > $config['password_reset_exp'])
 		{
+			get_password_reset_exp_formatted();
 			$error_output = 'This account password reset has expired. For security, password resets expire after <b>' . $password_reset_exp_formatted . '</b>.<br>You may reset your password again <a href="' . $app_url_slash . 'index.php?page=help">here</a>.<br>If you need additional help please contact ' . mail_to($config['admin_email']) . '.';
 			exit_error();
 		}
