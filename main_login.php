@@ -4202,22 +4202,21 @@ else // if staff login
 							<input type="submit" id="submit_update" name="submit" value="update" class="form_button">
 							<input type="reset" id="submit_reset" name="reset" value="reset" class="form_button">
 							<input type="submit" id="submit_reset_defaults" name="submit" value="reset defaults" class="form_button">
-							';
-
-							if ($submodule == 'fields')
-							{
-								$upload_max_filesize_bytes = 0;
-								$upload_max_filesize = ini_get('upload_max_filesize');
-								if (strtolower(substr($upload_max_filesize, -1)) == 'm') {$upload_max_filesize_bytes = substr($upload_max_filesize, 0, -1) * 1048576;} else {$upload_max_filesize_bytes = $upload_max_filesize;}
-								if ($upload_max_filesize_bytes) {echo '<span style="margin-left: 380px;">upload_max_filesize = <a href="#' . $upload_max_filesize_bytes . '" id="upload_max_filesize">' . $upload_max_filesize_bytes . '</a> (' . get_bytes_formatted($upload_max_filesize_bytes) . ')</span>';}
-							}
-
-							echo '
 						</td>
 						</tr>
 						</table>
 						<input type="hidden" id="submodule" name="submodule" value="' . $submodule . '">
 						';
+
+						if ($submodule == 'fields')
+						{
+							echo '<table style="font-size: ' . $font_size_minus . 'pt; font-weight: bold; margin-top: 10px;"><tr><td class="row_left">max_file_size:</td><td>' . $fields['file']['maxlength'] . ' (' . $max_file_size_formatted . ')</td></tr>';
+							$upload_max_filesize_bytes = 0;
+							$upload_max_filesize = ini_get('upload_max_filesize');
+							if (strtolower(substr($upload_max_filesize, -1)) == 'm') {$upload_max_filesize_bytes = substr($upload_max_filesize, 0, -1) * 1048576;} else {$upload_max_filesize_bytes = $upload_max_filesize;}
+							if ($upload_max_filesize_bytes) {echo '<tr><td class="row_left">upload_max_filesize:</td><td><a href="#' . $upload_max_filesize_bytes . '" id="upload_max_filesize">' . $upload_max_filesize_bytes . '</a> (' . get_bytes_formatted($upload_max_filesize_bytes) . ')</td></tr>';}
+							echo '</table>';
+						}
 					}
 
 					if ($submodule == 'payment_vars')
