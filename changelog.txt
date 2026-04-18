@@ -1,4 +1,5 @@
-version 3.42 2026-03-06
+version 3.42 2026-04-18
+- disallow .php files (case-insensitive)
 - refactoring of upload_max_filesize routine in /maintenance/fields/ (added max_file_size)
 - refactoring of default table/array sorting: $config $fields $groups
 - added $config['version_remote_url'] (default = submissionmanager.net)

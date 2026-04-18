@@ -593,6 +593,7 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 			$_POST['file_types'] = array_unique($_POST['file_types']);
 			$_POST['file_types'] = cleanup($_POST['file_types'], 'strip_tags', 'stripslashes');
 			unset($_POST['file_types'][array_search('php', $_POST['file_types'])]);
+			unset($_POST['file_types'][array_search('PHP', $_POST['file_types'])]);
 
 			foreach ($_POST['file_types'] as $value)
 			{
@@ -1053,7 +1054,7 @@ function get_file_types()
 	$GLOBALS['file_types'] = [];
 	if (in_array('file_types', $show_tables))
 	{
-		$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM file_types ORDER BY ext') or exit_error('query failure: SELECT file_types');
+		$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT LOWER(ext) AS ext FROM file_types ORDER BY ext') or exit_error('query failure: SELECT file_types');
 		if ($result && mysqli_num_rows($result))
 		{
 			while ($row = mysqli_fetch_assoc($result)) {if ($row['ext'] != 'php') {$GLOBALS['file_types'][] = $row['ext'];}}
