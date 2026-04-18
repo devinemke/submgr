@@ -88,7 +88,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 
 	if ($config['allow_withdraw'] && isset($_GET['action']) && $_GET['action'] == 'withdraw' && isset($_GET['submission_id']) && $_GET['submission_id'] && is_numeric($_GET['submission_id']))
 	{
-		$submission_id = (int) $_GET['submission_id'];
+		$submission_id = (int) preg_replace('/[^0-9]/', '', $_GET['submission_id']);
 
 		if (!isset($_SESSION['submissions'][$submission_id]))
 		{
@@ -493,7 +493,7 @@ else // if staff login
 
 	if (isset($_GET['offset']) && $_GET['offset'] != '' && is_numeric($_GET['offset']))
 	{
-		$offset = (int) $_GET['offset'];
+		$offset = (int) preg_replace('/[^0-9]/', '', $_GET['offset']);
 		$_SESSION['offset'] = $offset;
 	}
 	if (isset($_SESSION['offset'])) {$offset = $_SESSION['offset'];}
@@ -793,7 +793,7 @@ else // if staff login
 			{
 				if (is_numeric($_REQUEST['contact_id']))
 				{
-					$_REQUEST['contact_id'] = (int) $_REQUEST['contact_id'];
+					$_REQUEST['contact_id']= (int) preg_replace('/[^0-9]/', '', $_REQUEST['contact_id']);
 					$sql = $sql1 . 'WHERE submissions.submitter_id = ' . mysqli_real_escape_string($GLOBALS['db_connect'], $_REQUEST['contact_id']) . $sql_order;
 				}
 				else
@@ -812,7 +812,7 @@ else // if staff login
 			{
 				if (is_numeric($submission_id))
 				{
-					$submission_id = (int) $submission_id;
+					$submission_id = (int) preg_replace('/[^0-9]/', '', $submission_id);
 					$sql = $sql1 . 'WHERE submissions.submission_id = ' . mysqli_real_escape_string($GLOBALS['db_connect'], $submission_id);
 				}
 				else
@@ -2122,7 +2122,7 @@ else // if staff login
 		{
 			if (is_numeric($_REQUEST['contact_id']))
 			{
-				$contact_id = (int) $_REQUEST['contact_id'];
+				$contact_id = (int) preg_replace('/[^0-9]/', '', $_GET['contact_id']);
 				$contact_id_safe = $contact_id; // to re-insert into global scope
 
 				if (isset($_GET['single_contact']))

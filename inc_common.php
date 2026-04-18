@@ -391,14 +391,14 @@ if ($GLOBALS['db_connect'])
 					// make "0" instead of NULL
 					if ($defaults['config'][$key]['allowed'] == 'zero')
 					{
-						if ($key == 'submission_price') {$clean = preg_replace('/[^0-9.]/i', '', $clean);} else {$clean = preg_replace('/[^0-9]/i', '', $clean);}
+						if ($key == 'submission_price') {$clean = preg_replace('/[^0-9.]/', '', $clean);} else {$clean = preg_replace('/[^0-9]/', '', $clean);}
 						if ($clean == '') {$clean = 0;}
 						if ($key == 'submission_price' && is_numeric($clean)) {$clean = number_format($clean, 2, '.', '');}
 					}
 
 					if ($key == 'password_reset_exp')
 					{
-						$clean = (int) preg_replace('/[^0-9]/i', '', $clean);
+						$clean = (int) preg_replace('/[^0-9]/', '', $clean);
 						if ($clean == 0) {$clean = 3600;}
 						if ($clean > 86400) {$clean = 86400;}
 					}
@@ -592,13 +592,14 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 			asort($_POST['file_types']);
 			$_POST['file_types'] = array_unique($_POST['file_types']);
 			$_POST['file_types'] = cleanup($_POST['file_types'], 'strip_tags', 'stripslashes');
+			unset($_POST['file_types'][array_search('php', $_POST['file_types'])]);
 
 			foreach ($_POST['file_types'] as $value)
 			{
 				if ($value != '')
 				{
 					$value = str_replace(' ', '', $value);
-					$value = preg_replace('/[^A-Za-z0-9]/i', '', $value);
+					$value = preg_replace('/[^a-z0-9]/i', '', $value);
 					$value = substr($value, 0, 10);
 					$value = strtolower($value);
 					$sql = "INSERT INTO file_types SET ext = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $value) . "'";
@@ -643,7 +644,7 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 			foreach ($_POST['fields'] as $key => $value)
 			{
 				$value = cleanup($value, 'strip_tags', 'stripslashes');
-				if ($value['maxlength']) {$value['maxlength'] = preg_replace('/[^0-9]/i', '', $value['maxlength']);}
+				if ($value['maxlength']) {$value['maxlength'] = preg_replace('/[^0-9]/', '', $value['maxlength']);}
 				if (isset($value['enabled'])) {$value['enabled'] = 'Y';} else {$value['enabled'] = '';}
 				if (isset($value['required'])) {$value['required'] = 'Y';} else {$value['required'] = '';}
 				if (!$value['enabled']) {$value['required'] = '';}
@@ -767,8 +768,8 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 			foreach ($_POST['genres'] as $key => $value)
 			{
 				$value = cleanup($value, 'strip_tags', 'stripslashes');
-				if ($value['submission_limit']) {$value['submission_limit'] = preg_replace('/[^0-9]/i', '', $value['submission_limit']);}
-				if ($value['price']) {$value['price'] = preg_replace('/[^0-9.]/i', '', $value['price']);}
+				if ($value['submission_limit']) {$value['submission_limit'] = preg_replace('/[^0-9]/', '', $value['submission_limit']);}
+				if ($value['price']) {$value['price'] = preg_replace('/[^0-9.]/', '', $value['price']);}
 
 				if ($value['name'] != '')
 				{
@@ -872,7 +873,7 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 
 		if (isset($_GET['genre_id']) && $_GET['genre_id'] && is_numeric($_GET['genre_id']) && isset($_GET['delete']))
 		{
-			$genre_id = (int) trim($_GET['genre_id']);
+			$genre_id = (int) preg_replace('/[^0-9]/', '', $_GET['genre_id']);
 
 			$sql = 'DELETE FROM genres WHERE genre_id = ' . mysqli_real_escape_string($GLOBALS['db_connect'], $genre_id);
 			@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: DELETE genre_id');
@@ -992,7 +993,7 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 
 		if (isset($_GET['payment_var_id']) && $_GET['payment_var_id'] && is_numeric($_GET['payment_var_id']) && isset($_GET['delete']))
 		{
-			$payment_var_id = (int) trim($_GET['payment_var_id']);
+			$payment_var_id = (int) preg_replace('/[^0-9]/', '', $_GET['payment_var_id']);
 			@mysqli_query($GLOBALS['db_connect'], 'DELETE FROM payment_vars WHERE payment_var_id = ' . mysqli_real_escape_string($GLOBALS['db_connect'], $payment_var_id)) or exit_error('query failure: DELETE payment variable');
 			$notice = 'Payment Variable #' . $payment_var_id . ' deleted';
 		}
@@ -1055,7 +1056,7 @@ function get_file_types()
 		$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM file_types ORDER BY ext') or exit_error('query failure: SELECT file_types');
 		if ($result && mysqli_num_rows($result))
 		{
-			while ($row = mysqli_fetch_assoc($result)) {$GLOBALS['file_types'][] = $row['ext'];}
+			while ($row = mysqli_fetch_assoc($result)) {if ($row['ext'] != 'php') {$GLOBALS['file_types'][] = $row['ext'];}}
 			$_SESSION['file_types'] = $GLOBALS['file_types'];
 		}
 	}
@@ -1287,7 +1288,7 @@ function form_main()
 
 		if ($key == 'genre_id' && isset($genres['active']))
 		{
-			if (isset($_GET['genre_id']) && $_GET['genre_id'] && isset($genres['all'][$_GET['genre_id']]) && !$submit) {$GLOBALS['genre_id'] = (int) $_GET['genre_id'];}
+			if (isset($_GET['genre_id']) && $_GET['genre_id'] && is_numeric($_GET['genre_id']) && isset($genres['all'][$_GET['genre_id']]) && !$submit) {$GLOBALS['genre_id'] = (int) preg_replace('/[^0-9]/', '', $_GET['genre_id']);}
 			foreach ($genres['active'] as $sub_value) {$genres_form[$sub_value] = $genres['all'][$sub_value]['name'];}
 			$GLOBALS['genres'] = $genres_form;
 		}
@@ -1524,10 +1525,10 @@ function cleanup()
 				foreach ($args as $function) {$value = $function($value);}
 			}
 			if ($key == 'email') {$value = strtolower($value);}
-			if ($key == 'phone' || $key == 'cc_number' || $key == 'cc_exp_month' || $key == 'cc_exp_year' || $key == 'cc_csc') {$value = preg_replace('/[^0-9]/i', '', $value);}
+			if ($key == 'phone' || $key == 'cc_number' || $key == 'cc_exp_month' || $key == 'cc_exp_year' || $key == 'cc_csc') {$value = preg_replace('/[^0-9]/', '', $value);}
 			if ($key == 'phone' && strlen($value) < 7) {$value = '';}
 			if ($key == 'state' && isset($array['country']) && $array['country'] != 'USA') {$value = '';}
-			if ($key == 'zip' && isset($array['country']) && $array['country'] == 'USA') {$value = preg_replace('/[^0-9]/i', '', $value);}
+			if ($key == 'zip' && isset($array['country']) && $array['country'] == 'USA') {$value = preg_replace('/[^0-9]/', '', $value);}
 			if ($key == 'zip') {$value = strtoupper($value);}
 			if ($key == 'comments')
 			{
@@ -1592,7 +1593,7 @@ function form_check()
 
 	if (isset($_SESSION['post']['email']))
 	{
-		if (!email_check($email)) {$checks['email']['status'] = false;}
+		if (!email_check($_SESSION['post']['email'])) {$checks['email']['status'] = false;}
 	}
 
 	if (isset($_SESSION['post']['country']) && $_SESSION['post']['country'] == 'USA')
@@ -1661,7 +1662,8 @@ function form_check()
 	{
 		if (isset($_SESSION['post']['email']))
 		{
-			$result = @mysqli_query($GLOBALS['db_connect'], "SELECT contact_id, email FROM contacts WHERE email = '$email'");
+			$sql = "SELECT contact_id, email FROM contacts WHERE email = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $_SESSION['post']['email']) . "'";
+			$result = @mysqli_query($GLOBALS['db_connect'], $sql);
 			if (mysqli_num_rows($result))
 			{
 				if ($page != 'login')

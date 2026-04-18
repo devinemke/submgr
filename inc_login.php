@@ -313,7 +313,7 @@ if ($module == 'pay_submission')
 	// this all needs to happen before javascript for price
 	if (!$submit)
 	{
-		if (isset($_GET['submission_id']) && $_GET['submission_id'] && is_numeric($_GET['submission_id'])) {$submission_id = (int) $_GET['submission_id'];} else {exit_error('invalid submission ID');}
+		if (isset($_GET['submission_id']) && $_GET['submission_id'] && is_numeric($_GET['submission_id'])) {$submission_id = (int) preg_replace('/[^0-9]/', '', $_GET['submission_id']);} else {exit_error('invalid submission ID');}
 		if (!isset($_SESSION['submissions'][$submission_id])) {exit_error('<p>You are not authorized to access this submission.</p>');}
 		$_SESSION['pay_submission_id'] = $submission_id;
 	}
@@ -569,7 +569,8 @@ if ($_SESSION['contact']['access'])
 				];
 
 				$tag = [];
-				$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT submission_id, submitter_id, title, writer, genre_id FROM submissions WHERE submission_id IN(' . implode(',', $_POST['tag']) . ') ORDER BY date_time, submission_id') or exit_error('query failure: SELECT tag submissions');
+				foreach ($_POST['tag'] as $key => $value) {$tag_escaped[$key] = mysqli_real_escape_string($GLOBALS['db_connect'], (int) preg_replace('/[^0-9]/', '', $value));}
+				$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT submission_id, submitter_id, title, writer, genre_id FROM submissions WHERE submission_id IN(' . implode(',', $tag_escaped) . ') ORDER BY date_time, submission_id') or exit_error('query failure: SELECT tag submissions');
 				while ($row = mysqli_fetch_assoc($result))
 				{
 					$tag[$row['submission_id']] = $row;
@@ -1168,11 +1169,11 @@ if ($_SESSION['contact']['access'])
 					$value = stripslashes($value);
 					if ($var == 'id')
 					{
-						$value = preg_replace('/[^0-9]/i', '', $value);
+						$value = preg_replace('/[^0-9]/', '', $value);
 					}
 					else
 					{
-						$value = preg_replace('/[^0-9-]/i', '', $value);
+						$value = preg_replace('/[^0-9-]/', '', $value);
 						if ($key == 'min') {$date_suffix = ' 00:00:00';}
 						if ($key == 'max') {$date_suffix = ' 23:59:59';}
 						$value = date('Y-m-d', strtotime($value)) . $date_suffix;
@@ -1298,7 +1299,7 @@ if ($_SESSION['contact']['access'])
 				define('DB_PASSWORD_ESCAPED', str_replace("'", "'\''", DB_PASSWORD));
 				define('DB_NAME_ESCAPED', addslashes(DB_NAME));
 				$backup = '';
-				$command = $mysqldump_path . " --host='" . DB_HOST_ESCAPED . "' --user='" . DB_USERNAME_ESCAPED . "' --password='" . DB_PASSWORD_ESCAPED . "' " . DB_NAME_ESCAPED;
+				$command = escapeshellcmd($mysqldump_path) . " --host='" . DB_HOST_ESCAPED . "' --user='" . DB_USERNAME_ESCAPED . "' --password='" . DB_PASSWORD_ESCAPED . "' " . DB_NAME_ESCAPED;
 				$backup = shell_exec($command);
 
 				if ($backup == NULL)

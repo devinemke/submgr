@@ -2,11 +2,11 @@
 ob_start();
 include('inc_common.php');
 
+$pages = ['view', 'update', 'phpinfo', 'mysqlinfo', 'changelog'];
+if (isset($_GET['page'])) {$page = htmlentities($_GET['page']);} else {$page = '';}
 $title = '';
 $copy = '';
 $viewport = '';
-
-extract($_REQUEST);
 
 if ($page == 'view')
 {
@@ -14,15 +14,28 @@ if ($page == 'view')
 
 	if ($_SESSION['contact']['access'])
 	{
-		$result = @mysqli_query($GLOBALS['db_connect'], "SELECT $field FROM `$table` WHERE $id_name = $id_value") or exit_error('query failure: SELECT [for view]');
-		extract(mysqli_fetch_assoc($result));
-		$title = $field . ': ' . $table . '.' . $id_name . ' #' . $id_value;
-		$copy = nl2br(htmlspecialchars($$field));
+		if ($_REQUEST['table'] != 'submissions') {unset($_REQUEST['table']);}
+		if ($_REQUEST['field'] != 'comments' && $_REQUEST['field'] != 'notes') {unset($_REQUEST['field']);}
+		if ($_REQUEST['id_name'] != 'submission_id') {unset($_REQUEST['id_name']);}
+
+		foreach ($_REQUEST as $key => $value)
+		{
+			$value = trim(str_replace(' ', '', $value));
+			if ($key == 'id_value') {$value = (int) preg_replace('/[^0-9]/', '', $value);} else {$value = (string) $value;}
+			$request_escaped[$key] = mysqli_real_escape_string($GLOBALS['db_connect'], $value);
+			$request_display[$key] = htmlentities($value);
+		}
+
+		$sql = 'SELECT ' . $request_escaped['field'] . ' FROM `' . $request_escaped['table'] . '` WHERE ' . $request_escaped['id_name'] . ' = ' . $request_escaped['id_value'];
+		$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: SELECT [for view]');
+		$row = mysqli_fetch_assoc($result);
+		$title = $request_display['field'] . ': ' . $request_display['table'] . '.' . $request_display['id_name'] . ' #' . $request_display['id_value'];
+		$copy = nl2br(htmlspecialchars($row[$request_display['field']]));
 	}
 
 	if (!$_SESSION['contact']['access'] && isset($_GET['submission_id']) && $_GET['submission_id'] && is_numeric($_GET['submission_id']) && isset($_SESSION['submissions'][$_GET['submission_id']]) && isset($_GET['field']) && $_GET['field'])
 	{
-		$submission_id = (int) $_GET['submission_id'];
+		$submission_id = (int) preg_replace('/[^0-9]/', '', $_GET['submission_id']);
 		$title .= '"' . htmlspecialchars($_SESSION['submissions'][$submission_id]['title']) . '"';
 
 		if ($_GET['field'] == 'comments_submitter')
@@ -44,10 +57,11 @@ if ($page == 'view')
 if ($page == 'update')
 {
 	if ($_SESSION['contact']['access'] != 'admin' && $_SESSION['contact']['access'] != 'editor') {exit('unauthorized access');}
-
 	$viewport = '<meta name="viewport" content="width=600">';
+	if (isset($_GET['submission_id']) && $_GET['submission_id'] && is_numeric($_GET['submission_id'])) {$submission_id = (int) preg_replace('/[^0-9]/', '', $_GET['submission_id']);} else {$submission_id = '';}
+	if (isset($_GET['action_id']) && $_GET['action_id'] && is_numeric($_GET['action_id'])) {$action_id = (int) preg_replace('/[^0-9]/', '', $_GET['action_id']);} else {$action_id = '';}
 
-	if (isset($submission_id))
+	if ($submission_id)
 	{
 		$_SESSION['table'] = 'submissions';
 		$_SESSION['id_name'] = 'submission_id';
@@ -56,7 +70,7 @@ if ($page == 'update')
 		if ($config['show_date_paid']) {$row['date_paid'] = (string) $row['date_paid'];} else {unset($row['date_paid']);} // string casting needed for isset() to work on NULLs
 	}
 
-	if (isset($action_id))
+	if ($action_id)
 	{
 		$_SESSION['table'] = 'actions';
 		$_SESSION['id_name'] = 'action_id';
