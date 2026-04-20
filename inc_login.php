@@ -1169,7 +1169,7 @@ if ($_SESSION['contact']['access'])
 					$value = stripslashes($value);
 					if ($var == 'id')
 					{
-						$value = preg_replace('/[^0-9]/', '', $value);
+						$value = (int) preg_replace('/[^0-9]/', '', $value);
 					}
 					else
 					{

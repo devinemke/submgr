@@ -391,7 +391,7 @@ if ($GLOBALS['db_connect'])
 					// make "0" instead of NULL
 					if ($defaults['config'][$key]['allowed'] == 'zero')
 					{
-						if ($key == 'submission_price') {$clean = preg_replace('/[^0-9.]/', '', $clean);} else {$clean = preg_replace('/[^0-9]/', '', $clean);}
+						if ($key == 'submission_price') {$clean = (float) preg_replace('/[^0-9.]/', '', $clean);} else {$clean = (int) preg_replace('/[^0-9]/', '', $clean);}
 						if ($clean == '') {$clean = 0;}
 						if ($key == 'submission_price' && is_numeric($clean)) {$clean = number_format($clean, 2, '.', '');}
 					}
@@ -645,7 +645,7 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 			foreach ($_POST['fields'] as $key => $value)
 			{
 				$value = cleanup($value, 'strip_tags', 'stripslashes');
-				if ($value['maxlength']) {$value['maxlength'] = preg_replace('/[^0-9]/', '', $value['maxlength']);}
+				if ($value['maxlength']) {$value['maxlength'] = (int) preg_replace('/[^0-9]/', '', $value['maxlength']);}
 				if (isset($value['enabled'])) {$value['enabled'] = 'Y';} else {$value['enabled'] = '';}
 				if (isset($value['required'])) {$value['required'] = 'Y';} else {$value['required'] = '';}
 				if (!$value['enabled']) {$value['required'] = '';}
@@ -769,8 +769,8 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 			foreach ($_POST['genres'] as $key => $value)
 			{
 				$value = cleanup($value, 'strip_tags', 'stripslashes');
-				if ($value['submission_limit']) {$value['submission_limit'] = preg_replace('/[^0-9]/', '', $value['submission_limit']);}
-				if ($value['price']) {$value['price'] = preg_replace('/[^0-9.]/', '', $value['price']);}
+				if ($value['submission_limit']) {$value['submission_limit'] = (int) preg_replace('/[^0-9]/', '', $value['submission_limit']);}
+				if ($value['price']) {$value['price'] = (float) preg_replace('/[^0-9.]/', '', $value['price']);}
 
 				if ($value['name'] != '')
 				{
@@ -1529,7 +1529,7 @@ function cleanup()
 			if ($key == 'phone' || $key == 'cc_number' || $key == 'cc_exp_month' || $key == 'cc_exp_year' || $key == 'cc_csc') {$value = preg_replace('/[^0-9]/', '', $value);}
 			if ($key == 'phone' && strlen($value) < 7) {$value = '';}
 			if ($key == 'state' && isset($array['country']) && $array['country'] != 'USA') {$value = '';}
-			if ($key == 'zip' && isset($array['country']) && $array['country'] == 'USA') {$value = preg_replace('/[^0-9]/', '', $value);}
+			if ($key == 'zip' && isset($array['country']) && $array['country'] == 'USA') {$value = (int) preg_replace('/[^0-9]/', '', $value);}
 			if ($key == 'zip') {$value = strtoupper($value);}
 			if ($key == 'comments')
 			{
