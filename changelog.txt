@@ -1,5 +1,7 @@
-version 3.42 2026-04-18
-- disallow .php files (case-insensitive)
+version 3.42 2026-04-23
+- added "accept" attribute to "file" form input tags
+- added $mime_types array with validation logic
+- added $exclude_file_types array with validation logic
 - refactoring of upload_max_filesize routine in /maintenance/fields/ (added max_file_size)
 - refactoring of default table/array sorting: $config $fields $groups
 - added $config['version_remote_url'] (default = submissionmanager.net)

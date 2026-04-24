@@ -11,20 +11,16 @@ $session_start = session_start();
 $nonce = get_token();
 form_hash('session'); // needed here so csrf_token exists in javascript
 $_SERVER['PHP_SELF'] = htmlentities($_SERVER['PHP_SELF']);
-
-$pages = ['home', 'login', 'install', 'help', 'error'];
+$pages = ['home','login','install','help','error'];
 if (isset($_GET['page'])) {$page = htmlentities($_GET['page']);} else {$page = 'home';}
 if (!in_array($page, $pages)) {$page = 'error';}
 if ($page != 'home') {$page_title = $page;}
 if (isset($_GET['kill_session'])) {kill_session('regenerate');} // session needed for form_hash()
-
 if (isset($_REQUEST['module'])) {$module = htmlentities($_REQUEST['module']);} else {$module = '';}
 if (isset($_REQUEST['submodule'])) {$submodule = htmlentities($_REQUEST['submodule']);} else {$submodule = '';}
-
 if (isset($_POST['submit'])) {$submit = htmlentities($_POST['submit']);} else {$submit = '';}
 if (isset($_POST['submit_hidden'])) {$submit = htmlentities($_POST['submit_hidden']);}
 $submit_js = $submit; // needed for javascript because this changes downstream
-
 $gm_timestamp = time();
 $gm_date_time = gmdate('Y-m-d H:i:s', $gm_timestamp);
 $gm_date = gmdate('Y-m-d', $gm_timestamp);
@@ -39,72 +35,18 @@ $continue = true;
 $form_check = true;
 $errors = [];
 $password_length_min = 8; $password_length_max = 72; // needed here globally for install, will be overwritten by $fields
+$mime_types = ['doc' => 'application/msword','docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document','pdf' => 'application/pdf','rtf' => 'text/rtf|application/rtf','txt' => 'text/plain','jpg' => 'image/jpeg','jpeg' => 'image/jpeg','gif' => 'image/gif','png' => 'image/png','wav' => 'audio/wav','mp3' => 'audio/mpeg','mp4' => 'video/mp4','mov' => 'video/quicktime','odt' => 'application/vnd.oasis.opendocument.text','xls' => 'application/vnd.ms-excel','xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','zip' => 'application/zip|application/zip-compressed'];
+$exclude_file_types = ['exe','com','cmd','bin','bat','ps1','sh','command','msi','dmg','vbs','html','htm','php','py','js','jsp','asp','aspx','xml','json','cgi','env','ini','reg','dll','sys','config','htaccess'];
+$no_text = ['no_submissions' => 'Submission Manager is currently in <b>&ldquo;no submissions&rdquo;</b> mode.<br>Submitters and staff may log into their accounts however no new submissions are being accepted at this time.','admin_only' => 'Submission Manager is currently in <b>admin only</b> mode.<br>Only the system administrators have access at this time.','no_cookies' => '<b>Submission Manager</b> requires that cookies be enabled in your web browser. Please enable cookies and try again.<br>You may also need to empty your browser cache and restart your browser.'];
+$modules = ['account' => 'account summary','update' => 'update your account','submit' => 'submit your work','pay_submission' => 'pay for submission','logout' => 'logout'];
+$modules_admin = ['submissions','contacts','reports','configuration','maintenance'];
+$login_required_fields = ['submissions' => ['submitter_id','title'],'actions' => ['reader_id','action_type_id']];
+$local_variables = ['contacts' => ['contact_id','first_name','last_name','name','email','company','address1','address2','city','state','zip','country','phone'],'submissions' => ['submission_id','genre_id'],'payment' => ['price','cc_number','cc_exp_month','cc_exp_year','cc_exp_date','cc_csc','hash','timestamp','result_code','error']];
 
 if (!$session_start) {$display_login = false; exit_error('session_start failed');}
 if (file_exists('config_defaults.php')) {include('config_defaults.php'); $config = $config_defaults;} else {$display_login = false; exit_error('missing config_defaults.php');}
 if (file_exists('config_db.php')) {include('config_db.php');} elseif (file_exists('config_db_default.php')) {include('config_db_default.php');} else {$display_login = false; exit_error('missing config_db.php');}
 if (file_exists('db_schema.php')) {include('db_schema.php');} else {$display_login = false; exit_error('missing db_schema.php');}
-
-$no_text = [
-'no_submissions' => 'Submission Manager is currently in <b>&ldquo;no submissions&rdquo;</b> mode.<br>Submitters and staff may log into their accounts however no new submissions are being accepted at this time.',
-'admin_only' => 'Submission Manager is currently in <b>admin only</b> mode.<br>Only the system administrators have access at this time.',
-'no_cookies' => '<b>Submission Manager</b> requires that cookies be enabled in your web browser. Please enable cookies and try again.<br>You may also need to empty your browser cache and restart your browser.'
-];
-
-$modules = [
-'account' => 'account summary',
-'update' => 'update your account',
-'submit' => 'submit your work',
-'pay_submission' => 'pay for submission',
-'logout' => 'logout'
-];
-
-$modules_admin = [
-'submissions',
-'contacts',
-'reports',
-'configuration',
-'maintenance'
-];
-
-$login_required_fields = [
-'submissions' => ['submitter_id', 'title'],
-'actions' => ['reader_id', 'action_type_id']
-];
-
-$local_variables = [
-'contacts' => [
-	'contact_id',
-	'first_name',
-	'last_name',
-	'name',
-	'email',
-	'company',
-	'address1',
-	'address2',
-	'city',
-	'state',
-	'zip',
-	'country',
-	'phone'
-	],
-'submissions' => [
-	'submission_id',
-	'genre_id'
-	],
-'payment' => [
-	'price',
-	'cc_number',
-	'cc_exp_month',
-	'cc_exp_year',
-	'cc_exp_date',
-	'cc_csc',
-	'hash',
-	'timestamp',
-	'result_code',
-	'error'
-]
-];
 
 function check_version($software, $get_remote = false)
 {
@@ -590,19 +532,16 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 		{
 			@mysqli_query($GLOBALS['db_connect'], 'TRUNCATE file_types') or exit_error('query failure: TRUNCATE file_types');
 			asort($_POST['file_types']);
-			$_POST['file_types'] = array_unique($_POST['file_types']);
+			$_POST['file_types'] = array_unique(array_map('strtolower', $_POST['file_types']));
 			$_POST['file_types'] = cleanup($_POST['file_types'], 'strip_tags', 'stripslashes');
-			unset($_POST['file_types'][array_search('php', $_POST['file_types'])]);
-			unset($_POST['file_types'][array_search('PHP', $_POST['file_types'])]);
 
 			foreach ($_POST['file_types'] as $value)
 			{
-				if ($value != '')
+				if ($value != '' && !in_array($value, $exclude_file_types))
 				{
 					$value = str_replace(' ', '', $value);
 					$value = preg_replace('/[^a-z0-9]/i', '', $value);
 					$value = substr($value, 0, 10);
-					$value = strtolower($value);
 					$sql = "INSERT INTO file_types SET ext = '" . mysqli_real_escape_string($GLOBALS['db_connect'], $value) . "'";
 					@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT file_types');
 				}
@@ -1049,15 +988,17 @@ function get_genres()
 
 function get_file_types()
 {
-	global $show_tables;
+	global $show_tables, $exclude_file_types;
 
 	$GLOBALS['file_types'] = [];
+	$GLOBALS['file_types_list'] = '';
 	if (in_array('file_types', $show_tables))
 	{
 		$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT LOWER(ext) AS ext FROM file_types ORDER BY ext') or exit_error('query failure: SELECT file_types');
 		if ($result && mysqli_num_rows($result))
 		{
-			while ($row = mysqli_fetch_assoc($result)) {if ($row['ext'] != 'php') {$GLOBALS['file_types'][] = $row['ext'];}}
+			while ($row = mysqli_fetch_assoc($result)) {if (!in_array($row['ext'], $exclude_file_types)) {$GLOBALS['file_types'][] = $row['ext'];}}
+			if ($GLOBALS['file_types']) {$GLOBALS['file_types_list'] = implode(', ', array_map(function($arg) {return '.' . $arg;}, $GLOBALS['file_types']));}
 			$_SESSION['file_types'] = $GLOBALS['file_types'];
 		}
 	}
@@ -1271,7 +1212,7 @@ function form_main()
 
 	function display_form_row($key, $value)
 	{
-		global $config, $fields, $genres, $submit, $form_type;
+		global $config, $fields, $genres, $submit, $form_type, $file_types_list;
 		$output = '';
 		$extra_tr = '';
 		$extra_before = '';
@@ -1302,7 +1243,7 @@ function form_main()
 		if ($form_type == 'submit' && !$submit && $value['value']) {$GLOBALS[$key] = htmlspecialchars($value['value']);}
 
 		$output .= '<tr' . $extra_tr . '><td class="row_left"><label for="' . $key . '" id="label_' . $key . '" class="' . $class . '">' . $value['name'] . ':</label></td><td>' . $extra_before;
-		if ($value['type'] == 'text' || $value['type'] == 'password' || $value['type'] == 'file') {$output .= '<input type="' . $value['type'] . '" id="' . $key . '" name="' . $key . '"'; if ($value['type'] != 'file') {$output .= ' value="'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '" maxlength="' . $value['maxlength'] . '"';} $output .=' class="' . $class . '">';}
+		if ($value['type'] == 'text' || $value['type'] == 'password' || $value['type'] == 'file') {$output .= '<input type="' . $value['type'] . '" id="' . $key . '" name="' . $key . '"'; if ($value['type'] == 'file') {$output .= ' accept="' . $file_types_list . '"';} else {$output .= ' value="'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '" maxlength="' . $value['maxlength'] . '"';} $output .=' class="' . $class . '">';}
 		if ($value['type'] == 'select') {$output .= '<select id="' . $key . '" name="' . $key . '" class="' . $class . '">'; if ($key != 'genre_id') {$output .= '<option value="">&nbsp;</option>';} foreach ($GLOBALS[$value['list']] as $sub_key => $sub_value) {$output .= '<option value="' . $sub_key . '"'; if (isset($GLOBALS[$key]) && $GLOBALS[$key] == $sub_key) {$output .= ' selected';} $output .= '>' . $sub_value . '</option>' . "\n";} $output .= '</select>';}
 		if ($value['type'] == 'checkbox') {$output .= '<input type="' . $value['type'] . '" id="' . $key . '" name="' . $key . '" value="Y"'; if (isset($GLOBALS[$key]) && $GLOBALS[$key]) {$output .= ' checked';} $output .= '>';}
 		if ($value['type'] == 'textarea') {$output .= '<textarea id="' . $key . '" name="' . $key . '" maxlength="' . $value['maxlength'] . '">'; if (isset($GLOBALS[$key])) {$output .= $GLOBALS[$key];} $output .= '</textarea>';}
@@ -1559,7 +1500,6 @@ function password_check($password)
 function form_check()
 {
 	extract($GLOBALS);
-	if ($file_types) {$file_types_list = implode(', ', $file_types);} else {$file_types_list = [];}
 
 	$checks = [
 	'blank' => ['status' => true, 'warning' => 'Required field(s) missing'],
@@ -1570,7 +1510,7 @@ function form_check()
 	'file' => ['status' => true, 'warning' => 'No upload file selected'],
 	'filesize_big' => ['status' => true, 'warning' => 'Uploaded file exceeds the maximum file size limit of ' . $max_file_size_formatted],
 	'filesize_small' => ['status' => true, 'warning' => 'Uploaded file is empty (0 bytes)'],
-	'file_ext' => ['status' => true, 'warning' => 'Invalid file extension. Allowed file extensions: ' . $file_types_list],
+	'file_ext' => ['status' => true, 'warning' => 'Invalid file type/extension. Allowed file types/extensions: ' . $file_types_list],
 	'cc_expired' => ['status' => true, 'warning' => 'Expiration Date entered indicates that your credit card has expired']
 	];
 
@@ -1626,11 +1566,15 @@ function form_check()
 		if ($_FILES['file']['error'] == 1 || $_FILES['file']['error'] == 2 || ($fields['file']['maxlength'] && $_FILES['file']['size'] > $fields['file']['maxlength'])) {$checks['filesize_big']['status'] = false;}
 
 		$pathinfo = pathinfo($_FILES['file']['name']);
-		if (!isset($pathinfo['extension']) || (isset($pathinfo['extension']) && $pathinfo['extension'] == '')) {$checks['file_ext']['status'] = false;}
-		if (isset($pathinfo['extension']) && !in_array(strtolower($pathinfo['extension']), $file_types)) {$checks['file_ext']['status'] = false;}
+		if (isset($pathinfo['extension'])) {$ext_lower = strtolower($pathinfo['extension']);} else {$ext_lower = '';}
+		if ($ext_lower == '' || !in_array($ext_lower, $file_types)) {$checks['file_ext']['status'] = false;}
+		if (isset($mime_types[$ext_lower]) && strpos($mime_types[$ext_lower], $_SESSION['file_upload']['mime_type']) === false) {$checks['file_ext']['status'] = false;}
 
 		// if file is too big then the file will not be uploaded thus other checks will fail
 		if (!$checks['filesize_big']['status']) {$checks['file']['status'] = true;}
+
+		// delete temp file if invalid extension
+		if ((!$checks['filesize_small']['status'] || !$checks['file_ext']['status']) && isset($_SESSION['file_upload']['filename_temp'])) {@unlink($upload_path_year . $_SESSION['file_upload']['filename_temp']);}
 	}
 
 	if (isset($_SESSION['post']['cc_exp_month']) && isset($_SESSION['post']['cc_exp_year']) && $_SESSION['post']['cc_exp_month'] && $_SESSION['post']['cc_exp_year'])
@@ -1727,6 +1671,8 @@ function upload()
 	$_SESSION['file_upload']['filename_temp'] = $filename_temp;
 	$_SESSION['file_upload']['is_uploaded_file'] = @is_uploaded_file($_FILES['file']['tmp_name']);
 	$_SESSION['file_upload']['move_uploaded_file'] = @move_uploaded_file($_FILES['file']['tmp_name'], $upload_path_year . $filename_temp);
+	$_SESSION['file_upload']['mime_type'] = @mime_content_type($upload_path_year . $filename_temp);
+	if ($_SESSION['file_upload']['mime_type']) {$_SESSION['file_upload']['mime_type'] = strtolower($_SESSION['file_upload']['mime_type']);} else {$_SESSION['file_upload']['mime_type'] = 'no_mime';} // so mime_type is always a lowercase non-empty string, not a boolean
 }
 
 function display($arg)

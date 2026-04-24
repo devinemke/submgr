@@ -82,6 +82,13 @@ function address_check()
 	}
 }
 
+function strval_htmlspecialchars($arg)
+{
+	$arg = strval($arg);
+	$arg = htmlspecialchars($arg);
+	return $arg;
+}
+
 if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocked') // if submitter login
 {
 	if (!isset($modules[$module])) {exit_error('page not found');}
@@ -254,8 +261,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 				$file_object = '';
 				$withdraw_object = '';
 
-				$value = array_map('strval', $value);
-				$value = array_map('htmlspecialchars', $value);
+				$value = array_map('strval_htmlspecialchars', $value);
 				extract($value);
 				$class = 'submission';
 				$date_time = timezone_adjust($date_time);
@@ -1229,7 +1235,7 @@ else // if staff login
 							{
 								$display_array = [];
 								if (isset($readers['all'][$reader_id])) {$display_array = $readers['all'][$reader_id];}
-								if ($reader_id == $submitter_id) {$display_array = $submissions[$submission_id]['contact']; $display_array = array_map('strval', $display_array); $display_array = array_map('htmlspecialchars', $display_array);}
+								if ($reader_id == $submitter_id) {$display_array = $submissions[$submission_id]['contact']; $display_array = array_map('strval_htmlspecialchars', $display_array);}
 								if ($display_array)
 								{
 									$reader_tooltip = $display_array['first_name'] . ' ' . $display_array['last_name'] . '<br>' . $display_array['email'];
@@ -1340,6 +1346,14 @@ else // if staff login
 							if ($_FILES['file']['error'] == 3 || !$_SESSION['file_upload']['is_uploaded_file'] || !$_SESSION['file_upload']['move_uploaded_file']) {$form_check = false; $error = 'file upload failed';}
 							if ($_FILES['file']['size'] == 0) {$form_check = false; $error = 'Uploaded file is empty (0 bytes)';}
 							if ($_FILES['file']['error'] == 1 || $_FILES['file']['error'] == 2 || ($fields['file']['maxlength'] && $_FILES['file']['size'] > $fields['file']['maxlength'])) {$form_check = false; $error = 'Uploaded file exceeds the maximum file size limit of ' . $max_file_size_formatted;}
+
+							$pathinfo = pathinfo($_FILES['file']['name']);
+							if (isset($pathinfo['extension'])) {$ext_lower = strtolower($pathinfo['extension']);} else {$ext_lower = '';}
+							if ($ext_lower == '' || !in_array($ext_lower, $file_types)) {$form_check = false; $error = 'Invalid file type/extension. Allowed file types/extensions: ' . $file_types_list;}
+							if (isset($mime_types[$ext_lower]) && strpos($mime_types[$ext_lower], $_SESSION['file_upload']['mime_type']) === false) {$form_check = false; $error = 'Invalid file type/extension. Allowed file types/extensions: ' . $file_types_list;}
+
+							// delete temp file if invalid extension
+							if (!$form_check && isset($_SESSION['file_upload']['filename_temp'])) {@unlink($upload_path_year . $_SESSION['file_upload']['filename_temp']);}
 						}
 
 						if (!$form_check)
@@ -1520,7 +1534,7 @@ else // if staff login
 								<textarea id="message" name="message">'; if (isset($message)) {echo htmlspecialchars($message);} echo '</textarea><br>
 								<label for="file" id="label_file">attach file:</label> <span class="small">[ <i>' . $max_file_size_formatted . ' max</i> ]</span><br>';
 								if ($fields['file']['maxlength']) {echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $fields['file']['maxlength'] . '">';}
-								echo '<input type="file" id="file" name="file">';
+								echo '<input type="file" id="file" name="file" accept="' . $file_types_list . '">';
 								if (isset($_SESSION['file_upload']['filename']) && $_SESSION['file_upload']['filename']) {echo '<br>file selected: <b>' . $_SESSION['file_upload']['filename'] . '</b> [<input type="submit" name="submit" value="remove" style="width: 50px; border: 0px; color: ' . $config['color_link'] . '; background-color: ' . $config['color_background'] . ';"> ]';}
 								echo '
 								<br>
@@ -2122,7 +2136,7 @@ else // if staff login
 		{
 			if (is_numeric($_REQUEST['contact_id']))
 			{
-				$contact_id = (int) preg_replace('/[^0-9]/', '', $_GET['contact_id']);
+				$contact_id = (int) preg_replace('/[^0-9]/', '', $_REQUEST['contact_id']);
 				$contact_id_safe = $contact_id; // to re-insert into global scope
 
 				if (isset($_GET['single_contact']))
@@ -2473,8 +2487,7 @@ else // if staff login
 
 				foreach ($contacts as $value)
 				{
-					$value = array_map('strval', $value);
-					$value = array_map('htmlspecialchars', $value);
+					$value = array_map('strval_htmlspecialchars', $value);
 					if (isset($value[$search_field]) && ($search_field == 'first_name' || $search_field == 'last_name')) {$value[$search_field] = '<u>' . $value[$search_field] . '</u>';}
 					extract($value);
 
@@ -2532,7 +2545,7 @@ else // if staff login
 						}
 
 						echo '
-						<tr><td class="row_left"><label for="file" id="label_file">file:</label></td><td>'; if ($fields['file']['maxlength']) {echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $fields['file']['maxlength'] . '">';} echo '<input type="file" id="file" name="file">'; if ($fields['file']['maxlength']) {echo ' <span class="small">(' . $max_file_size_formatted . ' max)'; if (isset($_SESSION['file_upload']['filename'])) {echo '<span style="margin-left: 5px;">file selected:</span> <b>' . $_SESSION['file_upload']['filename'] . '</b>';} echo '</span>';} echo '</td></tr>
+						<tr><td class="row_left"><label for="file" id="label_file">file:</label></td><td>'; if ($fields['file']['maxlength']) {echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $fields['file']['maxlength'] . '">';} echo '<input type="file" id="file" name="file" accept="' . $file_types_list . '">'; if ($fields['file']['maxlength']) {echo ' <span class="small">(' . $max_file_size_formatted . ' max)'; if (isset($_SESSION['file_upload']['filename'])) {echo '<span style="margin-left: 5px;">file selected:</span> <b>' . $_SESSION['file_upload']['filename'] . '</b>';} echo '</span>';} echo '</td></tr>
 						<tr><td class="row_left"><label for="comments" id="label_comments">comments:</label></td><td><textarea id="comments" name="comments" maxlength="' . $fields['comments']['maxlength'] . '">'; if (isset($comments)) {echo $comments;} echo '</textarea>'; if ($fields['comments']['maxlength']) {echo ' <span class="small">(' . $fields['comments']['maxlength'] . ' characters max)</span>';} echo '</td></tr>
 						<tr>
 						<td>&nbsp;</td>
@@ -3776,8 +3789,7 @@ else // if staff login
 
 						foreach ($action_types_array as $key => $value)
 						{
-							$value = array_map('strval', $value);
-							$value = array_map('htmlspecialchars', $value);
+							$value = array_map('strval_htmlspecialchars', $value);
 
 							foreach ($value as $field_name => $field_value)
 							{
@@ -3841,11 +3853,12 @@ else // if staff login
 						foreach ($file_types as $value)
 						{
 							$value = htmlspecialchars($value);
+							if (isset($mime_types[$value])) {$mime_type = '<span style="margin-left: 10px; font-family: monospace; font-weight: bold;">' . $mime_types[$value] . '</span>';} else {$mime_type = '';}
 
 							echo '
 							<tr>
 							<td style="text-align: center;"><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&submodule=' . $submodule . '&ext=' . urlencode($value) . '&delete=1" id="file_type_' . $value . '" class="file_type"><img src="button_delete.png" alt="delete" width="11" height="13"></a></td>
-							<td><input type="text" name="file_types[' . $value . ']" value="' . $value . '" maxlength="10" style="width: 100px;"></td>
+							<td><input type="text" name="file_types[' . $value . ']" value="' . $value . '" maxlength="10" style="width: 100px;">' . $mime_type . '</td>
 							</tr>
 							';
 						}
@@ -3949,8 +3962,7 @@ else // if staff login
 
 						foreach ($groups as $key => $value)
 						{
-							$value = array_map('strval', $value);
-							$value = array_map('htmlspecialchars', $value);
+							$value = array_map('strval_htmlspecialchars', $value);
 							extract($value);
 							$allowed_forwards_array = explode(',', $allowed_forwards);
 
@@ -4026,8 +4038,7 @@ else // if staff login
 						foreach ($genres['all'] as $key => $value)
 						{
 							if (isset($post_genres[$key])) {$value = $post_genres[$key];}
-							$value = array_map('strval', $value);
-							$value = array_map('htmlspecialchars', $value);
+							$value = array_map('strval_htmlspecialchars', $value);
 							extract($value);
 							$class = genre_class($key);
 
