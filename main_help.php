@@ -109,7 +109,11 @@ if ($submit == 'reset password')
 	}
 }
 
-if ($notice) {echo '<p class="notice">' . $notice . '</p>';}
+if ($notice)
+{
+	if (isset($halt_on_mail_error_notice)) {$notice .= '<p class="notice">' . $halt_on_mail_error_notice . '</p>';}
+	echo '<p class="notice">' . $notice . '</p>';
+}
 
 echo '
 <ul style="margin: 0px 0px 0px 15px;">

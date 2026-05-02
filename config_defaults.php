@@ -387,6 +387,14 @@ $defaults = [
 			'required' => '',
 			'allowed' => ''
 		],
+		'halt_on_mail_error' => [
+			'name' => 'halt_on_mail_error',
+			'value' => 'Y',
+			'description' => 'halt on mail error',
+			'type' => 'checkbox',
+			'required' => '',
+			'allowed' => ''
+		],
 		'allow_withdraw' => [
 			'name' => 'allow_withdraw',
 			'value' => '',

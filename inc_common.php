@@ -401,8 +401,8 @@ if ($GLOBALS['db_connect'])
 		$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT * FROM config') or exit_error('query failure: SELECT config');
 		if (mysqli_num_rows($result))
 		{
-			while ($row = mysqli_fetch_assoc($result)) {$config[$row['name']] = $row['value'];}
-			foreach ($config_defaults as $key => $value) {if (array_key_exists($key, $config)) {$GLOBALS['config'][$key] = $config[$key];}}
+			while ($row = mysqli_fetch_assoc($result)) {$GLOBALS['config_raw'][$row['name']] = $row['value'];}
+			foreach ($config_defaults as $key => $value) {if (array_key_exists($key, $GLOBALS['config_raw'])) {$GLOBALS['config'][$key] = $GLOBALS['config_raw'][$key];}}
 		}
 		else
 		{
@@ -412,15 +412,10 @@ if ($GLOBALS['db_connect'])
 
 	function compare_configs()
 	{
-		global $config_defaults, $config;
-
-		$keys_config_defaults = array_keys($config_defaults);
-		$keys_config = array_keys($config);
-		$missing_configs = array_diff($keys_config_defaults, $keys_config);
-		$extra_configs = array_diff($keys_config, $keys_config_defaults);
-
-		$GLOBALS['missing_configs'] = $missing_configs;
-		$GLOBALS['extra_configs'] = $extra_configs;
+		$keys_config_defaults = array_keys($GLOBALS['config_defaults']);
+		$keys_config_raw = array_keys($GLOBALS['config_raw']);
+		$GLOBALS['missing_configs'] = array_diff($keys_config_defaults, $keys_config_raw);
+		$GLOBALS['extra_configs'] = array_diff($keys_config_raw, $keys_config_defaults);
 	}
 
 	get_config();
@@ -429,7 +424,8 @@ if ($GLOBALS['db_connect'])
 	compare_configs();
 	if ($missing_configs)
 	{
-		foreach ($missing_configs as $value) {$config[$value] = $config_defaults[$value];}
+		foreach ($config_defaults as $key => $value) {if (array_key_exists($key, $config)) {$config_temp[$key] = $config[$key];} else {$config_temp[$key] = $value;}}
+		$config = $config_temp;
 	}
 	if ($extra_configs)
 	{
@@ -1560,21 +1556,15 @@ function form_check()
 	if (($form_type == 'submit' || $form_type == 'login_submit') && isset($_SESSION['file_upload']))
 	{
 		$_FILES['file'] = $_SESSION['file_upload'];
-
 		if ($_FILES['file']['error'] == 3 || $_FILES['file']['error'] == 4 || !$_SESSION['file_upload']['is_uploaded_file'] || !$_SESSION['file_upload']['move_uploaded_file']) {$checks['file']['status'] = false;}
 		if ($checks['file']['status'] && $_FILES['file']['size'] == 0) {$checks['filesize_small']['status'] = false;}
 		if ($_FILES['file']['error'] == 1 || $_FILES['file']['error'] == 2 || ($fields['file']['maxlength'] && $_FILES['file']['size'] > $fields['file']['maxlength'])) {$checks['filesize_big']['status'] = false;}
-
 		$pathinfo = pathinfo($_FILES['file']['name']);
 		if (isset($pathinfo['extension'])) {$ext_lower = strtolower($pathinfo['extension']);} else {$ext_lower = '';}
 		if ($ext_lower == '' || !in_array($ext_lower, $file_types)) {$checks['file_ext']['status'] = false;}
 		if (isset($mime_types[$ext_lower]) && strpos($mime_types[$ext_lower], $_SESSION['file_upload']['mime_type']) === false) {$checks['file_ext']['status'] = false;}
-
-		// if file is too big then the file will not be uploaded thus other checks will fail
-		if (!$checks['filesize_big']['status']) {$checks['file']['status'] = true;}
-
-		// delete temp file if invalid extension
-		if ((!$checks['filesize_small']['status'] || !$checks['file_ext']['status']) && isset($_SESSION['file_upload']['filename_temp'])) {@unlink($upload_path_year . $_SESSION['file_upload']['filename_temp']);}
+		if (!$checks['filesize_big']['status']) {$checks['file']['status'] = true;} // if file is too big then the file will not be uploaded thus other checks will fail
+		if ((!$checks['filesize_small']['status'] || !$checks['file_ext']['status']) && isset($_SESSION['file_upload']['filename_temp'])) {@unlink($upload_path_year . $_SESSION['file_upload']['filename_temp']);} // delete temp file if invalid extension
 	}
 
 	if (isset($_SESSION['post']['cc_exp_month']) && isset($_SESSION['post']['cc_exp_year']) && $_SESSION['post']['cc_exp_month'] && $_SESSION['post']['cc_exp_year'])
@@ -2024,7 +2014,7 @@ function send_mail($arg1, $arg2)
 		$mail->Subject = $subject;
 		if (isset($html_mail)) {$mail->MsgHTML($body);} else {$mail->Body = $body;}
 		if (isset($attachment)) {$mail->AddAttachment($attachment);}
-		if (!$mail->Send()) {exit_error('mail failure');}
+		if (!$mail->Send()) {if (isset($config['halt_on_mail_error']) && $config['halt_on_mail_error']) {$GLOBALS['display_login'] = false; $GLOBALS['notice'] = ''; exit_error('mail failure');} else {$GLOBALS['halt_on_mail_error_notice'] = 'Form processed, but a mail error has occured. Please check SMTP logs for more details.';}}
 		$mail->ClearAddresses();
 	}
 }

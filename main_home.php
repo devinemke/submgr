@@ -51,12 +51,13 @@ if ($submit == 'continue')
 		get_price();
 		if ($config['payment_redirect_method'] == 'POST' && (float) $price) {form_post();} else {redirect();}
 	}
-	echo '<b>[ submission successfully received ]</b>';
-	if ($config['submission_text']) {echo '<br><br>Dear ' . $_SESSION['post_display']['first_name'] . ',<br><br>' . replace_placeholders($config['submission_text']);}
-	echo '<br><br>Your account is now automatically setup.<br><img src="arrow_left_2.png" alt="arrow left" width="16" height="13" style="vertical-align: middle;"> You can use the form on the left to log in to your account using your email address and password.';
+	echo '<p style="font-weight: bold;">[ submission successfully received ]</p>';
+	if ($config['submission_text']) {echo '<p>Dear ' . $_SESSION['post_display']['first_name'] . ',</p>' . replace_placeholders($config['submission_text']);}
+	echo '<p>Your account is now automatically setup.<br><img src="arrow_left_2.png" alt="arrow left" width="16" height="13" style="vertical-align: middle;"> You can use the form on the left to log in to your account using your email address and password.</p>';
+	if (isset($halt_on_mail_error_notice)) {echo '<p class="notice">' . $halt_on_mail_error_notice . '</p>';}
 	if ($config['submission_limit'] != 1)
 	{
-		echo '<br><br><a href="' . $_SERVER['PHP_SELF'] . '?page=login&module=submit&first_submission=1"><b>submit another?</b></a>';
+		echo '<p style="font-weight: bold;"><a href="' . $_SERVER['PHP_SELF'] . '?page=login&module=submit&first_submission=1">submit another?</a></p>';
 	}
 	else
 	{

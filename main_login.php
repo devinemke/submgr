@@ -1,7 +1,7 @@
 <?php
 if (count(get_included_files()) == 1) {header('location: http://' . $_SERVER['HTTP_HOST']); exit();}
 
-$back_to_account = '<div style="font-weight: bold; margin-top: 10px;">[ <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=account"> back to my account</a> ]</div>';
+$back_to_account = '<p style="font-weight: bold;">[ <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=account"> back to my account</a> ]</p>';
 $GLOBALS['js_object'] = '';
 
 function calc_submission_status($arg)
@@ -144,6 +144,7 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 			}
 
 			$notice = 'Submission #' . $submission_id . ' has been withdrawn.';
+			if (isset($halt_on_mail_error_notice)) {$notice .= '<p class="notice">' . $halt_on_mail_error_notice . '</p>';}
 
 			// flush globals vars for display()
 			foreach ($placeholders as $key => $value)
@@ -422,8 +423,9 @@ if (!$_SESSION['contact']['access'] || $_SESSION['contact']['access'] == 'blocke
 				get_price();
 				if ($config['payment_redirect_method'] == 'POST' && (float) $price) {form_post();} else {redirect();}
 			}
-			echo '<b>[ submission successfully received ]</b>';
-			if ($config['submission_text']) {echo '<br><br>Dear ' . $first_name . ',<br><br>' . replace_placeholders($config['submission_text']);}
+			echo '<p style="font-weight: bold;">[ submission successfully received ]</p>';
+			if ($config['submission_text']) {echo '<p>Dear ' . $first_name . ',</p>' . replace_placeholders($config['submission_text']);}
+			if (isset($halt_on_mail_error_notice)) {echo '<p class="notice">' . $halt_on_mail_error_notice . '</p>';}
 			echo $back_to_account;
 		}
 	}
@@ -1342,18 +1344,14 @@ else // if staff login
 						if (isset($_SESSION['file_upload']))
 						{
 							$_FILES['file'] = $_SESSION['file_upload'];
-
 							if ($_FILES['file']['error'] == 3 || !$_SESSION['file_upload']['is_uploaded_file'] || !$_SESSION['file_upload']['move_uploaded_file']) {$form_check = false; $error = 'file upload failed';}
 							if ($_FILES['file']['size'] == 0) {$form_check = false; $error = 'Uploaded file is empty (0 bytes)';}
 							if ($_FILES['file']['error'] == 1 || $_FILES['file']['error'] == 2 || ($fields['file']['maxlength'] && $_FILES['file']['size'] > $fields['file']['maxlength'])) {$form_check = false; $error = 'Uploaded file exceeds the maximum file size limit of ' . $max_file_size_formatted;}
-
 							$pathinfo = pathinfo($_FILES['file']['name']);
 							if (isset($pathinfo['extension'])) {$ext_lower = strtolower($pathinfo['extension']);} else {$ext_lower = '';}
 							if ($ext_lower == '' || !in_array($ext_lower, $file_types)) {$form_check = false; $error = 'Invalid file type/extension. Allowed file types/extensions: ' . $file_types_list;}
 							if (isset($mime_types[$ext_lower]) && strpos($mime_types[$ext_lower], $_SESSION['file_upload']['mime_type']) === false) {$form_check = false; $error = 'Invalid file type/extension. Allowed file types/extensions: ' . $file_types_list;}
-
-							// delete temp file if invalid extension
-							if (!$form_check && isset($_SESSION['file_upload']['filename_temp'])) {@unlink($upload_path_year . $_SESSION['file_upload']['filename_temp']);}
+							if (!$form_check && isset($_SESSION['file_upload']['filename_temp'])) {@unlink($upload_path_year . $_SESSION['file_upload']['filename_temp']);} // delete temp file if invalid extension
 						}
 
 						if (!$form_check)
@@ -1714,7 +1712,6 @@ else // if staff login
 					@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: UPDATE');
 					$notice = $_SESSION['id_name'] . ' ' . $_SESSION['id_value'] . ' successfully updated';
 					$sql = '';
-
 					if ($_SESSION['table'] == 'actions') {sync_last_action($_SESSION['submission']['submission_id']);}
 				}
 				else
@@ -3729,20 +3726,21 @@ else // if staff login
 						{
 							$value = htmlspecialchars((string) $value);
 
-							$extra1 = '';
-							$extra2 = '';
-							$class = '';
+							$extra = '';
+							$class1 = '';
+							$class2 = '';
 							$description = '';
-							if (in_array($key, $config_invalid)) {$class = 'error';}
+							if (in_array($key, $config_invalid)) {$class1 = 'error';}
+							if (in_array($key, $missing_configs)) {$class2 = 'notice_row';}
 
-							$input = '<input type="text" id="config_' . $key . '" name="config[' . $key . ']" value="' . $value . '" class="' . $class . '">';
+							$input = '<input type="text" id="config_' . $key . '" name="config[' . $key . ']" value="' . $value . '" class="' . $class1 . '">';
 							if (strpos($defaults['config'][$key]['type'], 'select|') !== false)
 							{
 								$select = [];
 								$explode = explode('|', $defaults['config'][$key]['type']);
 								if (isset($GLOBALS[$explode[1]])) {$select = $GLOBALS[$explode[1]];} else {$explode2 = explode(',', $explode[1]);}
 								if (isset($explode2)) {foreach ($explode2 as $sub_value) {$select[$sub_value] = $sub_value;} unset($explode2);}
-								$input = '<select id="config_' . $key . '" name="config[' . $key . ']" class="' . $class . '">';
+								$input = '<select id="config_' . $key . '" name="config[' . $key . ']" class="' . $class1 . '">';
 								foreach ($select as $sub_key => $sub_value)
 								{
 									if ($sub_value == 'NULL') {$sub_key_display = ''; $sub_value_display = '&nbsp;';} else {$sub_key_display = htmlspecialchars($sub_key); $sub_value_display = htmlspecialchars($sub_value);}
@@ -3753,23 +3751,23 @@ else // if staff login
 								$input .= '</select>';
 							}
 							if ($defaults['config'][$key]['type'] == 'checkbox') {$input = '<input type="checkbox" id="config_' . $key . '" name="config[' . $key . ']" value="Y"'; if ($value) {$input .= ' checked';} $input .= ' >';}
-							if ($defaults['config'][$key]['type'] == 'textarea') {$input = '<textarea id="config_' . $key . '" name="config[' . $key . ']" class="' . $class . '">' . $value . '</textarea>';}
+							if ($defaults['config'][$key]['type'] == 'textarea') {$input = '<textarea id="config_' . $key . '" name="config[' . $key . ']" class="' . $class1 . '">' . $value . '</textarea>';}
 							if ($key == 'upload_path' && isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'])
 							{
 								$suggested_path = dirname($_SERVER['DOCUMENT_ROOT']);
 								$suggested_path = str_replace('\\', '/', $suggested_path);
 								if (substr($suggested_path, -1) != '/') {$suggested_path .= '/';}
-								$extra2 = '<br><span class="small" style="font-weight: bold;">suggested path: ' . $suggested_path . 'submissions/</span>';
+								$extra = '<br><span class="small" style="font-weight: bold;">suggested path: ' . $suggested_path . 'submissions/</span>';
 							}
 
 							if (isset($defaults['config'][$key]['description'])) {$description = $defaults['config'][$key]['description'];}
-							$key_display = '<label for="config_' . $key . '" id="label_config_' . $key . '" class="' . $class . '">' . $key . ':</label>';
+							$key_display = '<label for="config_' . $key . '" id="label_config_' . $key . '" class="' . $class1 . '">' . $key . ':</label>';
 
 							echo '
-							<tr>
-							<td class="row_left">' . $extra1 . $key_display . '</td>
+							<tr class="' . $class2 . '">
+							<td class="row_left">' . $key_display . '</td>
 							<td>' . $input . '</td>
-							<td>' . $description . $extra2 . '</td>
+							<td>' . $description . $extra . '</td>
 							</tr>
 							';
 						}
@@ -4604,7 +4602,7 @@ else // if staff login
 					{
 						echo '
 						<p>This function will help diagnose file upload problems.</p>
-						<label for="file" id="label_file" class="">file:</label> <input type="file" id="file" name="file" style="margin-right: 10px;"> upload_path: <b>' . $config['upload_path'] . '</b><br>
+						<label for="file" id="label_file" class="">file:</label> '; if ($fields['file']['maxlength']) {echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $fields['file']['maxlength'] . '">';} echo '<input type="file" id="file" name="file" accept="' . $file_types_list . '" style="margin-right: 10px;"> upload_path: <b>' . $config['upload_path'] . '</b><br>
 						<input type="submit" id="submit_test_upload" name="submit" value="test upload" class="form_button" style="width: 100px; margin: 10px 0px 0px 25px;">
 						';
 
@@ -4626,8 +4624,8 @@ else // if staff login
 							if ($_FILES['file']['name'])
 							{
 								$pathinfo = pathinfo($_FILES['file']['name']);
-								if (!isset($pathinfo['extension']) || (isset($pathinfo['extension']) && $pathinfo['extension'] == '')) {$extension = false;}
-								if (isset($pathinfo['extension']) && !in_array(strtolower($pathinfo['extension']), $file_types)) {$extension = false;}
+								if (isset($pathinfo['extension'])) {$ext_lower = strtolower($pathinfo['extension']);} else {$ext_lower = '';}
+								if ($ext_lower == '' || !in_array($ext_lower, $file_types)) {$extension = false;}
 							}
 
 							if ($file_exists || !$extension)

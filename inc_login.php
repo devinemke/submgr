@@ -1422,6 +1422,8 @@ if (isset($_SESSION['contact']) && $_SESSION['contact']['access'] == 'admin')
 	if ($module == 'maintenance' && $submit == 'Go') {$submodule = ''; $copy = '';} // needed here to reset submodule
 }
 
+if ($notice && isset($halt_on_mail_error_notice)) {$notice .= '<p class="notice">' . $halt_on_mail_error_notice . '</p>';}
+
 $display_login = false;
 
 if ($module == 'logout')
