@@ -2014,7 +2014,7 @@ function send_mail($arg1, $arg2)
 		$mail->Subject = $subject;
 		if (isset($html_mail)) {$mail->MsgHTML($body);} else {$mail->Body = $body;}
 		if (isset($attachment)) {$mail->AddAttachment($attachment);}
-		if (!$mail->Send()) {if (isset($config['halt_on_mail_error']) && $config['halt_on_mail_error']) {$GLOBALS['display_login'] = false; $GLOBALS['notice'] = ''; exit_error('mail failure');} else {$GLOBALS['halt_on_mail_error_notice'] = 'Form processed, but a mail error has occured. Please check SMTP logs for more details.';}}
+		if (!$mail->Send()) {if (isset($config['halt_on_mail_error']) && $config['halt_on_mail_error']) {$GLOBALS['display_login'] = false; $GLOBALS['notice'] = ''; exit_error('mail failure');} else {$GLOBALS['halt_on_mail_error_notice'] = 'Form processed, but a mail error has occurred. Please check SMTP logs for more details.';}}
 		$mail->ClearAddresses();
 	}
 }
