@@ -1998,7 +1998,7 @@ function send_mail($arg1, $arg2)
 		$body .= "\n";
 	}
 
-	$body .= "\n" . $local_date_time;
+	$body .= "\n" . $local_date_time . "\n" . $_SERVER['REMOTE_ADDR'];
 
 	if (isset($html_mail)) {$body = '<!DOCTYPE html><html lang="en"><head><title>' . htmlspecialchars($config['company_name']) . '</title><meta charset="UTF-8"></head><body>' . nl2br($body) . '</body></html>';}
 

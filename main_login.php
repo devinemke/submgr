@@ -4583,7 +4583,7 @@ else // if staff login
 						{
 							echo '<div style="font-family: monospace; font-weight: bold; white-space: nowrap;">';
 							$subject = 'test mail from ' . $test_mail['from_name'] . ' Submission Manager using ' . strtoupper($test_mail['mail_method']);
-							$body = $subject ."\n\n" . $local_date_time;
+							$body = $subject ."\n\n" . $local_date_time . "\n" . $_SERVER['REMOTE_ADDR'];
 							$config = $test_mail; // needed for mail_setup()
 							$mail = mail_setup();
 							$mail->SMTPDebug = 2;
@@ -4639,9 +4639,9 @@ else // if staff login
 								echo 'move_uploaded_file: '; var_dump($move_uploaded_file);
 								if ($_FILES['file']['name'] && file_exists($test_upload_file_path))
 								{
-									echo "\n" . 'test file: ' . $test_upload_file_path . ' | ' . filesize($test_upload_file_path) . ' bytes | ' . timezone_adjust(gmdate('Y-m-d H:i:s', filemtime($test_upload_file_path)));
+									echo "\n" . 'file: ' . $test_upload_file_path . "\n" . 'type: ' . mime_content_type($test_upload_file_path);
 									$unlink = unlink($test_upload_file_path);
-									if ($unlink) {echo ' | deleted';}
+									if ($unlink) {echo "\n" . 'status: deleted';}
 								}
 
 							}
