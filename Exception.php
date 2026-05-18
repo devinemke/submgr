@@ -1,5 +1,5 @@
 <?php
-// VERSION = '7.1.0'
+// VERSION = '7.1.1'
 /**
  * PHPMailer Exception class.
  * PHP Version 5.5.

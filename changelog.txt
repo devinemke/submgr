@@ -1,5 +1,5 @@
-version 3.42 2026-05-13
-- upgraded to PHPMailer 7.1.0 (2026-05-15)
+version 3.42 2026-05-18
+- upgraded to PHPMailer 7.1.1 (2026-05-18)
 - added IP to mail footers
 - added $config['halt_on_mail_error'] (default = Y) (thanks @teewuane)
 - added "accept" attribute to "file" form input tags
