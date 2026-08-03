@@ -1090,7 +1090,7 @@ if ($_SESSION['contact']['access'])
 			if (!$submit)
 			{
 				$copy = '
-				<script src="litepicker.js" nonce="' . $GLOBALS['nonce'] . '"></script>
+				<script src="litepicker.js" nonce="' . NONCE . '"></script>
 				<p>These functions will export Submission Manager data into CSV files.</p>
 
 				<p class="header">Export Contacts</p>
@@ -1325,7 +1325,7 @@ if ($_SESSION['contact']['access'])
 			get_min_max('submissions', 'submission_id');
 
 			$copy = '
-			<script src="litepicker.js" nonce="' . $GLOBALS['nonce'] . '"></script>
+			<script src="litepicker.js" nonce="' . NONCE . '"></script>
 			<p class="notice"><i>WARNING:</i> This will permanently delete data from your database! Please backup and archive your database before proceeding.</p>
 			<p>This function will purge submissions and their related actions and files.</p>
 			<b>purge range:</b><br>

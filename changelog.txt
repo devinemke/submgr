@@ -1,4 +1,5 @@
-version 3.42 2026-05-18
+version 3.42 2026-08-02
+- changed $nonce to NONCE (variable to constant)
 - upgraded to PHPMailer 7.1.1 (2026-05-18)
 - added IP to mail footers
 - added $config['halt_on_mail_error'] (default = Y) (thanks @teewuane)

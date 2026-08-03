@@ -267,7 +267,7 @@ body {margin: 0px;}
 if ($page == 'update')
 {
 	echo '
-	<script nonce="' . $GLOBALS['nonce'] . '">
+	<script nonce="' . NONCE . '">
 
 	function event_listener(eventName, onElement, event_object)
 	{
@@ -420,7 +420,7 @@ if ($page == 'update')
 
 	if (isset($row['date_paid']))
 	{
-		echo '<script src="litepicker.js" nonce="' . $GLOBALS['nonce'] . '"></script>';
+		echo '<script src="litepicker.js" nonce="' . NONCE . '"></script>';
 	}
 }
 

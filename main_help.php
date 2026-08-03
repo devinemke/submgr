@@ -15,7 +15,7 @@ function form_reset()
 	<td>
 	<label for="reset_email" id="label_reset_email">email:</label><br>
 	<input type="text" id="reset_email" name="reset_email" value="' . $reset_email . '" maxlength="50" style="width: 200px;"><br>
-	<div style="text-align: center;"><input type="submit" id="form_reset_submit" name="submit" value="reset password" class="form_button" style="width: 100px; margin-top: 5px;"></div>
+	<div style="text-align: center;"><input type="submit" id="form_reset_submit" name="submit" value="reset password" class="form_button" style="width: 110px; margin-top: 5px;"></div>
 	</td>
 	</tr>
 	</table>
@@ -89,7 +89,7 @@ if ($submit == 'reset password')
 				}
 				else
 				{
-					$token = $GLOBALS['nonce'];
+					$token = get_token();
 					send_mail('contact', 'reset');
 
 					$sql_array = [

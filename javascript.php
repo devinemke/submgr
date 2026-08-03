@@ -2,7 +2,7 @@
 if (count(get_included_files()) == 1) {header('location: http://' . $_SERVER['HTTP_HOST']); exit();}
 
 echo '
-<script nonce="' . $GLOBALS['nonce'] . '">
+<script nonce="' . NONCE . '">
 
 var page = "' . $page . '";
 var module = "' . $module . '";

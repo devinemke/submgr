@@ -12,7 +12,7 @@ echo '<!DOCTYPE html>
 if (file_exists('favicon.ico')) {echo '<link rel="icon" href="favicon.ico">';}
 if ($config) {include('css.php');}
 if ($GLOBALS['db_connect'] || $page == 'install') {include('javascript.php');}
-if (isset($use_captcha) && $use_captcha && $submit == 'submit' && ($page == 'home' || ($page == 'login' && $module == 'submit'))) {echo '<script src="https://www.google.com/recaptcha/api.js" nonce="' . $GLOBALS['nonce'] . '"></script>';}
+if (isset($use_captcha) && $use_captcha && $submit == 'submit' && ($page == 'home' || ($page == 'login' && $module == 'submit'))) {echo '<script src="https://www.google.com/recaptcha/api.js" nonce="' . NONCE . '"></script>';}
 if (isset($header_extra)) {echo $header_extra;}
 
 echo '
@@ -22,7 +22,7 @@ echo '
 
 if ($page == 'login' && ($module == 'account' || $module == 'submissions' || $module == 'contacts' || $module == 'reports'))
 {
-	echo '<div id="tooltip_div"></div>' . "\n" . '<script src="tooltip.js" nonce="' . $GLOBALS['nonce'] . '"></script>';
+	echo '<div id="tooltip_div"></div>' . "\n" . '<script src="tooltip.js" nonce="' . NONCE . '"></script>';
 }
 
 echo '

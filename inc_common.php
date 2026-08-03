@@ -8,7 +8,7 @@ $getcwd = getcwd();
 if ($getcwd) {$session_name .= '_' . sha1($getcwd);}
 session_name($session_name);
 $session_start = session_start();
-$nonce = get_token();
+define('NONCE', get_token());
 form_hash('session'); // needed here so csrf_token exists in javascript
 $_SERVER['PHP_SELF'] = htmlentities($_SERVER['PHP_SELF']);
 $pages = ['home','login','install','help','error'];
@@ -356,11 +356,7 @@ if ($GLOBALS['db_connect'])
 			// update CSP for captcha
 			if (isset($post_config['captcha_site_key']) && isset($post_config['captcha_secret_key']) && $post_config['captcha_site_key'] && $post_config['captcha_secret_key'] && isset($post_config['csp']))
 			{
-				if (strpos($post_config['csp'], 'https://www.google.com/recaptcha/') === false)
-				{
-					$post_config['csp'] = str_replace('script-src \'self\'', 'script-src \'self\' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/', $post_config['csp']);
-					$post_config['csp'] .= ' frame-src \'self\' https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/; connect-src \'self\' https://www.google.com/recaptcha/;';
-				}
+				if (strpos($post_config['csp'], 'https://www.google.com/recaptcha/') === false) {$post_config['csp'] = set_captcha_csp($post_config['csp']);}
 			}
 
 			$post_config = check_config($post_config);
@@ -452,7 +448,7 @@ if ($GLOBALS['db_connect'])
 
 	if (isset($config['csp']) && $config['csp'])
 	{
-		$csp = str_replace('[nonce]', $GLOBALS['nonce'], $config['csp']);
+		$csp = str_replace('[nonce]', NONCE, $config['csp']);
 		header('Content-Security-Policy: ' . $csp);
 	}
 }
@@ -1367,7 +1363,7 @@ function form_confirmation()
 	</form>
 	';
 
-	if ($submit_value == 'continue' && $use_captcha && $captcha_version == 3) {echo '<script nonce="' . $GLOBALS['nonce'] . '">function onSubmit(token) {document.getElementById("form_confirmation").submit();}</script>';}
+	if ($submit_value == 'continue' && $use_captcha && $captcha_version == 3) {echo '<script nonce="' . NONCE . '">function onSubmit(token) {document.getElementById("form_confirmation").submit();}</script>';}
 }
 
 function form_login()
@@ -1434,7 +1430,7 @@ function form_hash($arg)
 {
 	if ($arg == 'session')
 	{
-		if (!isset($_SESSION['csrf_token'])) {$_SESSION['csrf_token'] = $GLOBALS['nonce'];}
+		if (!isset($_SESSION['csrf_token'])) {$_SESSION['csrf_token'] = NONCE;}
 	}
 
 	if ($arg == 'validate')
@@ -1619,6 +1615,13 @@ function form_check()
 			}
 		}
 	}
+}
+
+function set_captcha_csp($arg)
+{
+	$arg = str_replace("script-src 'self'", "script-src 'self' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/", $arg);
+	$arg .= " frame-src 'self' https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/; connect-src 'self' https://www.google.com/recaptcha/;";
+	return $arg;
 }
 
 function process_captcha()
