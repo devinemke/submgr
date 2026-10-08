@@ -1462,7 +1462,7 @@ function cleanup()
 			if ($key == 'phone' || $key == 'cc_number' || $key == 'cc_exp_month' || $key == 'cc_exp_year' || $key == 'cc_csc') {$value = preg_replace('/[^0-9]/', '', $value);}
 			if ($key == 'phone' && strlen($value) < 7) {$value = '';}
 			if ($key == 'state' && isset($array['country']) && $array['country'] != 'USA') {$value = '';}
-			if ($key == 'zip' && isset($array['country']) && $array['country'] == 'USA') {$value = (int) preg_replace('/[^0-9]/', '', $value);}
+			if ($key == 'zip' && isset($array['country']) && $array['country'] == 'USA') {$value = preg_replace('/[^0-9]/', '', $value);} // cannot cast to INT, will mess up leading zeros
 			if ($key == 'zip') {$value = strtoupper($value);}
 			if ($key == 'comments')
 			{

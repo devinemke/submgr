@@ -1,4 +1,5 @@
-version 3.42 2026-08-02
+version 3.42 2026-10-08
+- fixed bug with USA zip codes with leading zeros (int casting, regression from 1faf91b)
 - changed $nonce to NONCE (variable to constant)
 - upgraded to PHPMailer 7.1.1 (2026-05-18)
 - added IP to mail footers
