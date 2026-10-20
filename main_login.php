@@ -2242,8 +2242,17 @@ else // if staff login
 
 				$_SESSION['current_contact_id'] = $contact_id;
 				$_SESSION['current_contact_array'] = $contact;
+				if (isset($_SESSION['sql'])) {$sql_safe = $_SESSION['sql'];}
 
-				get_min_max('contacts', 'contact_id');
+				if ($result_count > 1)
+				{
+					$explode = explode('WHERE', $sql_safe);
+					get_min_max('contacts', 'contact_id', $explode[1]);}
+				else
+				{
+					$sql_safe = 'FROM contacts WHERE 1 = 1';
+					get_min_max('contacts', 'contact_id');
+				}
 
 				unset($_SESSION['prev_contact_id']);
 				unset($_SESSION['next_contact_id']);
@@ -2251,7 +2260,8 @@ else // if staff login
 				// get prev contact
 				if ($contact_id != $min_max['contacts']['min_id'])
 				{
-					$result = @mysqli_query($GLOBALS['db_connect'], "SELECT contact_id FROM contacts WHERE contact_id < '$contact_id' ORDER BY contact_id DESC LIMIT 1") or exit_error('query failure: SELECT prev contact');
+					$sql = "SELECT contact_id $sql_safe AND contact_id < $contact_id ORDER BY contact_id DESC LIMIT 1";
+					$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: SELECT prev contact');
 					$row = mysqli_fetch_assoc($result);
 					$prev_contact_id = $row['contact_id'];
 					$_SESSION['prev_contact_id'] = $prev_contact_id;
@@ -2260,7 +2270,8 @@ else // if staff login
 				// get next contact
 				if ($contact_id != $min_max['contacts']['max_id'])
 				{
-					$result = @mysqli_query($GLOBALS['db_connect'], "SELECT contact_id FROM contacts WHERE contact_id > '$contact_id' LIMIT 1") or exit_error('query failure: SELECT next contact');
+					$sql = "SELECT contact_id $sql_safe AND contact_id > $contact_id ORDER BY contact_id LIMIT 1";
+					$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: SELECT next contact');
 					$row = mysqli_fetch_assoc($result);
 					$next_contact_id = $row['contact_id'];
 					$_SESSION['next_contact_id'] = $next_contact_id;
@@ -2603,10 +2614,13 @@ else // if staff login
 
 					if (in_array($_SESSION['contact']['access'], $access_grouping['admin_editor']) && $submodule != 'insert')
 					{
+						$extra = '';
+						if (isset($_GET['single_contact'])) {$extra = '&single_contact=1';}
+
 						echo '
 						<tr>
-						<td class="row_left">'; if ($contact_id == $min_max['contacts']['min_id']) {echo '';} else {echo '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&contact_id=' . $min_max['contacts']['min_id'] . '"><img src="arrow_left_2.png" width="16" height="13" alt="first"></a> <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&contact_id=' . $prev_contact_id . '"><img src="arrow_left_1.png" width="8" height="13" alt="previous"></a>';} echo '</td>
-						<td>'; if ($contact_id == $min_max['contacts']['max_id']) {echo '';} else {echo '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&contact_id=' . $next_contact_id . '"><img src="arrow_right_1.png" width="8" height="13" alt="next"></a> <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&contact_id=' . $min_max['contacts']['max_id'] . '"><img src="arrow_right_2.png" width="16" height="13" alt="last"></a>';} echo '</td>
+						<td class="row_left">'; if ($contact_id == $min_max['contacts']['min_id']) {echo '';} else {echo '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . $extra . '&contact_id=' . $min_max['contacts']['min_id'] . '"><img src="arrow_left_2.png" width="16" height="13" alt="first"></a> <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . $extra . '&contact_id=' . $prev_contact_id . '"><img src="arrow_left_1.png" width="8" height="13" alt="previous"></a>';} echo '</td>
+						<td>'; if ($contact_id == $min_max['contacts']['max_id']) {echo '';} else {echo '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . $extra . '&contact_id=' . $next_contact_id . '"><img src="arrow_right_1.png" width="8" height="13" alt="next"></a> <a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . $extra . '&contact_id=' . $min_max['contacts']['max_id'] . '"><img src="arrow_right_2.png" width="16" height="13" alt="last"></a>';} echo '</td>
 						</tr>
 						';
 					}
@@ -2708,7 +2722,7 @@ else // if staff login
 
 						if ($key == 'contact_id')
 						{
-							$input = '<b><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&contact_id=' . $value . '" id="contact_id">' . $value . '</a></b>';
+							$input = '<b><a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=' . $module . '&single_contact=1&contact_id=' . $value . '" id="contact_id">' . $value . '</a></b>';
 						}
 
 						if ($key == 'date_time' || $key == 'timestamp')
@@ -4269,6 +4283,7 @@ else // if staff login
 		'purge' => 'purge data',
 		'test_mail' => 'test mail',
 		'test_upload' => 'test upload',
+		'duplicate_email_check' => 'duplicate email check',
 		'update_structure' => 'update data structure',
 		'versions' => 'versions'
 		];
@@ -4647,6 +4662,36 @@ else // if staff login
 							}
 
 							echo '</pre>';
+						}
+					}
+
+					if ($submodule == 'duplicate_email_check')
+					{
+						$sql = 'SELECT COUNT(*) AS repetitions, IFNULL(email, "") AS email FROM contacts GROUP BY email HAVING repetitions > 1';
+						$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: duplicate email check');
+						if (mysqli_num_rows($result))
+						{
+							while ($row = mysqli_fetch_assoc($result)) {$duplicate_emails_1[] = "'" . $row['email'] . "'";}
+							$duplicate_emails_1 = array_unique($duplicate_emails_1);
+							$sql = 'SELECT contact_id, email FROM contacts WHERE email IN(' . implode(',', $duplicate_emails_1) . ') OR email IS NULL ORDER BY contact_id';
+							$result_duplicate_emails = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: duplicate email check');
+							while ($row = mysqli_fetch_assoc($result_duplicate_emails))
+							{
+								if (is_null($row['email'])) {$row['email'] = $row['contact_id'] . ' @ null';} elseif ($row['email'] == '') {$row['email'] = $row['contact_id'] . ' @ empty';}
+								$duplicate_emails_2[$row['email']][] = $row['contact_id'];
+							}
+							echo '<table class="table_list" style="width: auto;"><tr><th>emails (' . count($duplicate_emails_2) . ')</th><th>contact IDs</th></tr>';
+							foreach ($duplicate_emails_2 as $key => $value)
+							{
+								$value_display = [];
+								foreach ($value as $contact_id) {$value_display[] = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=contacts&single_contact=1&contact_id=' . $contact_id . '" target="_blank">' . $contact_id . '</a>';}
+								echo '<tr style="text-align: left;"><td>' . $key . '</td><td>' . implode(', ', $value_display) . '</td></tr>' . "\n";
+							}
+							echo '</table>';
+						}
+						else
+						{
+							echo 'no duplicates found';
 						}
 					}
 

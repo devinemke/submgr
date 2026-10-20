@@ -1683,7 +1683,7 @@ function display($arg)
 		if ($value['section'] == 'contact' && $key != 'password2')
 		{
 			if ($key == 'country' && isset($display_source[$key]) && $display_source[$key] && isset($countries[$display_source[$key]])) {$display_source[$key] = $countries[$display_source[$key]] . ' (' . $display_source[$key] . ')';}
-			if (isset($display_source[$key]) && $display_source[$key]) {$search_replace['[' . $key . ']'] = $display_source[$key];}
+			if (isset($display_source[$key]) && $display_source[$key]) {$search_replace['[' . $key . ']'] = $display_source[$key];} else {$search_replace['[' . $key . ']'] = '';}
 		}
 
 		if ($value['section'] == 'submission' || $value['section'] == 'payment') {$display_template_array[$value['section']][$key] = '[' . $key . ']';}
@@ -1859,7 +1859,7 @@ function get_row_string($table, $field_name, $field_value)
 		}
 
 		if ($key == 'date_time' && $value) {$value = timezone_adjust($value);}
-		if ($key == 'country' && isset($lists['countries'][$value])) {$value = $lists['countries'][$value] . ' (' . $value . ')';}
+		if ($key == 'country' && $value && isset($lists['countries'][$value])) {$value = $lists['countries'][$value] . ' (' . $value . ')';}
 
 		$row .= $key . ': ' . $value . "\n";
 	}

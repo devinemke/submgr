@@ -349,9 +349,11 @@ if ($_SESSION['contact']['access'])
 		$_SESSION['readers'] = $readers;
 	}
 
-	function get_min_max($table, $id_field)
+	function get_min_max($table, $id_field, $where = '')
 	{
-		$result = @mysqli_query($GLOBALS['db_connect'], "SELECT MIN($id_field) AS min_id, DATE(MIN(date_time)) AS min_date_time, DATE(MIN(timestamp)) AS min_timestamp, MAX($id_field) AS max_id, DATE(MAX(date_time)) AS max_date_time, DATE(MAX(timestamp)) AS max_timestamp FROM `$table`") or exit_error('query failure: SELECT MIN MAX ' . $table);
+		$sql = "SELECT MIN($id_field) AS min_id, DATE(MIN(date_time)) AS min_date_time, DATE(MIN(timestamp)) AS min_timestamp, MAX($id_field) AS max_id, DATE(MAX(date_time)) AS max_date_time, DATE(MAX(timestamp)) AS max_timestamp FROM `$table`";
+		if ($where) {$sql .= ' WHERE ' . trim($where);}
+		$result = @mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: SELECT MIN MAX ' . $table);
 		$array = mysqli_fetch_assoc($result);
 		$GLOBALS['min_max'][$table] = $array;
 	}
