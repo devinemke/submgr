@@ -1646,6 +1646,22 @@ if ($continue)
 				});
 				';
 			}
+
+			if ($submodule == 'duplicate_email_check')
+			{
+				echo '
+				document.addEventListener("DOMContentLoaded", function()
+				{
+					var open_alls = document.getElementsByClassName("open_all");
+					for (let i = 0; i < open_alls.length; i++)
+					{
+						let split = open_alls[i].id.split("_");
+						let contact_ids = split[2].split("|").map(Number);
+						open_alls[i].addEventListener("click", function(event) { contact_ids.forEach(contact_id => {window.open("' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=contacts&single_contact=1&contact_id=" + contact_id, "_blank");}); event.preventDefault(); });
+					}
+				});
+				';
+			}
 		}
 	}
 

@@ -4684,8 +4684,9 @@ else // if staff login
 							foreach ($duplicate_emails_2 as $key => $value)
 							{
 								$value_display = [];
-								foreach ($value as $contact_id) {$value_display[] = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=contacts&single_contact=1&contact_id=' . $contact_id . '" target="_blank">' . $contact_id . '</a>';}
-								echo '<tr style="text-align: left;"><td>' . $key . '</td><td>' . implode(', ', $value_display) . '</td></tr>' . "\n";
+								foreach ($value as $contact_id) {$value_display[$contact_id] = '<a href="' . $_SERVER['PHP_SELF'] . '?page=' . $page . '&module=contacts&single_contact=1&contact_id=' . $contact_id . '" target="_blank">' . $contact_id . '</a>';}
+								if (count($value_display) > 1) {$extra = '<a href="#" class="open_all" id="open_all_' . implode('|', array_keys($value_display)) . '">all</a> | ';} else {$extra = '';}
+								echo '<tr style="text-align: left;"><td>' . $key . '</td><td>' . $extra . implode(', ', $value_display) . '</td></tr>' . "\n";
 							}
 							echo '</table>';
 						}

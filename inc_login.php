@@ -995,33 +995,24 @@ if ($_SESSION['contact']['access'])
 
 			if ($submit == 'insert sample data')
 			{
+				include_once('inc_lists.php');
 				$names = ['Joe','John','Robert','Richard','Tom','William','Charles','Christopher','Kenneth','Jason','Noah','Aaron','Baker','Allen','George','Andrew','Bert','Earnest','James','Stephen','David','Taylor','Fredrick','Brian','Roger','Ann','Sally','Jane','Helen','Jennifer','Rachel','Mary','Hillary','Barbara','Ginger','Judy','Rebecca','Laura','Lauren','Betty','Joan','Margaret','Katherine','Christine','Phoebe','Melissa','May','Dina','Cindy','Lisa'];
 				$titles = ['River','Dream','Summer','Winter','Spring','Fall','Autumn','Fine','Joy','Madness','Anger','Clown','Year','Day','Morning','Evening','Night','Future','Past','Ocean','Lake','First','Second','Mother','Father','Brother','Sister','Earth','Sky','Water','Wind','Fire','Why','Depression','Battle','War','Peace','Breakfast','Lunch','Dinner','Up','Down','Left','Right','Black','White','Back','Front','Side','Top'];
-
-				include_once('inc_lists.php');
+				$addresses = ['Ave','Blvd','Ct','Dr','Hwy','Ln','Pl','Pkwy','Rd','St'];
 				$timestamp_minus3 = $gm_timestamp - (60 * 60 * 24 * 365 * 3);
-				$genres_sample = $genres; // not conflict with global $genres
 
 				for ($i = 1; $i <= 100; $i++)
 				{
 					shuffle($names);
 					shuffle($titles);
-					shuffle($genres_sample['all']);
-
+					shuffle($addresses);
 					$rand_timestamp = rand($timestamp_minus3, $gm_timestamp);
 					$rand_date_time = gmdate('Y-m-d H:i:s', $rand_timestamp);
 					$rand_year = gmdate('Y', $rand_timestamp);
+					$rand_3 = rand(100, 999);
+					$rand_5 = rand(10000, 99999);
 
-					$sql = "INSERT INTO contacts SET
-					date_time = '$rand_date_time',
-					first_name = '" . $names[0] . "',
-					last_name = '" . $names[1] . "',
-					address1 = '123 " . $names[3] . " St.',
-					city = '" . $names[4] . "',
-					state = '" . $states[array_rand($states)] . "',
-					zip = '12345',
-					country = 'USA'";
-
+					$sql = "INSERT INTO contacts SET date_time = '$rand_date_time', first_name = '$names[0]', last_name = '$names[1]', address1 = '$rand_3 $names[2] $addresses[0].', city = '$names[3]', state = '" . array_rand($states) . "', zip = '$rand_5', country = 'USA'";
 					@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT sample contacts');
 					$contact_id = mysqli_insert_id($GLOBALS['db_connect']);
 
@@ -1033,14 +1024,7 @@ if ($_SESSION['contact']['access'])
 					$comments = implode(' ', array_slice($titles, 0, 20));
 					$text = $titles[0] . ' ' . $titles[1] . "\n" . 'by ' . $names[0] . ' ' . $names[1] . "\n\n" . implode(' ', $titles);
 
-					$sql = "INSERT INTO submissions SET
-					date_time = '$rand_date_time',
-					submitter_id = $contact_id,
-					title = '" . $titles[0] . " " . $titles[1] . "',
-					genre_id = '" . $genres_sample['all'][0]['genre_id'] . "',
-					ext = 'txt',
-					comments = '$comments'";
-
+					$sql = "INSERT INTO submissions SET	date_time = '$rand_date_time', submitter_id = $contact_id, title = '$titles[0] $titles[1]', genre_id = '" . array_rand($genres['all']) . "', ext = 'txt', comments = '$comments'";
 					@mysqli_query($GLOBALS['db_connect'], $sql) or exit_error('query failure: INSERT sample submissions');
 					$submission_id = mysqli_insert_id($GLOBALS['db_connect']);
 
