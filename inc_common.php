@@ -36,7 +36,7 @@ $form_check = true;
 $errors = [];
 $password_length_min = 8; $password_length_max = 72; // needed here globally for install, will be overwritten by $fields
 $mime_types = ['doc' => 'application/msword','docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document','pdf' => 'application/pdf','rtf' => 'text/rtf|application/rtf','txt' => 'text/plain','jpg' => 'image/jpeg','jpeg' => 'image/jpeg','gif' => 'image/gif','png' => 'image/png','wav' => 'audio/wav','mp3' => 'audio/mpeg','mp4' => 'video/mp4','mov' => 'video/quicktime','odt' => 'application/vnd.oasis.opendocument.text','xls' => 'application/vnd.ms-excel','xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','zip' => 'application/zip|application/zip-compressed'];
-$exclude_file_types = ['exe','com','cmd','bin','bat','ps1','sh','command','msi','dmg','vbs','html','htm','php','py','js','jsp','asp','aspx','xml','json','cgi','env','ini','reg','dll','sys','config','htaccess'];
+$exclude_file_types = ['exe','com','cmd','bin','bat','ps1','sh','command','msi','dmg','vbs','html','htm','shtml','php','phtml','phar','pht','py','js','jsp','asp','aspx','xml','json','cgi','env','ini','reg','dll','sys','config','htaccess'];
 $no_text = ['no_submissions' => 'Submission Manager is currently in <b>&ldquo;no submissions&rdquo;</b> mode.<br>Submitters and staff may log into their accounts however no new submissions are being accepted at this time.','admin_only' => 'Submission Manager is currently in <b>admin only</b> mode.<br>Only the system administrators have access at this time.','no_cookies' => '<b>Submission Manager</b> requires that cookies be enabled in your web browser. Please enable cookies and try again.<br>You may also need to empty your browser cache and restart your browser.'];
 $modules = ['account' => 'account summary','update' => 'update your account','submit' => 'submit your work','pay_submission' => 'pay for submission','logout' => 'logout'];
 $modules_admin = ['submissions','contacts','reports','configuration','maintenance'];
@@ -529,7 +529,7 @@ if ($page == 'login' && isset($_SESSION['contact']['access']) && $_SESSION['cont
 
 			foreach ($_POST['file_types'] as $value)
 			{
-				if ($value != '' && !in_array($value, $exclude_file_types))
+				if ($value != '' && !in_array($value, $exclude_file_types) && strpos($value, 'php') === false)
 				{
 					$value = str_replace(' ', '', $value);
 					$value = preg_replace('/[^a-z0-9]/i', '', $value);
@@ -989,7 +989,7 @@ function get_file_types()
 		$result = @mysqli_query($GLOBALS['db_connect'], 'SELECT LOWER(ext) AS ext FROM file_types ORDER BY ext') or exit_error('query failure: SELECT file_types');
 		if ($result && mysqli_num_rows($result))
 		{
-			while ($row = mysqli_fetch_assoc($result)) {if (!in_array($row['ext'], $exclude_file_types)) {$GLOBALS['file_types'][] = $row['ext'];}}
+			while ($row = mysqli_fetch_assoc($result)) {if (!in_array($row['ext'], $exclude_file_types) && strpos($row['ext'], 'php') === false) {$GLOBALS['file_types'][] = $row['ext'];}}
 			if ($GLOBALS['file_types']) {$GLOBALS['file_types_list'] = implode(', ', array_map(function($arg) {return '.' . $arg;}, $GLOBALS['file_types']));}
 			$_SESSION['file_types'] = $GLOBALS['file_types'];
 		}
