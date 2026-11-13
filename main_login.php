@@ -3766,19 +3766,12 @@ else // if staff login
 							}
 							if ($defaults['config'][$key]['type'] == 'checkbox') {$input = '<input type="checkbox" id="config_' . $key . '" name="config[' . $key . ']" value="Y"'; if ($value) {$input .= ' checked';} $input .= ' >';}
 							if ($defaults['config'][$key]['type'] == 'textarea') {$input = '<textarea id="config_' . $key . '" name="config[' . $key . ']" class="' . $class1 . '">' . $value . '</textarea>';}
-							if ($key == 'upload_path' && isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'])
-							{
-								$suggested_path = dirname($_SERVER['DOCUMENT_ROOT']);
-								$suggested_path = str_replace('\\', '/', $suggested_path);
-								if (substr($suggested_path, -1) != '/') {$suggested_path .= '/';}
-								$extra = '<br><span class="small" style="font-weight: bold;">suggested path: ' . $suggested_path . 'submissions/</span>';
-							}
-
+							if ($key == 'upload_path') {$extra = '<br><span class="small" style="font-weight: bold;">suggested path: ' . $suggested_path . '</span>';}
 							if (isset($defaults['config'][$key]['description'])) {$description = $defaults['config'][$key]['description'];}
 							$key_display = '<label for="config_' . $key . '" id="label_config_' . $key . '" class="' . $class1 . '">' . $key . ':</label>';
 
 							echo '
-							<tr class="' . $class2 . '">
+							<tr class="' . $class2 . '" id="tr_' . $key . '">
 							<td class="row_left">' . $key_display . '</td>
 							<td>' . $input . '</td>
 							<td>' . $description . $extra . '</td>

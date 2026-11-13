@@ -440,6 +440,15 @@ if ($GLOBALS['db_connect'])
 
 	$upload_path_year = $config['upload_path'] . $gm_year . '/';
 
+	$suggested_path = '';
+	if (isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'])
+	{
+		$suggested_path = dirname($_SERVER['DOCUMENT_ROOT']);
+		$suggested_path = str_replace('\\', '/', $suggested_path);
+		if (substr($suggested_path, -1) != '/') {$suggested_path .= '/';}
+		$suggested_path .= 'submissions/';
+	}
+
 	// required config settings must be set
 	if (!isset($post_config)) {$config = check_config($config);}
 

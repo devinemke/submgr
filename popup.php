@@ -217,14 +217,14 @@ if ($page == 'update')
 
 if ($page == 'phpinfo')
 {
-	if ($_SESSION['contact']['access'] != 'admin') {exit('unauthorized access');}
+	if ($_SESSION['contact']['access'] != 'admin' || isset($config_hide)) {exit('unauthorized access');}
 	phpinfo();
 	exit();
 }
 
 if ($page == 'mysqlinfo')
 {
-	if ($_SESSION['contact']['access'] != 'admin') {exit('unauthorized access');}
+	if ($_SESSION['contact']['access'] != 'admin' || isset($config_hide)) {exit('unauthorized access');}
 	$title = 'mysqlinfo';
 	$copy = '<table class="table_list">';
 	$result = @mysqli_query($GLOBALS['db_connect'], 'SHOW VARIABLES');
